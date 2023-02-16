@@ -14,15 +14,10 @@ const printfulStore = axios.create({
     signal: new AbortController().signal,
 });
 
-export default async function handler(
-    _req: NextApiRequest,
-    res: NextApiResponse
-) {
+async function handler(_req: NextApiRequest, res: NextApiResponse) {
     const { data: products } = await printfulStore.get("/products");
 
-    const { data: shirt } = await printfulStore.get(
-        `/products/${products.result[0].id}`
-    );
-
-    res.status(200).json(shirt);
+    res.status(200).json(products);
 }
+
+export default handler;
