@@ -3,12 +3,18 @@ import { axiosClient } from "../../utils/axiosClient";
 import type { TPrintfulStore } from "../api/store";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
+import ProductCard from "../../components/ProductCard";
 
 const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center gap-8 p-8 md:flex-row">
       {data?.result.map((product) => (
-        <div className=" p-8">{JSON.stringify(product, null, 10)}</div>
+        <ProductCard
+          key={product.id}
+          id={product.id}
+          name={product.name}
+          thumbnail={product.thumbnail_url}
+        />
       ))}
     </div>
   );

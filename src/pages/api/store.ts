@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { Url } from "url";
 
 type TShortProduct = {
     id: number;
@@ -9,7 +8,7 @@ type TShortProduct = {
     name: string;
     variants: number;
     synced: number;
-    thumbnail_url: Url;
+    thumbnail_url: string;
     is_ignored: boolean;
 };
 
@@ -28,8 +27,8 @@ export type TPrintfulStore = {
 
 // ______________________________________________________________________________________
 
-// products https://api.printful.com/store/products?store_id=9524028
-// single product https://api.printful.com/store/products/296406176?store_id=9524028
+// products https://api.printful.com/store/products
+// single product https://api.printful.com/store/products/<id>
 
 const printfulStore = axios.create({
     baseURL: "https://api.printful.com/store",
