@@ -1,4 +1,5 @@
-import React from "react";
+import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
 const CartIcon = () => {
   // https://heroicons.com/
@@ -20,11 +21,26 @@ const CartIcon = () => {
   );
 };
 
-const Header = () => {
+interface HeaderProps {
+  setIsExpanded: Dispatch<SetStateAction<boolean>>;
+}
+
+const Header = ({ setIsExpanded }: HeaderProps) => {
   return (
-    <header className="flex items-center justify-between bg-gray-500 p-4">
-      <h1 className="text-3xl font-extrabold text-white">LOGO</h1>
-      <CartIcon />
+    <header className="flex h-[60px] items-center justify-between bg-gray-500 px-4">
+      <Link className="text-3xl text-white" href="/">
+        L
+      </Link>
+      <div className="flex items-center justify-center gap-8">
+        <CartIcon />
+        <button
+          onClick={() => setIsExpanded((old) => !old)}
+          className="selext-none text-3xl"
+          role="button"
+        >
+          C
+        </button>
+      </div>
     </header>
   );
 };
