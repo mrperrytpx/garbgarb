@@ -12,7 +12,7 @@ const ProductCard = ({ name, thumbnail, id }: IProductCard) => {
   const whichIndex = splitName.indexOf("Unisex");
 
   return (
-    <div className="rounded-md border-2 border-b-8 md:self-start">
+    <div className="max-w-[350px] rounded-md border-2 border-b-8 md:self-start">
       <Link href={`/products/${id}`}>
         <Image className="border border-b-2" src={thumbnail} alt="" width={400} height={400} />
         <div className="p-2">

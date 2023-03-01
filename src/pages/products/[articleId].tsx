@@ -3,12 +3,12 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import type { TProductDetails } from "../api/product";
 import Image from "next/image";
-import Dropdown from "../../components/Dropdown";
 
 const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div>
-      <div>
+      {JSON.stringify(data, null, 2)}
+      <div className="max-w-[500px]">
         <Image
           width={600}
           height={600}
@@ -17,7 +17,6 @@ const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideP
         />
       </div>
       <h1>{data?.result.sync_product.name}</h1>
-      <Dropdown />
     </div>
   );
 };
