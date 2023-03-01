@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
-type TShortProduct = {
+export type TProduct = {
     id: number;
     external_id: string;
     name: string;
@@ -20,7 +20,7 @@ type TPage = {
 
 export type TPrintfulStore = {
     code: number;
-    result: TShortProduct[];
+    result: TProduct[];
     extra?: Array<null>;
     paging: TPage;
 };

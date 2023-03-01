@@ -1,7 +1,8 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 interface ILayoutProps {
   children: JSX.Element | JSX.Element[];
@@ -9,6 +10,11 @@ interface ILayoutProps {
 
 const Layout = ({ children }: ILayoutProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const pathname = usePathname();
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [pathname]);
 
   return (
     <div>
