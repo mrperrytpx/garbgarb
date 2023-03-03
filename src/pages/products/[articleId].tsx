@@ -23,7 +23,7 @@ const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideP
 
   return (
     <div className="mb-28">
-      {JSON.stringify(data, null, 2)}
+      {/* {JSON.stringify(data, null, 2)} */}
       <div className="max-w-[500px]">
         <Image
           width={600}
@@ -33,7 +33,14 @@ const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideP
         />
       </div>
       <h1>{data?.result.sync_product.name}</h1>
+      <p>PRICE: {data?.result.sync_variants[0].retail_price}€</p>
+      <p>{data?.result.sync_variants[0].product.name}</p>
+      <p>SIZE:</p>
       <Dropdown state={dropdownValue} setState={setDropdownValue} options={dropdownOptions} />
+      <p>QUANTITY</p>
+      <input className="block" id="number" type="number" />
+      <button>Add to cart!</button>
+      <p>click to toggle size guide</p>
     </div>
   );
 };
