@@ -3,10 +3,26 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import type { TProductDetails } from "../api/product";
 import Image from "next/image";
+import { Dropdown } from "../../components/Dropdown";
+import { useState } from "react";
+
+const dropdownOptions = [
+  {
+    state: "one",
+  },
+  {
+    state: "two",
+  },
+  {
+    state: "three",
+  },
+];
 
 const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [dropdownValue, setDropdownValue] = useState(dropdownOptions[0].state);
+
   return (
-    <div>
+    <div className="mb-28">
       {JSON.stringify(data, null, 2)}
       <div className="max-w-[500px]">
         <Image
@@ -17,6 +33,7 @@ const ArticlePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideP
         />
       </div>
       <h1>{data?.result.sync_product.name}</h1>
+      <Dropdown state={dropdownValue} setState={setDropdownValue} options={dropdownOptions} />
     </div>
   );
 };
@@ -27,7 +44,7 @@ export const getServerSideProps: GetServerSideProps<{ data: TProductDetails }> =
   context
 ) => {
   const { articleId } = context.query;
-  const res = await axiosClient.get("/api/product", { params: { id: articleId } });
+  const res = await axiosClient.get<TProductDetails>("/api/product", { params: { id: articleId } });
   const data = res.data;
 
   return {

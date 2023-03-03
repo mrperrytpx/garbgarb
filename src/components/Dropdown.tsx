@@ -1,30 +1,68 @@
-import { KeyboardEvent, useState } from "react";
+import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
 
-const SIZES = ["S", "M", "L", "XL", "XXL"];
+interface IDropdownProps {
+  options: {
+    state: string;
+  }[];
+  state: string;
+  setState: Dispatch<SetStateAction<string>>;
+}
 
-const Dropdown = ({ expanded = false }) => {
-  const [isExpanded, setIsExpanded] = useState(expanded);
+export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
+  const [isActive, setIsActive] = useState(false);
 
-  const handleKeyboardToggle = (e: KeyboardEvent<HTMLSpanElement>) => {
-    if (e.code === "Space" || e.code === "Enter") {
-      setIsExpanded(!isExpanded);
-      return;
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function collapseDropdown() {
+      const element = ref.current;
+
+      const closeMenu: EventListenerOrEventListenerObject = (e) => {
+        const node = e.target as Node;
+        if (element?.contains(node)) return;
+        setIsActive(false);
+      };
+
+      if (!element) return;
+      ["click", "touchstart"].forEach((type) => {
+        document.addEventListener(type, closeMenu);
+
+        return () => document.removeEventListener(type, closeMenu);
+      });
     }
-    return;
-  };
+
+    collapseDropdown();
+  }, [setIsActive, ref]);
 
   return (
-    <div>
+    <div
+      ref={ref}
+      className="relative z-[2] m-auto max-w-md select-none rounded-md border border-red-600"
+    >
       <span
-        onKeyDown={(e) => handleKeyboardToggle(e)}
+        className="flex min-w-[60px] cursor-pointer flex-col items-center justify-center py-1 px-2 font-semibold uppercase"
         tabIndex={0}
-        onClick={() => setIsExpanded((prev) => !prev)}
+        onClick={() => setIsActive(!isActive)}
       >
-        xd
+        {state}
       </span>
-      {isExpanded && SIZES.map((x, i) => <div key={i}>{x}</div>)}
+      {isActive && (
+        <div className="absolute top-full left-0 flex w-full min-w-[150px] flex-col items-center justify-center overflow-hidden rounded-md">
+          {options.map((option, i) => (
+            <span
+              className="inline-block w-full cursor-pointer py-1 px-2 text-left"
+              tabIndex={0}
+              key={i}
+              onClick={() => {
+                setState(option.state);
+                setIsActive(false);
+              }}
+            >
+              {option.state.toUpperCase()}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
-
-export default Dropdown;
