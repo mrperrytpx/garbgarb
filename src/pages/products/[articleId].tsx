@@ -6,13 +6,8 @@ import Image from "next/image";
 import { Dropdown } from "../../components/Dropdown";
 import { useState, useMemo } from "react";
 import parse from "html-react-parser";
-import {
-  useReactTable,
-  createColumnHelper,
-  getCoreRowModel,
-  flexRender,
-} from "@tanstack/react-table";
-import { TSizes } from "../api/productSizes";
+import type { TSizes } from "../api/productSizes";
+import SizesTable from "../../components/SizesTable";
 
 const dropdownOptions = [
   {
@@ -42,7 +37,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
   };
 
   return (
-    <div className="mb-28 flex flex-col items-center justify-center gap-12 p-6 lg:flex-row">
+    <div className="mb-28 flex flex-col items-center justify-center gap-24 p-6 lg:flex-row">
       <div className="max-w-[500px] border-2">
         <Image
           priority={true}
@@ -58,7 +53,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
           <p className="text-center text-xl">{defualtShirtName}</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <p className="text-xl">{data?.result.sync_variants[0].retail_price}€*</p>
+          <p className="text-3xl">{data?.result.sync_variants[0].retail_price}€*</p>
           <p className="text-xs">*Taxes not included</p>
         </div>
         <p className="text-center text-sm">{data?.result.sync_variants[0].product.name}</p>
@@ -88,7 +83,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
           Click to {isToggledSizes ? "close" : "open"} the sizes guide
         </p>
       </article>
-      {isToggledSizes && (
+      {isToggledSizes && sizes && (
         <div className="flex flex-col items-center justify-center gap-4">
           {/* <div className="flex flex-col items-center justify-center gap-2">
             {parse(measureYourself)}
@@ -127,123 +122,3 @@ export const getServerSideProps: GetServerSideProps<{
     },
   };
 };
-
-interface ISizesTable {
-  sizes: TSizes;
-}
-
-function SizesTable({ sizes }: ISizesTable) {
-  const tableData = useSizesDataConverter(sizes);
-  const columnHelper = createColumnHelper<TConvertedTableData>();
-
-  const [data, _setData] = useState(() => [...tableData]);
-
-  const columns = useMemo(
-    () => [
-      columnHelper.accessor((row) => row.size, {
-        id: "size",
-        cell: (info) => <i>{info.getValue()}</i>,
-        header: () => <span>Sizes</span>,
-      }),
-      columnHelper.accessor("length", {
-        cell: (info) => <i>{info.getValue()}</i>,
-        header: () => <span>Length</span>,
-      }),
-      columnHelper.accessor((row) => `${row.chestMin}-${row.chestMax}`, {
-        id: "chest",
-        header: "Chest",
-        cell: (info) => <i>{info.getValue()}</i>,
-      }),
-      columnHelper.accessor("sleeve length", {
-        cell: (info) => <i>{info.getValue()}</i>,
-        header: () => <span>Sleeve</span>,
-      }),
-    ],
-    [sizes]
-  );
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  return (
-    <div>
-      <table>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-type TConvertedTableData = {
-  size: string;
-  length: string;
-  chestMin: string;
-  chestMax: string;
-  "sleeve length": string;
-};
-
-function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
-  let arrOfObjs = new Array(sizes.result.available_sizes.length).fill({});
-
-  const objKeys: string[] = [];
-
-  sizes.result.size_tables[0].measurements.forEach((x) => {
-    objKeys.push(x.type_label.toLowerCase());
-  });
-
-  arrOfObjs = arrOfObjs.map((x, i) => {
-    objKeys.forEach((key) => {
-      if (key.toLowerCase() !== "chest") {
-        x = {
-          ...x,
-          [`${key}`]: sizes.result.size_tables[0].measurements.find(
-            (arr) => arr.type_label.toLowerCase() === key
-          )?.values[i].value,
-        };
-        return;
-      } else {
-        const chestArr = sizes.result.size_tables[0].measurements.find(
-          (arr) => arr.type_label.toLowerCase() === key
-        );
-
-        x = {
-          ...x,
-          chestMin: chestArr?.values[i].min_value,
-          chestMax: chestArr?.values[i].max_value,
-        };
-        return;
-      }
-    });
-
-    return (x = {
-      size: sizes.result.available_sizes[i],
-      ...x,
-    });
-  });
-
-  return arrOfObjs;
-}
