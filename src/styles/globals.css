@@ -27,3 +27,7 @@ canvas {
   width: 100%;
   min-width: 100%;
 }
+
+h6 {
+  font-weight: bold;
+}

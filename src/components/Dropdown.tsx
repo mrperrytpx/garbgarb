@@ -35,22 +35,19 @@ export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
   }, [setIsActive, ref]);
 
   return (
-    <div
-      ref={ref}
-      className="relative z-[2] m-auto max-w-md select-none rounded-md border border-red-600"
-    >
+    <div ref={ref} className="relative z-[2] m-auto max-w-md select-none">
       <span
-        className="flex min-w-[60px] cursor-pointer flex-col items-center justify-center py-1 px-2 font-semibold uppercase"
+        className="flex min-w-[60px] cursor-pointer flex-col items-center justify-center border py-1 px-2 font-semibold uppercase"
         tabIndex={0}
         onClick={() => setIsActive(!isActive)}
       >
         {state}
       </span>
       {isActive && (
-        <div className="absolute top-full left-0 flex w-full min-w-[150px] flex-col items-center justify-center overflow-hidden rounded-md">
+        <div className="absolute left-1/2 flex w-full min-w-[150px] -translate-x-1/2 flex-col items-center justify-center overflow-hidden bg-white">
           {options.map((option, i) => (
             <span
-              className="inline-block w-full cursor-pointer py-1 px-2 text-left"
+              className="inline-block w-full cursor-pointer border py-1 px-2 text-center hover:bg-slate-300"
               tabIndex={0}
               key={i}
               onClick={() => {

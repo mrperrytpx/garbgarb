@@ -27,7 +27,7 @@ interface HeaderProps {
 
 const Header = ({ setIsExpanded }: HeaderProps) => {
   return (
-    <header className="flex h-[60px] items-center justify-between bg-gray-500 px-4">
+    <header className="sticky top-0 flex h-[60px] items-center justify-between bg-gray-500 px-4">
       <Link className="text-3xl text-white" href="/">
         L
       </Link>

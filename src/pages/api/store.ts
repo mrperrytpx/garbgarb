@@ -40,7 +40,7 @@ const printfulStore = axios.create({
 });
 
 async function handler(_req: NextApiRequest, res: NextApiResponse) {
-    const { data: products } = await printfulStore.get("/products");
+    const { data: products } = await printfulStore.get<TPrintfulStore>("/products");
 
     res.status(200).json(products);
 }

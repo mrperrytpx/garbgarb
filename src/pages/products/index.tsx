@@ -7,7 +7,7 @@ import ProductCard from "../../components/ProductCard";
 
 const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-8 p-8 md:flex-row">
+    <div className="flex flex-col flex-wrap items-center justify-center gap-8 p-8 md:flex-row">
       {data?.result.map((product) => (
         <ProductCard
           key={product.id}
