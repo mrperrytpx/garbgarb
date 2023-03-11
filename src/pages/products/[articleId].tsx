@@ -12,7 +12,7 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { TMeasurement, TSizes } from "../api/productSizes";
+import { TSizes } from "../api/productSizes";
 
 const dropdownOptions = [
   {
@@ -133,19 +133,34 @@ interface ISizesTable {
 }
 
 function SizesTable({ sizes }: ISizesTable) {
-  const columnHelper = createColumnHelper<TMeasurement>();
+  const tableData = useSizesDataConverter(sizes);
+  const columnHelper = createColumnHelper<TConvertedTableData>();
 
-  const defaultData = sizes?.result.size_tables[0].measurements;
+  const [data, _setData] = useState(() => [...tableData]);
 
-  const [data, setData] = useState(() => [...defaultData]);
-
-  const columns = [
-    columnHelper.accessor((row, i) => row.values[i].size, {
-      id: "size",
-      cell: (info) => <i>{info.getValue()}</i>,
-      header: () => <span>Sizes</span>,
-    }),
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor((row) => row.size, {
+        id: "size",
+        cell: (info) => <i>{info.getValue()}</i>,
+        header: () => <span>Sizes</span>,
+      }),
+      columnHelper.accessor("length", {
+        cell: (info) => <i>{info.getValue()}</i>,
+        header: () => <span>Length</span>,
+      }),
+      columnHelper.accessor((row) => `${row.chestMin}-${row.chestMax}`, {
+        id: "chest",
+        header: "Chest",
+        cell: (info) => <i>{info.getValue()}</i>,
+      }),
+      columnHelper.accessor("sleeve length", {
+        cell: (info) => <i>{info.getValue()}</i>,
+        header: () => <span>Sleeve</span>,
+      }),
+    ],
+    [sizes]
+  );
 
   const table = useReactTable({
     data,
@@ -181,4 +196,54 @@ function SizesTable({ sizes }: ISizesTable) {
       </table>
     </div>
   );
+}
+
+type TConvertedTableData = {
+  size: string;
+  length: string;
+  chestMin: string;
+  chestMax: string;
+  "sleeve length": string;
+};
+
+function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
+  let arrOfObjs = new Array(sizes.result.available_sizes.length).fill({});
+
+  const objKeys: string[] = [];
+
+  sizes.result.size_tables[0].measurements.forEach((x) => {
+    objKeys.push(x.type_label.toLowerCase());
+  });
+
+  arrOfObjs = arrOfObjs.map((x, i) => {
+    objKeys.forEach((key) => {
+      if (key.toLowerCase() !== "chest") {
+        x = {
+          ...x,
+          [`${key}`]: sizes.result.size_tables[0].measurements.find(
+            (arr) => arr.type_label.toLowerCase() === key
+          )?.values[i].value,
+        };
+        return;
+      } else {
+        const chestArr = sizes.result.size_tables[0].measurements.find(
+          (arr) => arr.type_label.toLowerCase() === key
+        );
+
+        x = {
+          ...x,
+          chestMin: chestArr?.values[i].min_value,
+          chestMax: chestArr?.values[i].max_value,
+        };
+        return;
+      }
+    });
+
+    return (x = {
+      size: sizes.result.available_sizes[i],
+      ...x,
+    });
+  });
+
+  return arrOfObjs;
 }

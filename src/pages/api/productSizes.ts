@@ -12,7 +12,7 @@ export type TSizes = {
 
 export type TMeasurement = {
     type_label: string;
-    values: Array<{ size: string; value: string }>;
+    values: Array<{ size: string; value?: string, min_value?: string, max_value?: string }>;
 };
 
 type TMeasurements = {

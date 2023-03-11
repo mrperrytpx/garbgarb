@@ -190,11 +190,36 @@ const obj = {
 
 let arrOfObjs = new Array(obj.result.available_sizes.length).fill({});
 
-arrOfObjs = arrOfObjs.map(
-    (x, i) =>
-        (x = {
-            size: obj.result.available_sizes[i],
-        })
-);
+const objKeys = [];
 
-console.log(arrOfObjs);
+obj.result.size_tables[0].measurements.forEach((x) => {
+    objKeys.push(x.type_label.toLowerCase());
+});
+
+arrOfObjs = arrOfObjs.map((x, i) => {
+    objKeys.forEach((key) => {
+        if (key.toLowerCase() !== "chest") {
+            x = {
+                ...x,
+                [`${key}`]: obj.result.size_tables[0].measurements.find(
+                    (arr) => arr.type_label.toLowerCase() === key
+                ).values[i].value,
+            };
+        } else {
+            chestArr = obj.result.size_tables[0].measurements.find(
+                (arr) => arr.type_label.toLowerCase() === key
+            );
+
+            x = {
+                ...x,
+                chestMin: chestArr.values[i].min_value,
+                chestMax: chestArr.values[i].max_value,
+            };
+        }
+    });
+
+    return (x = {
+        size: obj.result.available_sizes[i],
+        ...x,
+    });
+});
