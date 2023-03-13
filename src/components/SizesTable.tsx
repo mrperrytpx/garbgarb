@@ -9,9 +9,10 @@ import { useState, useMemo } from "react";
 
 interface ISizesTable {
   sizes: TSizes;
+  isCentimeters: boolean;
 }
 
-function SizesTable({ sizes }: ISizesTable) {
+function SizesTable({ sizes, isCentimeters }: ISizesTable) {
   const tableData = useSizesDataConverter(sizes);
   const columnHelper = createColumnHelper<TConvertedTableData>();
 
@@ -26,22 +27,34 @@ function SizesTable({ sizes }: ISizesTable) {
         header: () => <span>Sizes</span>,
       }),
       columnHelper.accessor("length", {
-        cell: (info) => <i>{info.getValue()}</i>,
+        cell: (info) => (
+          <i>{isCentimeters ? Math.round(+info.getValue() * 2.54 * 10) / 10 : info.getValue()}</i>
+        ),
         header: () => <span>Length</span>,
       }),
-      columnHelper.accessor((row) => `${row.chestMin}-${row.chestMax}`, {
+      columnHelper.accessor("chest", {
         id: "chest",
         header: "Chest",
-        cell: (info) => <i>{info.getValue()}</i>,
+        cell: (info) => (
+          <i>
+            {isCentimeters
+              ? `${Math.round(+info.getValue()[0]! * 2.54 * 10) / 10}-${
+                  Math.round(+info.getValue()[1]! * 2.54 * 10) / 10
+                }`
+              : `${info.getValue()[0]}-${info.getValue()[1]}`}
+          </i>
+        ),
       }),
       columnHelper.accessor((row) => row["sleeve length"], {
         id: "sleeve",
-        cell: (info) => <i>{info.getValue()}</i>,
+        cell: (info) => (
+          <i>{isCentimeters ? Math.round(+info.getValue()! * 2.54 * 10) / 10 : info.getValue()}</i>
+        ),
         header: () => <span>Sleeve</span>,
         enableHiding: true,
       }),
     ],
-    [sizes]
+    [sizes, isCentimeters]
   );
 
   const table = useReactTable({
@@ -92,8 +105,7 @@ function SizesTable({ sizes }: ISizesTable) {
 type TConvertedTableData = {
   size: string;
   length: string;
-  chestMin: string;
-  chestMax: string;
+  chest: [string | undefined, string | undefined];
   "sleeve length"?: string | undefined;
 };
 
@@ -123,8 +135,7 @@ export function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
 
         x = {
           ...x,
-          chestMin: chestArr.values[i].min_value,
-          chestMax: chestArr.values[i].max_value,
+          chest: [chestArr.values[i]?.min_value, chestArr.values[i]?.max_value],
         };
         return;
       }

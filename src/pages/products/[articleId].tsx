@@ -7,7 +7,7 @@ import { Dropdown } from "../../components/Dropdown";
 import { useState } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/productSizes";
-import SizesTable from "../../components/SizesTable";
+import SizesTable, { useSizesDataConverter } from "../../components/SizesTable";
 
 const dropdownOptions = [
   {
@@ -25,6 +25,9 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
   const [dropdownValue, setDropdownValue] = useState(dropdownOptions[0].state);
   const [quantity, setQuantity] = useState("1");
   const [isToggledSizes, setIsToggledSizes] = useState(false);
+  const [isCentimeters, setIsCentimeters] = useState(true);
+
+  // const tdata = useSizesDataConverter(sizes)
 
   const splitName = data?.result.sync_product.name.split(" ");
   const whichIndex = splitName.indexOf("Unisex");
@@ -38,6 +41,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
 
   return (
     <div>
+      {/* <div>{JSON.stringify(tdata, null, 2)}</div> */}
       <div className="flex flex-col items-center justify-center gap-24 p-6 lg:flex-row">
         <div className="max-w-[500px] border-2">
           <Image
@@ -93,7 +97,21 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
           <div className="flex flex-col items-start justify-center gap-2">
             {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
           </div>
-          <SizesTable sizes={sizes} />
+          <div className="flex items-center justify-center gap-4">
+            <span
+              onClick={() => setIsCentimeters(false)}
+              className={`cursor-pointer p-2 ${isCentimeters ? "" : "border-b-4 border-gray-500"}`}
+            >
+              Inches
+            </span>
+            <span
+              onClick={() => setIsCentimeters(true)}
+              className={`cursor-pointer p-2 ${isCentimeters ? "border-b-4 border-gray-500" : ""}`}
+            >
+              Centimeters
+            </span>
+          </div>
+          <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
         </div>
       )}
     </div>
