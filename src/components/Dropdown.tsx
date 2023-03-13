@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
+import type { TDropdownData } from "../pages/products/[articleId]";
 
 interface IDropdownProps {
-  options: {
-    state: string;
-  }[];
+  options: TDropdownData[];
   state: string;
-  setState: Dispatch<SetStateAction<string>>;
+  setState: Dispatch<SetStateAction<TDropdownData>>;
 }
 
 export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
@@ -51,11 +50,11 @@ export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
               tabIndex={0}
               key={i}
               onClick={() => {
-                setState(option.state);
+                setState(option);
                 setIsActive(false);
               }}
             >
-              {option.state.toUpperCase()}
+              {option.text.toUpperCase()}
             </span>
           ))}
         </div>

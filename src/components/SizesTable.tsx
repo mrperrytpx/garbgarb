@@ -38,10 +38,10 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
         cell: (info) => (
           <i>
             {isCentimeters
-              ? `${Math.round(+info.getValue()[0]! * 2.54 * 10) / 10}-${
+              ? `${Math.round(+info.getValue()[0]! * 2.54 * 10) / 10} - ${
                   Math.round(+info.getValue()[1]! * 2.54 * 10) / 10
                 }`
-              : `${info.getValue()[0]}-${info.getValue()[1]}`}
+              : `${info.getValue()[0]} - ${info.getValue()[1]}`}
           </i>
         ),
       }),
@@ -73,13 +73,13 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
   });
 
   return (
-    <div>
+    <div className="w-full">
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr className="border" key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th className="border p-2 text-left" key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -92,7 +92,9 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                <td className="border p-2" key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
               ))}
             </tr>
           ))}

@@ -7,27 +7,30 @@ import { Dropdown } from "../../components/Dropdown";
 import { useState } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/productSizes";
-import SizesTable, { useSizesDataConverter } from "../../components/SizesTable";
+import SizesTable from "../../components/SizesTable";
 
-const dropdownOptions = [
-  {
-    state: "one",
-  },
-  {
-    state: "two",
-  },
-  {
-    state: "three",
-  },
-];
+export type TDropdownData = { text: string; index: number };
+
+function useDataAsDropdown(data: TProductDetails): TDropdownData[] {
+  const result: TDropdownData[] = [];
+
+  data.result.sync_variants.forEach((variant, i) => {
+    result.push({
+      text: variant.name.split(" ").slice(-1).join(""),
+      index: i,
+    });
+  });
+
+  return result;
+}
 
 const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [dropdownValue, setDropdownValue] = useState(dropdownOptions[0].state);
+  const dropdownOptions = useDataAsDropdown(data);
+
+  const [dropdownValue, setDropdownValue] = useState(dropdownOptions[0]);
   const [quantity, setQuantity] = useState("1");
   const [isToggledSizes, setIsToggledSizes] = useState(false);
   const [isCentimeters, setIsCentimeters] = useState(true);
-
-  // const tdata = useSizesDataConverter(sizes)
 
   const splitName = data?.result.sync_product.name.split(" ");
   const whichIndex = splitName.indexOf("Unisex");
@@ -41,7 +44,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
 
   return (
     <div>
-      {/* <div>{JSON.stringify(tdata, null, 2)}</div> */}
+      {/* <div>{JSON.stringify(data, null, 2)}</div> */}
       <div className="flex flex-col items-center justify-center gap-24 p-6 lg:flex-row">
         <div className="max-w-[500px] border-2">
           <Image
@@ -57,14 +60,16 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
             <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
             <p className="text-center text-xl">{defualtShirtName}</p>
           </div>
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-3xl">{data?.result.sync_variants[0].retail_price}€*</p>
-            <p className="text-xs">*Taxes not included</p>
-          </div>
-          <p className="text-center text-sm">{data?.result.sync_variants[0].product.name}</p>
+          <p className="text-center text-sm">
+            {data?.result.sync_variants[dropdownValue.index].product.name}
+          </p>
           <div className="flex flex-col items-center justify-center">
             <p className="text-md">Size:</p>
-            <Dropdown state={dropdownValue} setState={setDropdownValue} options={dropdownOptions} />
+            <Dropdown
+              state={dropdownValue.text}
+              setState={setDropdownValue}
+              options={dropdownOptions}
+            />
           </div>
           <div className="flex flex-col items-center justify-center">
             <p>Quantity:</p>
@@ -78,6 +83,12 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
               type="number"
             />
           </div>
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-3xl">
+              {data?.result.sync_variants[dropdownValue.index].retail_price}€*
+            </p>
+            <p className="text-xs">*Taxes not included</p>
+          </div>
           <button className="min-w-[8rem] border p-4 hover:bg-slate-600 hover:text-white">
             Add to cart!
           </button>
@@ -90,25 +101,25 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
         </article>
       </div>
       {isToggledSizes && sizes && (
-        <div className="mb-32 flex flex-col items-center justify-center gap-4">
-          <div className="flex flex-col items-center justify-center gap-2">
+        <div className="m-auto mb-32 flex max-w-[800px] flex-col items-center justify-center gap-4 rounded-md border-2 p-4">
+          <div className="flex w-full flex-col items-start justify-center gap-2">
             {parse(sizes.result.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
           </div>
           <div className="flex flex-col items-start justify-center gap-2">
             {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
           </div>
-          <div className="flex items-center justify-center gap-4">
-            <span
-              onClick={() => setIsCentimeters(false)}
-              className={`cursor-pointer p-2 ${isCentimeters ? "" : "border-b-4 border-gray-500"}`}
-            >
-              Inches
-            </span>
+          <div className="flex w-full items-start justify-start gap-4">
             <span
               onClick={() => setIsCentimeters(true)}
-              className={`cursor-pointer p-2 ${isCentimeters ? "border-b-4 border-gray-500" : ""}`}
+              className={`cursor-pointer p-2 ${isCentimeters && "border-b-4 border-gray-500"}`}
             >
               Centimeters
+            </span>
+            <span
+              onClick={() => setIsCentimeters(false)}
+              className={`cursor-pointer p-2 ${!isCentimeters && "border-b-4 border-gray-500"}`}
+            >
+              Inches
             </span>
           </div>
           <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
