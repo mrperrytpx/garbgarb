@@ -16,6 +16,7 @@ function SizesTable({ sizes }: ISizesTable) {
   const columnHelper = createColumnHelper<TConvertedTableData>();
 
   const [data, _setData] = useState(() => [...tableData]);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const columns = useMemo(
     () => [
@@ -37,6 +38,7 @@ function SizesTable({ sizes }: ISizesTable) {
         id: "sleeve",
         cell: (info) => <i>{info.getValue()}</i>,
         header: () => <span>Sleeve</span>,
+        enableHiding: true,
       }),
     ],
     [sizes]
@@ -45,6 +47,15 @@ function SizesTable({ sizes }: ISizesTable) {
   const table = useReactTable({
     data,
     columns,
+    state: {
+      columnVisibility: {
+        sleeve: tableData[0].hasOwnProperty("sleeve length"),
+      },
+    },
+    initialState: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -86,7 +97,7 @@ type TConvertedTableData = {
   "sleeve length"?: string | undefined;
 };
 
-function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
+export function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
   let arrOfObjs: TConvertedTableData[] = new Array(sizes.result.available_sizes.length).fill({});
 
   const objKeys: string[] = [];
