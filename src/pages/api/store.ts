@@ -21,7 +21,7 @@ type TPage = {
 export type TPrintfulStore = {
     code: number;
     result: TProduct[];
-    extra?: Array<null>;
+    extra?: Array<unknown>;
     paging: TPage;
 };
 

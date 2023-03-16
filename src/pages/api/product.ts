@@ -9,7 +9,7 @@ export type TProductDetails = {
         sync_product: TProduct;
         sync_variants: Array<TProductVariant>;
     };
-    extra?: Array<null>;
+    extra?: Array<unknown>;
 };
 
 type BaseProduct = {

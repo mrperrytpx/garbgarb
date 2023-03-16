@@ -79,7 +79,7 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr className="border" key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th className="border p-2 text-left" key={header.id}>
+                <th className="border p-2 text-center" key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -92,7 +92,7 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td className="border p-2" key={cell.id}>
+                <td className="border p-2 text-center text-sm" key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

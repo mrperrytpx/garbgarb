@@ -7,7 +7,7 @@ import axios from "axios";
 export type TSizes = {
     code: number;
     result: TProductSizes;
-    extra: Array<null>;
+    extra: Array<unknown>;
 };
 
 export type TMeasurement = {

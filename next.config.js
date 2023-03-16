@@ -9,6 +9,12 @@ const nextConfig = {
                 port: "",
                 pathname: "/files/**",
             },
+            {
+                protocol: "https",
+                hostname: "files.cdn.printful.com",
+                port: "",
+                pathname: "/upload/**",
+            },
         ],
     },
 };

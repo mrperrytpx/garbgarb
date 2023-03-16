@@ -8,6 +8,7 @@ import { useState } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/productSizes";
 import SizesTable from "../../components/SizesTable";
+import { Portal } from "../../components/Portal";
 
 export type TDropdownData = { text: string; index: number };
 
@@ -85,7 +86,10 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
           </div>
           <div className="flex flex-col items-center justify-center">
             <p className="text-3xl">
-              {data?.result.sync_variants[dropdownValue.index].retail_price}€*
+              {Math.round(
+                +data?.result.sync_variants[dropdownValue.index].retail_price * +quantity * 100
+              ) / 100}
+              €*
             </p>
             <p className="text-xs">*Taxes not included</p>
           </div>
@@ -101,29 +105,47 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
         </article>
       </div>
       {isToggledSizes && sizes && (
-        <div className="m-auto mb-32 flex max-w-[800px] flex-col items-center justify-center gap-4 rounded-md border-2 p-4">
-          <div className="flex w-full flex-col items-start justify-center gap-2">
-            {parse(sizes.result.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
-          </div>
-          <div className="flex flex-col items-start justify-center gap-2">
-            {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
-          </div>
-          <div className="flex w-full items-start justify-start gap-4">
+        <Portal>
+          <div className="relative flex max-w-[800px] flex-col items-center justify-center gap-4 rounded-md border-2 bg-white p-4">
+            <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
+              {parse(sizes.result.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
+            </div>
+            <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
+              <div className="w-[150px] self-center sm:self-start">
+                <Image
+                  width={150}
+                  height={150}
+                  alt="Visual guide for measuring yourself"
+                  src={sizes?.result.size_tables[0].image_url}
+                />
+              </div>
+              <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
+                {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
+              </div>
+            </div>
+            <div className="flex w-full items-start justify-start gap-4">
+              <span
+                onClick={() => setIsCentimeters(true)}
+                className={`cursor-pointer p-2 ${isCentimeters && "border-b-4 border-gray-500"}`}
+              >
+                Centimeters
+              </span>
+              <span
+                onClick={() => setIsCentimeters(false)}
+                className={`cursor-pointer p-2 ${!isCentimeters && "border-b-4 border-gray-500"}`}
+              >
+                Inches
+              </span>
+            </div>
+            <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
             <span
-              onClick={() => setIsCentimeters(true)}
-              className={`cursor-pointer p-2 ${isCentimeters && "border-b-4 border-gray-500"}`}
+              onClick={() => setIsToggledSizes(false)}
+              className="absolute right-0 top-0 cursor-pointer px-2 py-1 text-3xl font-bold"
             >
-              Centimeters
-            </span>
-            <span
-              onClick={() => setIsCentimeters(false)}
-              className={`cursor-pointer p-2 ${!isCentimeters && "border-b-4 border-gray-500"}`}
-            >
-              Inches
+              X
             </span>
           </div>
-          <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
-        </div>
+        </Portal>
       )}
     </div>
   );
