@@ -44,9 +44,9 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
   };
 
   return (
-    <div>
+    <div className="m-auto lg:mt-[50px]">
       {/* <div>{JSON.stringify(data, null, 2)}</div> */}
-      <div className="flex flex-col items-center justify-center gap-24 p-6 lg:flex-row">
+      <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
         <div className="max-w-[500px] border-2">
           <Image
             priority={true}
@@ -87,7 +87,9 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
           <div className="flex flex-col items-center justify-center">
             <p className="text-3xl">
               {Math.round(
-                +data?.result.sync_variants[dropdownValue.index].retail_price * +quantity * 100
+                +data?.result.sync_variants[dropdownValue.index].retail_price *
+                  Math.abs(+quantity) *
+                  100
               ) / 100}
               €*
             </p>
@@ -123,7 +125,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
                 {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
               </div>
             </div>
-            <div className="flex w-full items-start justify-start gap-4">
+            <div className="flex gap-4 self-start">
               <span
                 onClick={() => setIsCentimeters(true)}
                 className={`cursor-pointer p-2 ${isCentimeters && "border-b-4 border-gray-500"}`}
@@ -140,7 +142,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
             <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
             <span
               onClick={() => setIsToggledSizes(false)}
-              className="absolute right-0 top-0 cursor-pointer px-2 py-1 text-3xl font-bold"
+              className="absolute right-0 top-0 cursor-pointer px-2 py-1 text-2xl font-bold"
             >
               X
             </span>

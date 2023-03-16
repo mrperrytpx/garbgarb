@@ -73,7 +73,7 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
   });
 
   return (
-    <div className="w-full">
+    <div className="self-start overflow-x-auto">
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
