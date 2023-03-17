@@ -7,6 +7,7 @@ import { Dropdown } from "../../components/Dropdown";
 import { useState } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/product_sizes";
+import type { TProductAvailability } from "../api/product_availability";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 
@@ -159,9 +160,16 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
 
 export default ArticlePage;
 
+type TAvailableSizes = {
+  id: number | undefined;
+  size: string | undefined;
+  inStock: boolean | undefined;
+};
+
 export const getServerSideProps: GetServerSideProps<{
   data: TProductDetails;
   sizes: TSizes;
+  dropdown: Array<TAvailableSizes>;
 }> = async (context) => {
   const { articleId } = context.query;
   const articleRes = await axiosClient.get<TProductDetails>("/api/product", {
@@ -174,10 +182,31 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const sizesData = sizesRes.data;
 
+  const availabilityRes = await axiosClient.get<TProductAvailability>("/api/product_availability", {
+    params: { id: articleData.result.sync_variants[0].product.product_id },
+  });
+  const availabiltiyData = availabilityRes.data;
+
+  let sizes: Array<TAvailableSizes> = new Array(articleData.result.sync_variants.length)
+    .fill({})
+    .map((x, i) => ({ ...x, id: articleData.result.sync_variants[i].variant_id }));
+
+  sizes = sizes.map((size) => {
+    const variant = availabiltiyData.result.variants.find((x) => x.id === size.id);
+    return {
+      id: variant?.id,
+      size: variant?.size,
+      inStock: !!variant?.availability_status.find(
+        (x) => x.region === "EU" && x.status === "in_stock"
+      ),
+    };
+  });
+
   return {
     props: {
       data: articleData,
       sizes: sizesData,
+      dropdown: sizes,
     },
   };
 };

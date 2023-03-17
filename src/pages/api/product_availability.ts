@@ -6,7 +6,10 @@ import axios from "axios";
 
 export type TProductAvailability = {
     code: number;
-    result: TBaseProduct;
+    result: {
+        product: TBaseProduct;
+        variants: Array<TBaseVariants>;
+    };
     extra: Array<unknown>;
 };
 
@@ -53,6 +56,26 @@ type TBaseProduct = {
     avg_fullfillment_time: string | null;
     techniques: Array<TBaseProductTechniques>;
     files: Array<TBaseProductFiles>;
+};
+
+type TBaseVariants = {
+    id: number;
+    product_id: number;
+    name: string;
+    size: string;
+    color: string;
+    color_code: string;
+    color_code2: string | null;
+    image: string;
+    price: string;
+    in_stock: boolean;
+    availability_regions: {
+        [key: string]: string;
+    };
+    availability_status: Array<{
+        [key: string]: string;
+        status: string;
+    }>;
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
