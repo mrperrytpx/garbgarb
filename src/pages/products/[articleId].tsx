@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Dropdown } from "../../components/Dropdown";
 import { useState } from "react";
 import parse from "html-react-parser";
-import type { TSizes } from "../api/productSizes";
+import type { TSizes } from "../api/product_sizes";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 
@@ -46,6 +46,7 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
   return (
     <div className="m-auto lg:mt-[50px]">
       {/* <div>{JSON.stringify(data, null, 2)}</div> */}
+
       <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
         <div className="max-w-[500px] border-2">
           <Image
@@ -56,14 +57,17 @@ const ArticlePage = ({ data, sizes }: InferGetServerSidePropsType<typeof getServ
             src={data?.result.sync_product.thumbnail_url}
           />
         </div>
+
         <article className="flex flex-col items-center justify-center gap-4">
           <div className="flex flex-col items-center justify-center">
             <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
             <p className="text-center text-xl">{defualtShirtName}</p>
           </div>
+
           <p className="text-center text-sm">
             {data?.result.sync_variants[dropdownValue.index].product.name}
           </p>
+
           <div className="flex flex-col items-center justify-center">
             <p className="text-md">Size:</p>
             <Dropdown
@@ -165,7 +169,7 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const articleData = articleRes.data;
 
-  const sizesRes = await axiosClient.get<TSizes>("/api/productSizes", {
+  const sizesRes = await axiosClient.get<TSizes>("/api/product_sizes", {
     params: { id: articleData.result.sync_variants[0].product.product_id },
   });
   const sizesData = sizesRes.data;

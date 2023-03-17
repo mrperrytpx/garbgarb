@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { TSizes } from "../pages/api/productSizes";
+import type { TSizes } from "../pages/api/product_sizes";
 import { useState, useMemo } from "react";
 
 interface ISizesTable {
