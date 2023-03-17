@@ -15,6 +15,7 @@ const ArticlePage = ({
   data,
   sizes,
   dropdownOptions,
+  description,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [dropdownState, setDropdownState] = useState(dropdownOptions[0]);
   const [quantity, setQuantity] = useState("1");
@@ -31,6 +32,11 @@ const ArticlePage = ({
     if (+quantity < 1 || +quantity > 999) setQuantity("1");
   };
 
+  const HTMLDesc = description
+    .split("\n")
+    .map((x) => `<p>${x}</p>`)
+    .join("");
+
   return (
     <div className="m-auto lg:mt-[50px]">
       <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
@@ -44,42 +50,48 @@ const ArticlePage = ({
           />
         </div>
 
-        <article className="flex flex-col items-center justify-center gap-4">
-          <div className="flex flex-col items-center justify-center">
-            <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
-            <p className="text-center text-xl">{defualtShirtName}</p>
+        <article className="flex max-w-[90%] flex-col items-center justify-center gap-4 lg:max-w-[450px]">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div>
+              <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
+              <p className="text-center text-xl">{defualtShirtName}</p>
+            </div>
+            <div className="text-sm">{parse(HTMLDesc)}</div>
           </div>
-          {/* 
+
           <p className="text-center text-sm">
-            {data?.result.sync_variants[dropdownState?.].product.name}
-          </p> */}
+            {data?.result.sync_variants[dropdownState?.index].product.name}
+          </p>
 
           <div className="flex flex-col items-center justify-center">
             <p className="text-md">Size:</p>
             <Dropdown state={dropdownState} setState={setDropdownState} options={dropdownOptions} />
           </div>
-          <div className="flex flex-col items-center justify-center">
-            <p>Quantity:</p>
-            <input
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="block w-32 border p-4 text-center"
-              onBlur={handleQuantity}
-              min="1"
-              max="999"
-              type="number"
-            />
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            {/* <p className="text-3xl">
-              {Math.round(
-                +data?.result.sync_variants[dropdownState?.index].retail_price *
-                  Math.abs(+quantity) *
-                  100
-              ) / 100}
-              €*
-            </p> */}
-            <p className="text-xs">*Taxes not included</p>
+          {/*  */}
+          <div className="flex items-center justify-center gap-4">
+            <div>
+              <p>Quantity:</p>
+              <input
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="block w-32 border p-4 text-center"
+                onBlur={handleQuantity}
+                min="1"
+                max="999"
+                type="number"
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center self-end">
+              <p className="text-3xl">
+                {Math.round(
+                  +data?.result.sync_variants[dropdownState?.index].retail_price *
+                    Math.abs(+quantity) *
+                    100
+                ) / 100}
+                €*
+              </p>
+              <p className="text-xs">*Taxes not included</p>
+            </div>
           </div>
           <button className="min-w-[8rem] border p-4 hover:bg-slate-600 hover:text-white">
             Add to cart!
@@ -152,6 +164,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: TProductDetails;
   sizes: TSizes;
   dropdownOptions: Array<TAvailableSizes>;
+  description: string;
 }> = async (context) => {
   const { articleId } = context.query;
   const articleRes = await axiosClient.get<TProductDetails>("/api/product", {
@@ -169,11 +182,13 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const availabiltiyData = availabilityRes.data;
 
-  let sizes: Array<TAvailableSizes> = new Array(articleData.result.sync_variants.length)
+  const description = availabiltiyData.result.product.description;
+
+  let dropdownOptions: Array<TAvailableSizes> = new Array(articleData.result.sync_variants.length)
     .fill({})
     .map((x, i) => ({ ...x, id: articleData.result.sync_variants[i].variant_id }));
 
-  sizes = sizes.map((size, i) => {
+  dropdownOptions = dropdownOptions.map((size, i) => {
     const variant = availabiltiyData.result.variants.find((x) => x.id === size.id);
     return {
       index: i,
@@ -185,13 +200,12 @@ export const getServerSideProps: GetServerSideProps<{
     };
   });
 
-  console.log(sizes);
-
   return {
     props: {
       data: articleData,
       sizes: sizesData,
-      dropdownOptions: sizes,
+      dropdownOptions,
+      description,
     },
   };
 };
