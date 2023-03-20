@@ -15,11 +15,15 @@ export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
   };
 
   return (
-    <select value={state.id} onChange={handleChange} className="select-none border p-2 text-lg">
+    <select
+      value={state.id}
+      onChange={handleChange}
+      className="w-[200px] select-none border p-2 text-lg"
+    >
       {options.map((option) => (
         <option
           disabled={!option.inStock}
-          className="inline-block w-full cursor-pointer text-sm hover:bg-slate-300"
+          className="inline-block w-full cursor-pointer text-lg hover:bg-slate-300"
           key={option.id}
           value={option.id}
         >

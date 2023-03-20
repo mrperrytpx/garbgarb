@@ -32,11 +32,6 @@ const ArticlePage = ({
     if (+quantity < 1 || +quantity > 999) setQuantity("1");
   };
 
-  const HTMLDesc = description
-    .split("\n")
-    .map((x) => `<p>${x}</p>`)
-    .join("");
-
   return (
     <div className="m-auto lg:mt-[50px]">
       <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
@@ -56,7 +51,7 @@ const ArticlePage = ({
               <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
               <p className="text-center text-xl">{defualtShirtName}</p>
             </div>
-            <div className="text-sm">{parse(HTMLDesc)}</div>
+            <div className="text-sm">{parse(description)}</div>
           </div>
 
           <p className="text-center text-sm">
@@ -182,7 +177,10 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const availabiltiyData = availabilityRes.data;
 
-  const description = availabiltiyData.result.product.description;
+  const description = availabiltiyData.result.product.description
+    .split("\n")
+    .map((x) => `<p>${x}</p>`)
+    .join("");
 
   let dropdownOptions: Array<TAvailableSizes> = new Array(articleData.result.sync_variants.length)
     .fill({})
