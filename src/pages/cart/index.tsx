@@ -8,20 +8,24 @@ const CartPage = () => {
 
   return (
     <div>
-      {productsInCart.map((product) => (
-        <div>
+      {productsInCart.length ? (
+        productsInCart.map((product) => (
           <div>
-            {product.name} {product.size}
+            <div>
+              {product.name} {product.size}
+            </div>
+            <div>{product.quantity}</div>
+            <button
+              onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
+              className="border-2 p-4"
+            >
+              X
+            </button>
           </div>
-          <div>{product.quantity}</div>
-          <button
-            onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
-            className="border-2 p-4"
-          >
-            X
-          </button>
-        </div>
-      ))}
+        ))
+      ) : (
+        <div>No Items in cart :(</div>
+      )}
     </div>
   );
 };

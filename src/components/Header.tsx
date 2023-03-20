@@ -28,11 +28,16 @@ interface HeaderProps {
 const Header = ({ setIsExpanded }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-10 flex h-[60px] items-center justify-between bg-gray-500 px-4">
-      <Link className="text-3xl text-white" href="/">
-        L
-      </Link>
-      <div className="flex items-center justify-center gap-8">
-        <Link className="text-3xl text-white" href="/cart">
+      <div className="flex items-center justify-center gap-4">
+        <Link className="p-1 text-3xl text-white" href="/">
+          L
+        </Link>
+        <Link className="p-1 text-3xl uppercase text-white hover:text-black" href="/products">
+          Shop
+        </Link>
+      </div>
+      <div className="flex items-center justify-center gap-4">
+        <Link className="p-1 text-3xl text-white" href="/cart">
           <CartIcon />
         </Link>
         <button

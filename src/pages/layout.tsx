@@ -17,7 +17,7 @@ const Layout = ({ children }: ILayoutProps) => {
   }, [pathname]);
 
   return (
-    <div>
+    <div className="flex min-h-screen flex-col">
       <Header setIsExpanded={setIsExpanded} />
       {isExpanded ? (
         <div className="flex h-[calc(max(600px,100vh)-60px)] flex-col items-center justify-center gap-6 overflow-hidden bg-gray-500">
@@ -50,7 +50,10 @@ const Layout = ({ children }: ILayoutProps) => {
           </div>
         </div>
       ) : (
-        children
+        <>
+          {children}
+          <div className="h-[100px] bg-red-400">I AM FOOTER</div>
+        </>
       )}
     </div>
   );
