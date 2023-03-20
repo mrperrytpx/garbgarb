@@ -52,7 +52,7 @@ type TProductVariant = {
     currency: "Eur";
     product: BaseProduct;
     files: Array<File>;
-    options: Array<{ id: string; value: string | boolean | Array<null> }>;
+    options: Array<{ id: string; value: string | boolean | Array<unknown> }>;
     is_ignored: boolean;
 };
 

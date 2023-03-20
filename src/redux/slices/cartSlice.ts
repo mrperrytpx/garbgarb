@@ -1,27 +1,64 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export interface CartState {
-    value: number;
+    value: Array<TCartProduct>;
 }
 
+export type TCartProduct = {
+    price: string;
+    quantity: number;
+    size: string;
+    size_index: number;
+    name: string;
+    sku: string;
+    variant_image: string;
+    id: number;
+    sync_id: number;
+    sync_variant_id: number;
+    base_product_id: number;
+};
+
 const initialState: CartState = {
-    value: 0,
+    value: [],
 };
 
 export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addToCart: (state) => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
-            state.value += 1;
+        addToCart: (state, action: PayloadAction<TCartProduct>) => {
+            if (!action.payload) {
+                throw new Error('payload missing in "addToCart" action');
+            }
+
+            const payload = action.payload;
+            const isInCart = state.value.find((product) => product.sku === payload.sku);
+
+            if (!isInCart) {
+                state.value = [...state.value, payload];
+            } else {
+                isInCart.quantity += payload.quantity;
+                state.value = [
+                    ...state.value.filter((product) => product.sku !== isInCart.sku),
+                    isInCart,
+                ];
+            }
         },
-        removeFromCart: (state) => {
-            state.value -= 1;
+        removeFromCart: (state, action: PayloadAction<{ sku: string }>) => {
+            if (!action.payload) {
+                throw new Error("Payload missing in 'addToCart' action");
+            }
+
+            const payload = action.payload;
+            const isInCart = state.value.find((product) => product.sku === payload.sku);
+
+            if (!isInCart) {
+                throw new Error("Product must be in the cart to remove it");
+            }
+
+            state.value = state.value.filter((product) => product.sku !== payload.sku);
         },
     },
 });

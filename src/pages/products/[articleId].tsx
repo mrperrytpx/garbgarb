@@ -10,6 +10,8 @@ import type { TSizes } from "../api/product/sizes";
 import type { TProductAvailability } from "../api/product/availability";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
+import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 const ArticlePage = ({
   data,
@@ -22,6 +24,8 @@ const ArticlePage = ({
   const [isToggledSizes, setIsToggledSizes] = useState(false);
   const [isCentimeters, setIsCentimeters] = useState(true);
 
+  const dispatch = useDispatch();
+
   const splitName = data?.result.sync_product.name.split(" ");
   const whichIndex = splitName.indexOf("Unisex");
   const shirtName = splitName.slice(0, whichIndex).join(" ");
@@ -32,8 +36,26 @@ const ArticlePage = ({
     if (+quantity < 1 || +quantity > 999) setQuantity("1");
   };
 
+  function handleAddToCart() {
+    const payload: TCartProduct = {
+      name: data?.result.sync_product.name,
+      quantity: +quantity,
+      sku: data?.result.sync_variants[dropdownState.index].sku,
+      price: data?.result.sync_variants[dropdownState.index].retail_price,
+      size: dropdownState?.size,
+      size_index: dropdownState.index,
+      variant_image: data?.result.sync_product.thumbnail_url,
+      id: data?.result.sync_variants[dropdownState.index].id,
+      sync_id: data?.result.sync_variants[dropdownState.index].sync_product_id,
+      sync_variant_id: data?.result.sync_variants[dropdownState.index].variant_id,
+      base_product_id: data?.result.sync_variants[dropdownState.index].product.product_id,
+    };
+    dispatch(addToCart(payload));
+  }
+
   return (
     <div className="m-auto lg:mt-[50px]">
+      {/* {JSON.stringify(data, null, 2)} */}
       <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
         <div className="max-w-[500px] border-2">
           <Image
@@ -88,7 +110,10 @@ const ArticlePage = ({
               <p className="text-xs">*Taxes not included</p>
             </div>
           </div>
-          <button className="min-w-[8rem] border p-4 hover:bg-slate-600 hover:text-white">
+          <button
+            onClick={handleAddToCart}
+            className="min-w-[8rem] border p-4 hover:bg-slate-600 hover:text-white"
+          >
             Add to cart!
           </button>
           <p
@@ -149,9 +174,9 @@ const ArticlePage = ({
 export default ArticlePage;
 
 export type TAvailableSizes = {
-  id: number | undefined;
-  size: string | undefined;
-  inStock: boolean | undefined;
+  id: number;
+  size: string;
+  inStock: boolean;
   index: number;
 };
 
@@ -182,16 +207,16 @@ export const getServerSideProps: GetServerSideProps<{
     .map((x) => `<p>${x}</p>`)
     .join("");
 
-  let dropdownOptions: Array<TAvailableSizes> = new Array(articleData.result.sync_variants.length)
+  let dropdownOptions: Array<TAvailableSizes> = new Array(articleData?.result.sync_variants.length)
     .fill({})
     .map((x, i) => ({ ...x, id: articleData.result.sync_variants[i].variant_id }));
 
   dropdownOptions = dropdownOptions.map((size, i) => {
-    const variant = availabiltiyData.result.variants.find((x) => x.id === size.id);
+    const variant = availabiltiyData.result.variants.filter((x) => x.id === size.id)[0];
     return {
       index: i,
-      id: variant?.id,
-      size: variant?.size,
+      id: variant.id,
+      size: variant.size,
       inStock: !!variant?.availability_status.find(
         (x) => x.region === "EU" && x.status === "in_stock"
       ),

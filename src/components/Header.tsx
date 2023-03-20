@@ -32,7 +32,9 @@ const Header = ({ setIsExpanded }: HeaderProps) => {
         L
       </Link>
       <div className="flex items-center justify-center gap-8">
-        <CartIcon />
+        <Link className="text-3xl text-white" href="/cart">
+          <CartIcon />
+        </Link>
         <button
           onClick={() => setIsExpanded((old) => !old)}
           className="selext-none text-3xl"
