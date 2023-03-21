@@ -3,7 +3,7 @@ import { axiosClient } from "../../utils/axiosClient";
 import type { TPrintfulStore } from "../api/store";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import ProductCard from "../../components/ProductCard";
+import { ProductCard } from "../../components/ProductCard";
 
 const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (

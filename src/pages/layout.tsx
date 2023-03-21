@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
+import { Header } from "../components/Header";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 
@@ -52,7 +52,7 @@ const Layout = ({ children }: ILayoutProps) => {
       ) : (
         <>
           {children}
-          <div className="h-[100px] bg-red-400">I AM FOOTER</div>
+          <div className="flex h-[100px] items-center justify-center bg-red-400">I AM FOOTER</div>
         </>
       )}
     </div>

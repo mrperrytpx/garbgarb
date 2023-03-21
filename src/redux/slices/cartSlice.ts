@@ -34,37 +34,72 @@ export const cartSlice = createSlice({
             }
 
             const payload = action.payload;
-            const isInCart = state.value.find((product) => product.sku === payload.sku);
+            const product = state.value.find((product) => product.sku === payload.sku);
 
-            if (!isInCart) {
+            if (!product) {
                 state.value = [...state.value, payload];
             } else {
-                isInCart.quantity += payload.quantity;
+                product.quantity += payload.quantity;
                 state.value = [
-                    ...state.value.filter((product) => product.sku !== isInCart.sku),
-                    isInCart,
+                    ...state.value.filter((product) => product.sku !== product.sku),
+                    product,
                 ];
             }
         },
         removeFromCart: (state, action: PayloadAction<{ sku: string }>) => {
             if (!action.payload) {
-                throw new Error("Payload missing in 'addToCart' action");
+                throw new Error("Payload missing in 'removeFromCart' action");
             }
 
             const payload = action.payload;
-            const isInCart = state.value.find((product) => product.sku === payload.sku);
+            const product = state.value.find((product) => product.sku === payload.sku);
 
-            if (!isInCart) {
+            if (!product) {
                 throw new Error("Product must be in the cart to remove it");
             }
 
-            state.value = state.value.filter((product) => product.sku !== payload.sku);
+            state.value = [...state.value.filter((product) => product.sku !== payload.sku)];
+        },
+        increaseQuantity: (state, action: PayloadAction<{ sku: string }>) => {
+            if (!action.payload) {
+                throw new Error("Payload missing in 'increaseQuantity' action");
+            }
+
+            const payload = action.payload;
+            const product = state.value.find((product) => product.sku === payload.sku);
+
+            if (!product) {
+                throw new Error("Product must be in the cart to increase its quantity");
+            }
+
+            product.quantity += 1;
+
+            state.value = [...state.value];
+        },
+        decreaseQuantity: (state, action: PayloadAction<{ sku: string }>) => {
+            if (!action.payload) {
+                throw new Error("Payload missing in 'increaseQuantity' action");
+            }
+
+            const payload = action.payload;
+            const product = state.value.find((product) => product.sku === payload.sku);
+
+            if (!product) {
+                throw new Error("Product must be in the cart to decrease its quantity");
+            }
+
+            product.quantity -= 1;
+            if (product.quantity <= 0) {
+                state.value = [...state.value.filter((product) => product.sku !== payload.sku)];
+            } else {
+                state.value = [...state.value];
+            }
         },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;
 

@@ -7,7 +7,7 @@ interface IProductCard {
   id: number;
 }
 
-const ProductCard = ({ name, thumbnail, id }: IProductCard) => {
+export const ProductCard = ({ name, thumbnail, id }: IProductCard) => {
   const splitName = name.split(" ");
   const whichIndex = splitName.indexOf("Unisex");
 
@@ -26,5 +26,3 @@ const ProductCard = ({ name, thumbnail, id }: IProductCard) => {
     </div>
   );
 };
-
-export default ProductCard;

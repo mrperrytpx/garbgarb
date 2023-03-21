@@ -25,7 +25,7 @@ interface HeaderProps {
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
-const Header = ({ setIsExpanded }: HeaderProps) => {
+export const Header = ({ setIsExpanded }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-10 flex h-[60px] items-center justify-between bg-gray-500 px-4">
       <div className="flex items-center justify-center gap-4">
@@ -51,5 +51,3 @@ const Header = ({ setIsExpanded }: HeaderProps) => {
     </header>
   );
 };
-
-export default Header;

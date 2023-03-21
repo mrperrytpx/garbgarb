@@ -12,6 +12,7 @@ import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
+import { currency } from "../../utils/currency";
 
 const ArticlePage = ({
   data,
@@ -100,12 +101,9 @@ const ArticlePage = ({
             </div>
             <div className="flex flex-col items-center justify-center self-end">
               <p className="text-3xl">
-                {Math.round(
-                  +data?.result.sync_variants[dropdownState?.index].retail_price *
-                    Math.abs(+quantity) *
-                    100
-                ) / 100}
-                €*
+                {currency(
+                  +data?.result.sync_variants[dropdownState?.index].retail_price * +quantity
+                )}
               </p>
               <p className="text-xs">*Taxes not included</p>
             </div>

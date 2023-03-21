@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { TSizes } from "../pages/api/product_sizes";
+import type { TSizes } from "../pages/api/product/sizes";
 import { useState, useMemo } from "react";
 
 interface ISizesTable {
@@ -12,7 +12,7 @@ interface ISizesTable {
   isCentimeters: boolean;
 }
 
-function SizesTable({ sizes, isCentimeters }: ISizesTable) {
+export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
   const tableData = useSizesDataConverter(sizes);
   const columnHelper = createColumnHelper<TConvertedTableData>();
 
@@ -102,7 +102,7 @@ function SizesTable({ sizes, isCentimeters }: ISizesTable) {
       </table>
     </div>
   );
-}
+};
 
 type TConvertedTableData = {
   size: string;
