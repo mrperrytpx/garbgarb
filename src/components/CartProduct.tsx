@@ -13,41 +13,42 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
   const dispatch = useDispatch();
 
   return (
-    <article className="flex gap-2">
-      <Link href={`/products/${product.sync_id}`}>
-        <div className="max-w-[150px] rounded-md border">
-          <Image width={150} height={150} src={product.variant_image} alt="Product" />
-        </div>
+    <article className="relative flex w-full flex-col items-center justify-center gap-1 border-b-2 last-of-type:border-0 sm:flex-row">
+      <Link
+        className="select-nonerounded-md min-w-[100px] max-w-[150px] border"
+        href={`/products/${product.sync_id}`}
+      >
+        <Image width={150} height={150} src={product.variant_image} alt="Product" />
       </Link>
       {/*  */}
-      <div className="flex w-full flex-col">
-        <div className="flex flex-1 flex-col p-2">
-          <p>{product.name}</p>
+      <div className="flex w-full flex-col sm:gap-4">
+        <div className="flex flex-1 flex-col p-2 text-center text-sm sm:text-left">
+          <p className="sm:text-base">{product.name}</p>
           <p>
             Size: <span className="font-bold">{product.size}</span>
           </p>
         </div>
 
-        <div className="flex w-full flex-1 items-end justify-between p-2">
+        <div className="flex flex-1 items-center justify-center gap-4 p-2 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">
           <p>{currency(product.price)}</p>
-          <div className="flex gap-4">
+          <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => dispatch(decreaseQuantity({ sku: product.sku }))}
-              className="border px-2"
+              className="select-none border px-2"
             >
               -
             </button>
             <p>{product.quantity}</p>
             <button
               onClick={() => dispatch(increaseQuantity({ sku: product.sku }))}
-              className="border px-2"
+              className="select-none border px-2"
             >
               +
             </button>
           </div>
           <p>{currency(+product.price * product.quantity)}</p>
           <button
-            className="justify-self-end"
+            className="absolute top-0 right-0 select-none bg-black px-1 text-white"
             onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
             type="button"
           >
