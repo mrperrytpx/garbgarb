@@ -73,7 +73,7 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
   });
 
   return (
-    <div className="self-start overflow-x-auto">
+    <div className="self-start">
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

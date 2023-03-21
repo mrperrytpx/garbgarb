@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CheckoutPage = () => {
-  return (
-    <div>Checkout PAGe</div>
-  )
-}
+  return <div className="flex-1">Checkout PAGe</div>;
+};
 
-export default CheckoutPage
+export default CheckoutPage;

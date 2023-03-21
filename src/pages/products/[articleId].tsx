@@ -4,7 +4,7 @@ import { InferGetServerSidePropsType } from "next";
 import type { TProductDetails } from "../api/product";
 import Image from "next/image";
 import { Dropdown } from "../../components/Dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/product/sizes";
 import type { TProductAvailability } from "../api/product/availability";
@@ -54,11 +54,25 @@ const ArticlePage = ({
     dispatch(addToCart(payload));
   }
 
+  useEffect(() => {
+    if (typeof window != "undefined" && window.document) {
+      if (isToggledSizes) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isToggledSizes]);
+
   return (
-    <div className="m-auto lg:mt-[50px]">
+    <div className="flex-1">
       {/* {JSON.stringify(data, null, 2)} */}
       <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
-        <div className="max-w-[500px] border-2">
+        <div className="max-w-[500px] self-start border-2">
           <Image
             priority={true}
             width={600}
@@ -124,7 +138,10 @@ const ArticlePage = ({
       </div>
       {isToggledSizes && sizes && (
         <Portal>
-          <div className="relative flex max-w-[800px] flex-col items-center justify-center gap-4 rounded-md border-2 bg-white p-4">
+          <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
+            <div role="heading" className="w-full border-b-2 font-bold">
+              Measure yourself
+            </div>
             <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
               {parse(sizes.result.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
             </div>
@@ -157,8 +174,9 @@ const ArticlePage = ({
             </div>
             <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
             <span
-              onClick={() => setIsToggledSizes(false)}
-              className="absolute right-0 top-0 cursor-pointer px-2 py-1 text-2xl font-bold"
+              tabIndex={1}
+              onClick={() => setIsToggledSizes(!isToggledSizes)}
+              className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
             >
               X
             </span>

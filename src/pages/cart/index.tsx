@@ -18,9 +18,9 @@ const CartPage = () => {
           </div>
           {/*  */}
           <div className="mt-auto flex flex-col items-center justify-center border-t-2 sm:m-0">
-            <p className="block w-full  p-4 text-center sm:text-right">
+            <p className="block w-full p-4 text-center sm:text-right">
               TOTAL:{" "}
-              <span className="font-bold underline">
+              <span className="text-2xl font-bold underline">
                 {currency(
                   productsInCart.reduce((prev, curr) => prev + +curr.price * curr.quantity, 0)
                 )}
