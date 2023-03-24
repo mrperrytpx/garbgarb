@@ -16,7 +16,7 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
   const tableData = useSizesDataConverter(sizes);
   const columnHelper = createColumnHelper<TConvertedTableData>();
 
-  const [data, _setData] = useState(() => [...tableData]);
+  const [data] = useState(() => [...tableData]);
   const [columnVisibility, setColumnVisibility] = useState({});
 
   const columns = useMemo(
@@ -107,57 +107,36 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
 type TConvertedTableData = {
   size: string;
   length: string;
-  chest: [string | undefined, string | undefined];
-  "sleeve length"?: string | undefined;
+  chest: Array<string>;
+  "sleeve length"?: string;
 };
 
+type DynamicObject = Record<string, string | Array<string | undefined>>;
+
 export function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
-  // get all type_labels that are listed under 'size_tables' measurements[0]
-  // example ["chest", "sleeve"]
-  const objKeys: string[] = new Array(sizes.result.size_tables[0].measurements.length)
-    .fill("")
-    .map((_, i) => sizes.result.size_tables[0].measurements[i].type_label.toLowerCase());
+  // get all available sizes for a product
+  const tableRows: TConvertedTableData[] = [...sizes.result.available_sizes].map((size) => {
+    let obj: DynamicObject = {};
 
-  // make an empty array and fill it with an empty object for each size available for the product
-  const arrOfObjs: TConvertedTableData[] = new Array(sizes.result.available_sizes.length)
-    .fill({})
-    .map((x, i) => {
-      //map each size to have all of the 'objKeys' available, first pass gets one key, second pass another etc.
-      objKeys.forEach((key) => {
-        if (key.toLowerCase() !== "chest") {
-          // x is old x plus an additional key value pair
-          x = {
-            ...x,
-            [`${key}`]: sizes.result.size_tables[0].measurements.filter(
-              (arr) => arr.type_label.toLowerCase() === key
-            )[0]?.values[i].value,
-          };
+    //for each `type_label` key, assign it a value for that size
+    sizes.result.size_tables[0].measurements.forEach((measure) => {
+      const key = measure.type_label.toLowerCase();
 
-          return;
-        } else {
-          //chest has a min and max value while others have just 1 so it's separate
-          const chestArr = sizes.result.size_tables[0].measurements.filter(
-            (arr) => arr.type_label.toLowerCase() === key
-          )[0];
-
-          x = {
-            ...x,
-            chest: [chestArr.values[i]?.min_value, chestArr.values[i]?.max_value],
-          };
-
-          return;
-        }
-      });
-
-      // after all the type_labels got their value, add for which size it was.
-      // There's measuremenet values for each product size so indexes are the same between them
-      return {
-        ...x,
-        size: sizes.result.available_sizes[i],
-      };
+      if (key !== "chest") {
+        obj[key] = measure.values.find((val) => val.size === size)?.value ?? "";
+      } else {
+        const minMaxVal = measure.values.find((val) => val.size === size);
+        obj[key] = [minMaxVal?.min_value, minMaxVal?.max_value];
+      }
     });
 
-  return arrOfObjs;
+    return {
+      size: size,
+      ...obj,
+    } as TConvertedTableData;
+  });
+
+  return tableRows;
 }
 
 export default SizesTable;
