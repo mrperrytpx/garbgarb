@@ -54,7 +54,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
               +
             </button>
           </div>
-          <p>{currency(+product.price * product.quantity)}</p>
+          <p>Total: {currency(+product.price * product.quantity)}</p>
           <button
             className="absolute top-0 right-0 select-none bg-black px-1 text-white"
             onClick={() => dispatch(removeFromCart({ sku: product.sku }))}

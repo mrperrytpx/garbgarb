@@ -18,15 +18,18 @@ const CartPage = () => {
             ))}
           </div>
           {/*  */}
-          <div className="mt-auto flex flex-col items-center justify-center border-t-2 sm:m-0">
-            <p className="block w-full p-4 text-center sm:text-right">
-              TOTAL:{" "}
-              <span className="text-2xl font-bold underline">
-                {currency(
-                  productsInCart.reduce((prev, curr) => prev + +curr.price * curr.quantity, 0)
-                )}
-              </span>
-            </p>
+          <div className="mt-auto flex flex-col items-end justify-center border-t-2 sm:m-0">
+            <div className="flex flex-col justify-center gap-1 py-4 text-center">
+              <p className="block w-full sm:text-right">
+                TOTAL:{" "}
+                <span className="text-2xl font-bold underline">
+                  {currency(
+                    productsInCart.reduce((prev, curr) => prev + +curr.price * curr.quantity, 0)
+                  )}
+                </span>
+              </p>
+              <p className="text-right text-xs">VAT not included</p>
+            </div>
             <Link
               href="/checkout"
               className="w-full border-2 p-4 text-center hover:bg-slate-700 hover:text-white focus:bg-slate-700 focus:text-white sm:w-36 sm:self-end"
