@@ -19,55 +19,60 @@ const ArticlePage = ({
   sizes,
   product,
   productColors,
-  description,
+  productDescription,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [currentColor, setCurrentColor] = useState(productColors[0]);
-  const [dropdownState, setDropdownState] = useState(product[currentColor][0]);
+  const [color, setColor] = useState(productColors[0]);
+  const [option, setOption] = useState(product[color].find((x) => x.inStock));
 
-  const [quantity, setQuantity] = useState("1");
-  const [isToggledSizes, setIsToggledSizes] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCentimeters, setIsCentimeters] = useState(true);
 
   const dispatch = useDispatch();
 
   const splitName = data?.result.sync_product.name.split(" ");
-  const whichIndex = splitName.indexOf("Unisex");
-  const shirtName = splitName.slice(0, whichIndex).join(" ");
-  const defualtShirtName = splitName.slice(whichIndex).join(" ");
+  const splitIndex = splitName.indexOf("Unisex");
+  const myShirtName = splitName.slice(0, splitIndex).join(" ");
+  const baseShirtName = splitName.slice(splitIndex).join(" ");
 
   const handleQuantity = () => {
-    if (!quantity) setQuantity("1");
-    if (+quantity < 1 || +quantity > 999) setQuantity("1");
+    if (!quantity) setQuantity(1);
+    if (+quantity < 1 || +quantity > 999) setQuantity(1);
   };
 
   function handleAddToCart() {
+    if (!option || !data) return;
+
     const payload: TCartProduct = {
       name: data?.result.sync_product.name,
-      quantity: +quantity,
-      color_code: dropdownState.color_code,
-      color_name: dropdownState.color_name,
-      sku: data?.result.sync_variants[dropdownState.index].sku,
-      price: data?.result.sync_variants[dropdownState.index].retail_price,
-      size: dropdownState?.size,
-      size_index: dropdownState.index,
-      variant_image: data?.result.sync_variants[dropdownState.index].files[1].thumbnail_url,
-      id: data?.result.sync_variants[dropdownState.index].id,
-      sync_id: data?.result.sync_variants[dropdownState.index].sync_product_id,
-      sync_variant_id: data?.result.sync_variants[dropdownState.index].variant_id,
-      base_product_id: data?.result.sync_variants[dropdownState.index].product.product_id,
+      quantity: quantity,
+      color_code: option.color_code,
+      color_name: option.color_name,
+      sku: data?.result.sync_variants[option.index].sku,
+      price: data?.result.sync_variants[option.index].retail_price,
+      size: option?.size,
+      size_index: option.index,
+      variant_image: data?.result.sync_variants[option.index].files[1].thumbnail_url,
+      id: data?.result.sync_variants[option.index].id,
+      sync_id: data?.result.sync_variants[option.index].sync_product_id,
+      sync_variant_id: data?.result.sync_variants[option.index].variant_id,
+      base_product_id: data?.result.sync_variants[option.index].product.product_id,
     };
+
+    if (!payload) return;
+
     dispatch(addToCart(payload));
   }
 
   function handleColorChange(color: string): void {
-    setCurrentColor(color);
-    setDropdownState(product[color].find((x) => x.inStock)!);
-    setQuantity("1");
+    setColor(color);
+    setOption(product[color].find((x) => x.inStock)!);
+    setQuantity(1);
   }
 
   useEffect(() => {
     if (typeof window != "undefined" && window.document) {
-      if (isToggledSizes) {
+      if (isSizeGuideOpen) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "unset";
@@ -77,7 +82,9 @@ const ArticlePage = ({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isToggledSizes]);
+  }, [isSizeGuideOpen]);
+
+  if (!data || !product || !option) return <div>Something went wrong...</div>;
 
   return (
     <div className="flex-1">
@@ -89,21 +96,21 @@ const ArticlePage = ({
             width={600}
             height={600}
             alt="Piece of clothing with some words written on it"
-            src={data?.result.sync_variants[dropdownState.index].files[1].preview_url}
+            src={data?.result.sync_variants[option.index].files[1].preview_url}
           />
         </div>
 
         <article className="flex max-w-[90%] flex-col items-center justify-center gap-4 lg:max-w-[450px]">
           <div className="flex flex-col items-center justify-center gap-4">
             <div>
-              <h1 className="text-center text-2xl font-bold">{shirtName}</h1>
-              <p className="text-center text-xl">{defualtShirtName}</p>
+              <h1 className="text-center text-2xl font-bold">{myShirtName}</h1>
+              <p className="text-center text-xl">{baseShirtName}</p>
             </div>
-            <div className="text-sm">{parse(description)}</div>
+            <div className="text-sm">{parse(productDescription)}</div>
           </div>
 
           <p className="text-center text-sm">
-            {data?.result.sync_variants[dropdownState?.index].product.name}
+            {data?.result.sync_variants[option?.index].product.name}
           </p>
 
           <div className="flex justify-center gap-2">
@@ -123,13 +130,9 @@ const ArticlePage = ({
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            <p>CURRENT COLOR: {product[currentColor][0].color_name}</p>
+            <p>CURRENT COLOR: {product[color][0].color_name}</p>
             <p className="text-md">Size:</p>
-            <Dropdown
-              state={dropdownState}
-              setState={setDropdownState}
-              options={product[currentColor]}
-            />
+            <Dropdown state={option} setState={setOption} options={product[color]} />
           </div>
           {/*  */}
           <div className="flex items-center justify-center gap-4">
@@ -137,7 +140,7 @@ const ArticlePage = ({
               <p>Quantity:</p>
               <input
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => setQuantity(+e.target.value)}
                 className="block w-32 border p-4 text-center"
                 onBlur={handleQuantity}
                 min="1"
@@ -147,9 +150,7 @@ const ArticlePage = ({
             </div>
             <div className="flex flex-col items-center justify-center self-end">
               <p className="text-3xl">
-                {currency(
-                  +data?.result.sync_variants[dropdownState?.index].retail_price * +quantity
-                )}
+                {currency(+data?.result.sync_variants[option?.index].retail_price * +quantity)}
               </p>
               <p className="text-xs">*VAT not included</p>
             </div>
@@ -161,14 +162,14 @@ const ArticlePage = ({
             Add to cart!
           </button>
           <p
-            onClick={() => setIsToggledSizes(!isToggledSizes)}
+            onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
             className="cursor-pointer p-2 text-center text-sm font-bold"
           >
-            Click to {isToggledSizes ? "close" : "open"} the sizes guide
+            Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
           </p>
         </article>
       </div>
-      {isToggledSizes && sizes && (
+      {isSizeGuideOpen && sizes && (
         <Portal>
           <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
             <div role="heading" className="w-full border-b-2 font-bold">
@@ -207,7 +208,7 @@ const ArticlePage = ({
             <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
             <span
               tabIndex={1}
-              onClick={() => setIsToggledSizes(!isToggledSizes)}
+              onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
               className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
             >
               X
@@ -234,7 +235,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: TProductDetails;
   sizes: TSizes;
   product: { [key: string]: Array<TWarehouseProduct> };
-  description: string;
+  productDescription: string;
   productColors: Array<string>;
 }> = async (context) => {
   const { articleId } = context.query;
@@ -253,7 +254,7 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const availabiltiyData = availabilityRes.data;
 
-  const description = availabiltiyData.result.product.description
+  const productDescription = availabiltiyData.result.product.description
     .split("\n")
     .map((x) => `<p>${x}</p>`)
     .join("");
@@ -290,7 +291,7 @@ export const getServerSideProps: GetServerSideProps<{
       data: articleData,
       sizes: sizesData,
       product,
-      description,
+      productDescription,
       productColors,
     },
   };
