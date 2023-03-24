@@ -22,7 +22,7 @@ const ArticlePage = ({
   productDescription,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [color, setColor] = useState(productColors[0]);
-  const [option, setOption] = useState(product[color].find((x) => x.inStock));
+  const [option, setOption] = useState(product[color].filter((x) => x.inStock)[0]);
 
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -66,7 +66,7 @@ const ArticlePage = ({
 
   function handleColorChange(color: string): void {
     setColor(color);
-    setOption(product[color].find((x) => x.inStock)!);
+    setOption(product[color].filter((x) => x.inStock)[0]);
     setQuantity(1);
   }
 
@@ -114,19 +114,16 @@ const ArticlePage = ({
           </p>
 
           <div className="flex justify-center gap-2">
-            {productColors.map((color, i) => {
-              console.log(color);
-              return (
-                <button
-                  onClick={() => handleColorChange(color)}
-                  key={i}
-                  style={{
-                    backgroundColor: color,
-                  }}
-                  className="h-14 w-14 rounded-lg border-2"
-                />
-              );
-            })}
+            {productColors.map((color, i) => (
+              <button
+                onClick={() => handleColorChange(color)}
+                key={i}
+                style={{
+                  backgroundColor: color,
+                }}
+                className="h-14 w-14 rounded-lg border-2"
+              />
+            ))}
           </div>
 
           <div className="flex flex-col items-center justify-center">
@@ -252,9 +249,9 @@ export const getServerSideProps: GetServerSideProps<{
   const availabilityRes = await axiosClient.get<TWarehouse>("/api/product/availability", {
     params: { id: articleData.result.sync_variants[0].product.product_id },
   });
-  const availabiltiyData = availabilityRes.data;
+  const availabilityData = availabilityRes.data;
 
-  const productDescription = availabiltiyData.result.product.description
+  const productDescription = availabilityData.result.product.description
     .split("\n")
     .map((x) => `<p>${x}</p>`)
     .join("");
@@ -266,15 +263,15 @@ export const getServerSideProps: GetServerSideProps<{
   const product: { [key: string]: Array<TWarehouseProduct> } = {};
 
   variantIds.forEach((id, i) => {
-    const variant = availabiltiyData.result.variants.filter((x) => x.id === id)[0];
+    const variant = availabilityData.result.variants.filter((x) => x.id === id)[0];
 
     const variantInfo = {
       index: i,
       id: variant.id,
       size: variant.size,
-      inStock: !!variant?.availability_status.find(
+      inStock: !!variant?.availability_status.filter(
         (x) => x.region === "EU" && x.status === "in_stock"
-      ),
+      )[0],
       color_name: variant.color,
       color_code: variant.color_code,
     };

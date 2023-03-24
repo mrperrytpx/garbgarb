@@ -4,13 +4,13 @@ import type { TWarehouseProduct } from "../pages/products/[articleId]";
 interface IDropdownProps {
   options: TWarehouseProduct[];
   state: TWarehouseProduct;
-  setState: Dispatch<SetStateAction<TWarehouseProduct | undefined>>;
+  setState: Dispatch<SetStateAction<TWarehouseProduct>>;
 }
 
 export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedId = e.target.value;
-    const selectedState = options.find((x) => x.id === +selectedId)!;
+    const selectedState = options.filter((x) => x.id === +selectedId)[0];
 
     if (!selectedState) return;
 

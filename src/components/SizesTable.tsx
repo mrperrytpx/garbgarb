@@ -112,42 +112,50 @@ type TConvertedTableData = {
 };
 
 export function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
-  let arrOfObjs: TConvertedTableData[] = new Array(sizes.result.available_sizes.length).fill({});
+  // get all type_labels that are listed under 'size_tables' measurements[0]
+  // example ["chest", "sleeve"]
+  const objKeys: string[] = new Array(sizes.result.size_tables[0].measurements.length)
+    .fill("")
+    .map((_, i) => sizes.result.size_tables[0].measurements[i].type_label.toLowerCase());
 
-  const objKeys: string[] = [];
+  // make an empty array and fill it with an empty object for each size available for the product
+  const arrOfObjs: TConvertedTableData[] = new Array(sizes.result.available_sizes.length)
+    .fill({})
+    .map((x, i) => {
+      //map each size to have all of the 'objKeys' available, first pass gets one key, second pass another etc.
+      objKeys.forEach((key) => {
+        if (key.toLowerCase() !== "chest") {
+          // x is old x plus an additional key value pair
+          x = {
+            ...x,
+            [`${key}`]: sizes.result.size_tables[0].measurements.filter(
+              (arr) => arr.type_label.toLowerCase() === key
+            )[0]?.values[i].value,
+          };
 
-  sizes.result.size_tables[0].measurements.forEach((x) => {
-    objKeys.push(x.type_label.toLowerCase());
-  });
-
-  arrOfObjs = arrOfObjs.map((x, i) => {
-    objKeys.forEach((key) => {
-      if (key.toLowerCase() !== "chest") {
-        x = {
-          ...x,
-          [`${key}`]: sizes.result.size_tables[0].measurements.find(
+          return;
+        } else {
+          //chest has a min and max value while others have just 1 so it's separate
+          const chestArr = sizes.result.size_tables[0].measurements.filter(
             (arr) => arr.type_label.toLowerCase() === key
-          )?.values[i].value,
-        };
-        return;
-      } else {
-        const chestArr = sizes.result.size_tables[0].measurements.find(
-          (arr) => arr.type_label.toLowerCase() === key
-        )!;
+          )[0];
 
-        x = {
-          ...x,
-          chest: [chestArr.values[i]?.min_value, chestArr.values[i]?.max_value],
-        };
-        return;
-      }
-    });
+          x = {
+            ...x,
+            chest: [chestArr.values[i]?.min_value, chestArr.values[i]?.max_value],
+          };
 
-    return (x = {
-      ...x,
-      size: sizes.result.available_sizes[i],
+          return;
+        }
+      });
+
+      // after all the type_labels got their value, add for which size it was.
+      // There's measuremenet values for each product size so indexes are the same between them
+      return {
+        ...x,
+        size: sizes.result.available_sizes[i],
+      };
     });
-  });
 
   return arrOfObjs;
 }
