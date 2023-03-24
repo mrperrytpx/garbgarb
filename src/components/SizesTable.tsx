@@ -115,19 +115,16 @@ type DynamicObject = Record<string, string | Array<string | undefined>>;
 
 export function useSizesDataConverter(sizes: TSizes): TConvertedTableData[] {
   // get all available sizes for a product
-  const tableRows: TConvertedTableData[] = [...sizes.result.available_sizes].map((size) => {
+  const tableRows: TConvertedTableData[] = [...sizes.result.available_sizes].map((size, i) => {
     let obj: DynamicObject = {};
-
     //for each `type_label` key, assign it a value for that size
     sizes.result.size_tables[0].measurements.forEach((measure) => {
       const key = measure.type_label.toLowerCase();
 
-      if (key !== "chest") {
-        obj[key] = measure.values.find((val) => val.size === size)?.value ?? "";
-      } else {
-        const minMaxVal = measure.values.find((val) => val.size === size);
-        obj[key] = [minMaxVal?.min_value, minMaxVal?.max_value];
-      }
+      obj[key] = measure.values[i].value || [
+        measure.values[i].min_value,
+        measure.values[i].max_value,
+      ];
     });
 
     return {
