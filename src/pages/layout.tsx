@@ -9,7 +9,7 @@ interface ILayoutProps {
 }
 
 const Layout = ({ children }: ILayoutProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const pathname = usePathname();
   useEffect(() => {
@@ -20,17 +20,19 @@ const Layout = ({ children }: ILayoutProps) => {
     <div className="flex min-h-screen flex-col">
       <Header setIsExpanded={setIsExpanded} />
       {isExpanded ? (
-        <div className="flex h-[calc(max(600px,100vh)-60px)] flex-col items-center justify-center gap-6 overflow-hidden bg-gray-500">
-          <Link className="text-3xl text-white" href="/products">
-            Shop
-          </Link>
-          <Link className="text-3xl text-white" href="/login">
-            Login
-          </Link>
-          <Link className="text-3xl text-white" href="/contact">
-            Contact
-          </Link>
-          <div className="flex gap-4">
+        <div className="flex h-[calc(max(600px,100vh)-60px)] flex-col items-center justify-center overflow-hidden bg-gray-500">
+          <div className="flex flex-1 flex-col items-center justify-center gap-6">
+            <Link className="text-3xl text-white hover:underline  focus:underline" href="/products">
+              Shop
+            </Link>
+            <Link className="text-3xl text-white hover:underline focus:underline" href="/login">
+              Login
+            </Link>
+            <Link className="text-3xl text-white hover:underline focus:underline" href="/contact">
+              Contact
+            </Link>
+          </div>
+          <div className="mt-auto flex gap-4">
             <a
               className="my-8"
               target="_blank"

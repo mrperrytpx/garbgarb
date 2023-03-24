@@ -59,6 +59,12 @@ const ArticlePage = ({
     dispatch(addToCart(payload));
   }
 
+  function handleColorChange(color: string): void {
+    setCurrentColor(color);
+    setDropdownState(product[color].find((x) => x.inStock)!);
+    setQuantity("1");
+  }
+
   useEffect(() => {
     if (typeof window != "undefined" && window.document) {
       if (isToggledSizes) {
@@ -101,16 +107,16 @@ const ArticlePage = ({
           </p>
 
           <div className="flex justify-center gap-2">
-            {Object.keys(product).map((color) => {
+            {productColors.map((color, i) => {
+              console.log(color);
               return (
                 <button
-                  onClick={() => {
-                    setCurrentColor(color);
-                    setDropdownState(product[color].find((x) => x.inStock)!);
-                    setQuantity("1");
+                  onClick={() => handleColorChange(color)}
+                  key={i}
+                  style={{
+                    backgroundColor: color,
                   }}
-                  key={color}
-                  className={`z-20 h-[50px] w-[50px] bg-[${color}] rounded-lg`}
+                  className="h-14 w-14 rounded-lg border-2"
                 />
               );
             })}

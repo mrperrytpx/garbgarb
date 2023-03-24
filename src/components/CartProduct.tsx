@@ -22,8 +22,13 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
       </Link>
       {/*  */}
       <div className="flex w-full flex-col sm:gap-4">
-        <div className="flex flex-1 flex-col p-2 text-center text-sm sm:text-left">
-          <p className="sm:text-base">{product.name}</p>
+        <div className="flex flex-1 flex-col p-2 text-center text-sm  sm:text-left">
+          <Link
+            href={`/products/${product.sync_id}`}
+            className="hover:underline focus:underline sm:text-base"
+          >
+            {product.name}
+          </Link>
           <p>
             Size: <span className="font-bold">{product.size}</span>
           </p>
