@@ -27,6 +27,9 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
           <p>
             Size: <span className="font-bold">{product.size}</span>
           </p>
+          <p>
+            Color: <span className="font-bold">{product.color_name}</span>
+          </p>
         </div>
 
         <div className="flex flex-1 items-center justify-center gap-4 p-2 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">

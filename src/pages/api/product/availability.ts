@@ -4,7 +4,7 @@ import axios from "axios";
 
 // ______________________________________________________________________________________
 
-export type TProductAvailability = {
+export type TWarehouse = {
     code: number;
     result: {
         product: TBaseProduct;
@@ -81,9 +81,7 @@ type TBaseVariants = {
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const { data: sizes } = await axios.get<TProductAvailability>(
-        `https://api.printful.com/products/${id}`
-    );
+    const { data: sizes } = await axios.get<TWarehouse>(`https://api.printful.com/products/${id}`);
 
     res.status(200).json(sizes);
 }

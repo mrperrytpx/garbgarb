@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, ChangeEvent } from "react";
-import type { TAvailableSizes } from "../pages/products/[articleId]";
+import type { TWarehouseProduct } from "../pages/products/[articleId]";
 
 interface IDropdownProps {
-  options: TAvailableSizes[];
-  state: TAvailableSizes;
-  setState: Dispatch<SetStateAction<TAvailableSizes>>;
+  options: TWarehouseProduct[];
+  state: TWarehouseProduct;
+  setState: Dispatch<SetStateAction<TWarehouseProduct>>;
 }
 
 export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
@@ -27,7 +27,7 @@ export const Dropdown = ({ options, state, setState }: IDropdownProps) => {
           key={option.id}
           value={option.id}
         >
-          {option.inStock ? option.size : option.size + "- Out of Stock"}
+          {option.inStock ? option.size : option.size + " - Out of Stock"}
         </option>
       ))}
     </select>

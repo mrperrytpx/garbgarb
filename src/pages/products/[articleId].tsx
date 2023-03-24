@@ -7,7 +7,7 @@ import { Dropdown } from "../../components/Dropdown";
 import { useState, useEffect } from "react";
 import parse from "html-react-parser";
 import type { TSizes } from "../api/product/sizes";
-import type { TProductAvailability } from "../api/product/availability";
+import type { TWarehouse } from "../api/product/availability";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
@@ -17,10 +17,13 @@ import { currency } from "../../utils/currency";
 const ArticlePage = ({
   data,
   sizes,
-  dropdownOptions,
+  product,
+  productColors,
   description,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [dropdownState, setDropdownState] = useState(dropdownOptions[0]);
+  const [currentColor, setCurrentColor] = useState(productColors[0]);
+  const [dropdownState, setDropdownState] = useState(product[currentColor][0]);
+
   const [quantity, setQuantity] = useState("1");
   const [isToggledSizes, setIsToggledSizes] = useState(false);
   const [isCentimeters, setIsCentimeters] = useState(true);
@@ -41,11 +44,13 @@ const ArticlePage = ({
     const payload: TCartProduct = {
       name: data?.result.sync_product.name,
       quantity: +quantity,
+      color_code: dropdownState.color_code,
+      color_name: dropdownState.color_name,
       sku: data?.result.sync_variants[dropdownState.index].sku,
       price: data?.result.sync_variants[dropdownState.index].retail_price,
       size: dropdownState?.size,
       size_index: dropdownState.index,
-      variant_image: data?.result.sync_product.thumbnail_url,
+      variant_image: data?.result.sync_variants[dropdownState.index].files[1].thumbnail_url,
       id: data?.result.sync_variants[dropdownState.index].id,
       sync_id: data?.result.sync_variants[dropdownState.index].sync_product_id,
       sync_variant_id: data?.result.sync_variants[dropdownState.index].variant_id,
@@ -78,7 +83,7 @@ const ArticlePage = ({
             width={600}
             height={600}
             alt="Piece of clothing with some words written on it"
-            src={data?.result.sync_product.thumbnail_url}
+            src={data?.result.sync_variants[dropdownState.index].files[1].preview_url}
           />
         </div>
 
@@ -95,9 +100,30 @@ const ArticlePage = ({
             {data?.result.sync_variants[dropdownState?.index].product.name}
           </p>
 
+          <div className="flex justify-center gap-2">
+            {Object.keys(product).map((color) => {
+              return (
+                <button
+                  onClick={() => {
+                    setCurrentColor(color);
+                    setDropdownState(product[color].find((x) => x.inStock)!);
+                    setQuantity("1");
+                  }}
+                  key={color}
+                  className={`z-20 h-[50px] w-[50px] bg-[${color}] rounded-lg`}
+                />
+              );
+            })}
+          </div>
+
           <div className="flex flex-col items-center justify-center">
+            <p>CURRENT COLOR: {product[currentColor][0].color_name}</p>
             <p className="text-md">Size:</p>
-            <Dropdown state={dropdownState} setState={setDropdownState} options={dropdownOptions} />
+            <Dropdown
+              state={dropdownState}
+              setState={setDropdownState}
+              options={product[currentColor]}
+            />
           </div>
           {/*  */}
           <div className="flex items-center justify-center gap-4">
@@ -119,7 +145,7 @@ const ArticlePage = ({
                   +data?.result.sync_variants[dropdownState?.index].retail_price * +quantity
                 )}
               </p>
-              <p className="text-xs">*Taxes not included</p>
+              <p className="text-xs">*VAT not included</p>
             </div>
           </div>
           <button
@@ -189,18 +215,21 @@ const ArticlePage = ({
 
 export default ArticlePage;
 
-export type TAvailableSizes = {
+export type TWarehouseProduct = {
   id: number;
   size: string;
   inStock: boolean;
   index: number;
+  color_name: string;
+  color_code: string;
 };
 
 export const getServerSideProps: GetServerSideProps<{
   data: TProductDetails;
   sizes: TSizes;
-  dropdownOptions: Array<TAvailableSizes>;
+  product: { [key: string]: Array<TWarehouseProduct> };
   description: string;
+  productColors: Array<string>;
 }> = async (context) => {
   const { articleId } = context.query;
   const articleRes = await axiosClient.get<TProductDetails>("/api/product", {
@@ -213,7 +242,7 @@ export const getServerSideProps: GetServerSideProps<{
   });
   const sizesData = sizesRes.data;
 
-  const availabilityRes = await axiosClient.get<TProductAvailability>("/api/product/availability", {
+  const availabilityRes = await axiosClient.get<TWarehouse>("/api/product/availability", {
     params: { id: articleData.result.sync_variants[0].product.product_id },
   });
   const availabiltiyData = availabilityRes.data;
@@ -223,28 +252,40 @@ export const getServerSideProps: GetServerSideProps<{
     .map((x) => `<p>${x}</p>`)
     .join("");
 
-  let dropdownOptions: Array<TAvailableSizes> = new Array(articleData?.result.sync_variants.length)
-    .fill({})
-    .map((x, i) => ({ ...x, id: articleData.result.sync_variants[i].variant_id }));
+  const variantIds = new Array(articleData?.result.sync_variants.length)
+    .fill("")
+    .map((_x, i) => articleData?.result.sync_variants[i].variant_id);
 
-  dropdownOptions = dropdownOptions.map((size, i) => {
-    const variant = availabiltiyData.result.variants.filter((x) => x.id === size.id)[0];
-    return {
+  const product: { [key: string]: Array<TWarehouseProduct> } = {};
+
+  variantIds.forEach((id, i) => {
+    const variant = availabiltiyData.result.variants.filter((x) => x.id === id)[0];
+
+    const variantInfo = {
       index: i,
       id: variant.id,
       size: variant.size,
       inStock: !!variant?.availability_status.find(
         (x) => x.region === "EU" && x.status === "in_stock"
       ),
+      color_name: variant.color,
+      color_code: variant.color_code,
     };
+
+    product[variant.color_code] = product[variant.color_code]
+      ? [...product[variant.color_code], variantInfo]
+      : [variantInfo];
   });
+
+  const productColors = Object.keys(product);
 
   return {
     props: {
       data: articleData,
       sizes: sizesData,
-      dropdownOptions,
+      product,
       description,
+      productColors,
     },
   };
 };

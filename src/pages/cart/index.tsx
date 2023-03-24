@@ -9,6 +9,7 @@ const CartPage = () => {
 
   return (
     <div className="m-auto mt-2 flex w-full max-w-[900px] flex-1 flex-col gap-4 p-2 sm:mt-4">
+      {/* {JSON.stringify(productsInCart, null, 2)} */}
       {productsInCart.length ? (
         <>
           <div className="flex w-full flex-col items-center gap-4">

@@ -18,6 +18,8 @@ export type TCartProduct = {
     sync_id: number;
     sync_variant_id: number;
     base_product_id: number;
+    color_name: string;
+    color_code: string;
 };
 
 const initialState: CartState = {
