@@ -97,11 +97,15 @@ export const cartSlice = createSlice({
                 state.value = [...state.value];
             }
         },
+        emptyCart: (state) => {
+            state.value = [];
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity } = cartSlice.actions;
+export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity, emptyCart } =
+    cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;
 
