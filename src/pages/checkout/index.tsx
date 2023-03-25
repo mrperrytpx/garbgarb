@@ -6,6 +6,7 @@ import axios from "axios";
 import { CartProduct } from "../../components/CartProduct";
 import Stripe from "stripe";
 import getStripe from "../../utils/getStripe";
+import { axiosClient } from "../../utils/axiosClient";
 
 // const checkout = async (lineItems: TCartProduct[]) => {};
 
@@ -19,7 +20,7 @@ const CheckoutPage = () => {
   }
 
   async function handleCompleteOrder() {
-    const checkoutResponse = await axios.post("http://localhost:3000/api/stripe/checkout_session", {
+    const checkoutResponse = await axiosClient.post("/api/stripe/checkout_session", {
       cartItems: productsInCart,
       address: "test",
     });

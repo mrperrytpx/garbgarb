@@ -27,8 +27,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const { cartItems, address }: { cartItems: TCartProduct[]; address: string } = req.body;
 
-        // console.log(cartItems, "ADDY: ", address);
-
         const params: Stripe.Checkout.SessionCreateParams = {
             submit_type: "pay",
             mode: "payment",
@@ -47,11 +45,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     quantity: item.quantity,
                 })),
             ],
-            success_url: "http://localhost:3000/success",
-            cancel_url: "http://localhost:3000",
+            success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success`,
+            cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
         };
-
-        // console.log("PARAMS", params);
 
         const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
             params
