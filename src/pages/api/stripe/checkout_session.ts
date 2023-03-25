@@ -1,10 +1,12 @@
+import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { TCartProduct } from "../../../redux/slices/cartSlice";
+import { TWarehouseSingleVariant } from "../product/availability";
+import type { TPrintfulStore } from "../store";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
-    typescript: true,
 });
 
 export function formatAmountForStripe(amount: number, currency: string): number {
@@ -23,9 +25,38 @@ export function formatAmountForStripe(amount: number, currency: string): number 
     return zeroDecimalCurrency ? amount : Math.round(amount * 100);
 }
 
+const printfulStore = axios.create({
+    baseURL: "https://api.printful.com/store",
+    headers: {
+        Authorization: `Bearer ${process.env.PRINTFUL_API_KEY}`,
+    },
+    timeout: 7000,
+    signal: new AbortController().signal,
+});
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const { cartItems, address }: { cartItems: TCartProduct[]; address: string } = req.body;
+
+        const printfulStoreRes = await printfulStore<TPrintfulStore>("/products");
+        const numOfItemsInPrintfulStore = printfulStoreRes.data.result.reduce(
+            (prev, curr) => prev + curr.variants,
+            0
+        );
+
+        const warehouseStock = await Promise.all(
+            cartItems.map(async (item) => {
+                const res = await axios.get<TWarehouseSingleVariant>(
+                    `https://api.printful.com/products/variant/${item.sync_variant_id}`
+                );
+                const data = res.data.result.variant;
+                return data;
+            })
+        );
+
+        const stripeProducts = await stripe.products.list({
+            limit: numOfItemsInPrintfulStore,
+        });
 
         const params: Stripe.Checkout.SessionCreateParams = {
             submit_type: "pay",

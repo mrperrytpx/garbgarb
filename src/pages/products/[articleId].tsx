@@ -270,7 +270,7 @@ export const getServerSideProps: GetServerSideProps<{
       id: variant.id,
       size: variant.size,
       inStock: !!variant?.availability_status.filter(
-        (x) => x.region === "EU" && x.status === "in_stock"
+        (x) => x.region.includes("EU") && x.status === "in_stock"
       )[0],
       color_name: variant.color,
       color_code: variant.color_code,

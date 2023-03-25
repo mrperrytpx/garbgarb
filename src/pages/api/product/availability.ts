@@ -13,6 +13,15 @@ export type TWarehouse = {
     extra: Array<unknown>;
 };
 
+export type TWarehouseSingleVariant = {
+    code: number;
+    result: {
+        product: TBaseProduct;
+        variant: TBaseVariants;
+    };
+    extra: Array<unknown>;
+};
+
 type TBaseProductOptions = {
     id: string;
     title: string;
@@ -58,7 +67,7 @@ type TBaseProduct = {
     files: Array<TBaseProductFiles>;
 };
 
-type TBaseVariants = {
+export type TBaseVariants = {
     id: number;
     product_id: number;
     name: string;
