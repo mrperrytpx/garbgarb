@@ -11,6 +11,7 @@ export type TCheckoutPayload = {
   store_product_id: number;
   store_product_variant_id: number;
   sku: string;
+  quantity: number;
 };
 
 const CheckoutPage = () => {
@@ -27,6 +28,7 @@ const CheckoutPage = () => {
       store_product_id: item.store_product_id,
       store_product_variant_id: item.store_product_variant_id,
       sku: item.sku,
+      quantity: item.quantity,
     }));
 
     const checkoutResponse = await axiosClient.post("/api/stripe/checkout_session", {
