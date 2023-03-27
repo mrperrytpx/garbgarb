@@ -10,7 +10,6 @@ import { axiosClient } from "../../utils/axiosClient";
 export type TCheckoutPayload = {
   store_product_id: number;
   store_product_variant_id: number;
-  sku: string;
   quantity: number;
 };
 
@@ -27,7 +26,6 @@ const CheckoutPage = () => {
     const checkoutPayload: Array<TCheckoutPayload> = productsInCart.map((item) => ({
       store_product_id: item.store_product_id,
       store_product_variant_id: item.store_product_variant_id,
-      sku: item.sku,
       quantity: item.quantity,
     }));
 
@@ -55,7 +53,6 @@ const CheckoutPage = () => {
     <div className="m-auto flex w-full max-w-screen-md flex-1 flex-col items-center justify-start gap-2">
       <div className="w-full rounded-md border-2 p-6">Cart Overview</div>
       <div className="flex w-full flex-col items-center gap-4">
-        {JSON.stringify(productsInCart, null, 2)}
         {productsInCart.map((product) => (
           <CartProduct key={product.sku} product={product} />
         ))}

@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import type { TCheckoutPayload } from "../../checkout";
 import type { TBaseVariants, TWarehouseSingleVariant } from "../product/availability";
-import type { TPrintfulStore } from "../store";
 import type { TProductDetails, TProductVariant } from "../product/index";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
@@ -115,8 +114,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 };
             })
             .filter((item) => item.in_stock);
-
-        console.log(cartItemsInStock);
 
         if (!cartItemsInStock) return res.status(400).end("Cart items aren't in stock");
 
