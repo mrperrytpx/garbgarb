@@ -22,7 +22,8 @@
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "redux-persist": "^6.0.0",
-    "stripe": "^11.16.0"
+    "stripe": "^11.16.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "18.11.18",

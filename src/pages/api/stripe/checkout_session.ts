@@ -1,13 +1,22 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import type { TCheckoutPayload } from "../../checkout";
+import { z } from "zod";
 import type { TBaseVariants, TWarehouseSingleVariant } from "../product/availability";
 import type { TProductDetails, TProductVariant } from "../product/index";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
 });
+
+const cartItemsSchema = z.array(
+    z.object({
+        store_product_id: z.number(),
+        store_product_variant_id: z.number(),
+        quantity: z.number({ description: "Quantity can't be 0" }).min(1),
+    })
+);
+export type TCheckoutPayload = z.infer<typeof cartItemsSchema>;
 
 function formatAmountForStripe(amount: number, currency: string): number {
     let numberFormat = new Intl.NumberFormat(["en-US"], {
@@ -41,15 +50,24 @@ interface PromiseFulfilledResult<T> {
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const { cartItems, address }: { cartItems: Array<TCheckoutPayload>; address: string } =
-            req.body;
+        const { cartItems, address }: { cartItems: TCheckoutPayload; address: string } = req.body;
 
         if (!cartItems) return res.status(400).end("Bad request");
 
-        const uniqueIDsInCart = [...new Set(cartItems.map((item) => item.store_product_id))];
+        let parsedCartItems: TCheckoutPayload = [];
+        try {
+            parsedCartItems = cartItemsSchema.parse(cartItems);
+        } catch (err) {
+            if (err instanceof z.ZodError) {
+                return res.status(400).end(err.message);
+            }
+        }
+        const uniqueProductIDsInCart = [
+            ...new Set(parsedCartItems.map((item) => item.store_product_id)),
+        ];
 
-        const promises: Promise<TProductVariant[] | Error>[] = [];
-        uniqueIDsInCart.forEach((item) => {
+        const printfulStoreItemsPromises: Promise<TProductVariant[] | Error>[] = [];
+        uniqueProductIDsInCart.forEach((item) => {
             const promise: Promise<TProductVariant[] | Error> = new Promise(async (res, rej) => {
                 try {
                     const response = await printfulStore.get<TProductDetails>(`/products/${item}`);
@@ -64,15 +82,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     rej(err as Error);
                 }
             });
-            promises.push(promise);
+            printfulStoreItemsPromises.push(promise);
         });
-
-        const printfulStoreItems = (await Promise.allSettled(promises))
+        const printfulStoreItems = (await Promise.allSettled(printfulStoreItemsPromises))
             .filter((x) => x.status === "fulfilled")
             .map((x) => (x as PromiseFulfilledResult<TProductVariant[]>).value)
             .flat();
 
-        const cartItemsExistInStore = cartItems
+        const cartItemsExistInStore = parsedCartItems
             .map((item) => {
                 const storeItem = printfulStoreItems.filter(
                     (x) => x.id === item.store_product_variant_id

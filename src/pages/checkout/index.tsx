@@ -6,12 +6,7 @@ import { CartProduct } from "../../components/CartProduct";
 import Stripe from "stripe";
 import getStripe from "../../utils/getStripe";
 import { axiosClient } from "../../utils/axiosClient";
-
-export type TCheckoutPayload = {
-  store_product_id: number;
-  store_product_variant_id: number;
-  quantity: number;
-};
+import { TCheckoutPayload } from "../api/stripe/checkout_session";
 
 const CheckoutPage = () => {
   const productsInCart = useSelector(cartSelector);
@@ -23,7 +18,7 @@ const CheckoutPage = () => {
   }
 
   async function handleCompleteOrder() {
-    const checkoutPayload: Array<TCheckoutPayload> = productsInCart.map((item) => ({
+    const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
       store_product_id: item.store_product_id,
       store_product_variant_id: item.store_product_variant_id,
       quantity: item.quantity,
