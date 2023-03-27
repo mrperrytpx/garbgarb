@@ -1,15 +1,16 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { TCartProduct } from "../../../redux/slices/cartSlice";
-import { TWarehouseSingleVariant } from "../product/availability";
+import type { TCheckoutPayload } from "../../checkout";
+import type { TWarehouseSingleVariant } from "../product/availability";
 import type { TPrintfulStore } from "../store";
+import type { TProductDetails, TProductVariant } from "../product/index";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
 });
 
-export function formatAmountForStripe(amount: number, currency: string): number {
+function formatAmountForStripe(amount: number, currency: string): number {
     let numberFormat = new Intl.NumberFormat(["en-US"], {
         style: "currency",
         currency: currency,
@@ -36,53 +37,88 @@ const printfulStore = axios.create({
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const { cartItems, address }: { cartItems: TCartProduct[]; address: string } = req.body;
+        const { cartItems, address }: { cartItems: Array<TCheckoutPayload>; address: string } =
+            req.body;
 
-        const printfulStoreRes = await printfulStore<TPrintfulStore>("/products");
-        const numOfItemsInPrintfulStore = printfulStoreRes.data.result.reduce(
-            (prev, curr) => prev + curr.variants,
-            0
-        );
+        if (!cartItems) return res.status(400).end("Bad request");
 
-        const warehouseStock = await Promise.all(
-            cartItems.map(async (item) => {
-                const res = await axios.get<TWarehouseSingleVariant>(
-                    `https://api.printful.com/products/variant/${item.sync_variant_id}`
-                );
-                const data = res.data.result.variant;
-                return data;
-            })
-        );
+        cartItems.push({ sku: "12", store_product_id: 123, store_product_variant_id: 456 });
 
-        const stripeProducts = await stripe.products.list({
-            limit: numOfItemsInPrintfulStore,
+        const promises: Promise<TProductVariant[]>[] = [];
+
+        cartItems.forEach((item) => {
+            const promise = new Promise<TProductVariant[]>(async (res, rej) => {
+                try {
+                    const response = await printfulStore.get<TProductDetails>(
+                        `/products/${item.store_product_id}`
+                    );
+
+                    if (response.status === 404) {
+                        throw new Error("Product not found");
+                    }
+
+                    const data: TProductVariant[] = response.data.result.sync_variants;
+                    res(data);
+                } catch (err: any) {
+                    if (err instanceof Error) {
+                        rej(404);
+                    }
+                }
+            });
+            promises.push(promise);
         });
 
-        const params: Stripe.Checkout.SessionCreateParams = {
-            submit_type: "pay",
-            mode: "payment",
-            payment_method_types: ["card"],
-            line_items: [
-                ...cartItems.map((item) => ({
-                    price_data: {
-                        currency: "eur",
-                        unit_amount: formatAmountForStripe(+item.price, "eur"),
-                        product_data: {
-                            name: item.name,
-                            images: [item.variant_image],
-                            description: `Size: ${item.size}, Color: ${item.color_name}`,
-                        },
-                    },
-                    quantity: item.quantity,
-                })),
-            ],
-            success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success`,
-            cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
-        };
+        const printfulStoreItems = await Promise.allSettled(promises);
 
-        const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
-            params
-        );
+        // const printfulStoreRes = await printfulStore<TPrintfulStore>("/products");
+        // const numOfItemsInPrintfulStore = printfulStoreRes.data.result.reduce(
+        //     (prev, curr) => prev + curr.variants,
+        //     0
+        // );
+
+        // console.log("CART ITEMS: ", cartItems);
+
+        // const warehouseStock = await Promise.all(
+        //     cartItems.map(async (item) => {
+        //         const res = await axios.get<TWarehouseSingleVariant>(
+        //             `https://api.printful.com/products/variant/${item.sync_variant_id}`
+        //         );
+        //         const data = res.data.result.variant;
+        //         return data;
+        //     })
+        // );
+
+        // const stripeProducts = await stripe.products.list({
+        //     limit: numOfItemsInPrintfulStore,
+        // });
+
+        // const params: Stripe.Checkout.SessionCreateParams = {
+        //     submit_type: "pay",
+        //     mode: "payment",
+        //     payment_method_types: ["card"],
+        //     line_items: [
+        //         ...cartItems.map((item) => ({
+        //             price_data: {
+        //                 currency: "eur",
+        //                 unit_amount: formatAmountForStripe(+item.price, "eur"),
+        //                 product_data: {
+        //                     name: item.name,
+        //                     images: [item.variant_image],
+        //                     description: `Size: ${item.size}, Color: ${item.color_name}`,
+        //                 },
+        //             },
+        //             quantity: item.quantity,
+        //         })),
+        //     ],
+        //     success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success`,
+        //     cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
+        // };
+
+        // const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
+        //     params
+        // );
+
+        const checkoutSession: any = {};
 
         res.json(checkoutSession);
     } else {

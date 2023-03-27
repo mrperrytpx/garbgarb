@@ -1,14 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { cartSelector, TCartProduct } from "../../redux/slices/cartSlice";
+import { cartSelector } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { CartProduct } from "../../components/CartProduct";
 import Stripe from "stripe";
 import getStripe from "../../utils/getStripe";
 import { axiosClient } from "../../utils/axiosClient";
 
-// const checkout = async (lineItems: TCartProduct[]) => {};
+export type TCheckoutPayload = {
+  store_product_id: number;
+  store_product_variant_id: number;
+  sku: string;
+};
 
 const CheckoutPage = () => {
   const productsInCart = useSelector(cartSelector);
@@ -20,14 +23,18 @@ const CheckoutPage = () => {
   }
 
   async function handleCompleteOrder() {
+    const checkoutPayload: Array<TCheckoutPayload> = productsInCart.map((item) => ({
+      store_product_id: item.store_product_id,
+      store_product_variant_id: item.store_product_variant_id,
+      sku: item.sku,
+    }));
+
     const checkoutResponse = await axiosClient.post("/api/stripe/checkout_session", {
-      cartItems: productsInCart,
+      cartItems: checkoutPayload,
       address: "test",
     });
 
     const checkoutSession: Stripe.Checkout.Session = checkoutResponse.data;
-
-    // console.log("Session:", checkoutSession);
 
     if ((checkoutSession as any).statusCode === 500) {
       console.error((checkoutSession as any).message);
@@ -46,6 +53,7 @@ const CheckoutPage = () => {
     <div className="m-auto flex w-full max-w-screen-md flex-1 flex-col items-center justify-start gap-2">
       <div className="w-full rounded-md border-2 p-6">Cart Overview</div>
       <div className="flex w-full flex-col items-center gap-4">
+        {JSON.stringify(productsInCart, null, 2)}
         {productsInCart.map((product) => (
           <CartProduct key={product.sku} product={product} />
         ))}

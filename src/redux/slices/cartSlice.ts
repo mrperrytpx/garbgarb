@@ -14,9 +14,9 @@ export type TCartProduct = {
     name: string;
     sku: string;
     variant_image: string;
-    id: number;
-    sync_id: number;
-    sync_variant_id: number;
+    store_product_variant_id: number;
+    store_product_id: number;
+    base_product_variant_id: number;
     base_product_id: number;
     color_name: string;
     color_code: string;

@@ -38,7 +38,7 @@ type File = {
     is_temporary: boolean;
 };
 
-type TProductVariant = {
+export type TProductVariant = {
     id: number;
     external_id: string;
     sync_product_id: number;

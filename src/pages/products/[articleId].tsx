@@ -53,9 +53,9 @@ const ArticlePage = ({
       size: option?.size,
       size_index: option.index,
       variant_image: data?.result.sync_variants[option.index].files[1].thumbnail_url,
-      id: data?.result.sync_variants[option.index].id,
-      sync_id: data?.result.sync_variants[option.index].sync_product_id,
-      sync_variant_id: data?.result.sync_variants[option.index].variant_id,
+      store_product_variant_id: data?.result.sync_variants[option.index].id,
+      store_product_id: data?.result.sync_variants[option.index].sync_product_id,
+      base_product_variant_id: data?.result.sync_variants[option.index].variant_id,
       base_product_id: data?.result.sync_variants[option.index].product.product_id,
     };
 
