@@ -35,6 +35,11 @@ const printfulStore = axios.create({
     signal: new AbortController().signal,
 });
 
+interface PromiseFulfilledResult<T> {
+    status: "fulfilled";
+    value: T;
+}
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const { cartItems, address }: { cartItems: Array<TCheckoutPayload>; address: string } =
@@ -42,12 +47,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         if (!cartItems) return res.status(400).end("Bad request");
 
-        cartItems.push({ sku: "12", store_product_id: 123, store_product_variant_id: 456 });
-
-        const promises: Promise<TProductVariant[]>[] = [];
+        const promises: Promise<TProductVariant[] | Error>[] = [];
 
         cartItems.forEach((item) => {
-            const promise = new Promise<TProductVariant[]>(async (res, rej) => {
+            const promise: Promise<TProductVariant[] | Error> = new Promise(async (res, rej) => {
                 try {
                     const response = await printfulStore.get<TProductDetails>(
                         `/products/${item.store_product_id}`
@@ -61,20 +64,29 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     res(data);
                 } catch (err: any) {
                     if (err instanceof Error) {
-                        rej(404);
+                        rej(err);
                     }
                 }
             });
             promises.push(promise);
         });
 
-        const printfulStoreItems = await Promise.allSettled(promises);
+        const printfulStoreItems = (await Promise.allSettled(promises))
+            .filter((x) => x.status === "fulfilled")
+            .map((x) => (x as PromiseFulfilledResult<TProductVariant[]>).value)
+            .flat();
 
-        // const printfulStoreRes = await printfulStore<TPrintfulStore>("/products");
-        // const numOfItemsInPrintfulStore = printfulStoreRes.data.result.reduce(
-        //     (prev, curr) => prev + curr.variants,
-        //     0
-        // );
+        const cartItemsCheck = cartItems.map((item) => {
+            const storeItem = printfulStoreItems.find(
+                (x) => x.id === item.store_product_variant_id
+            );
+
+            if (!storeItem) return {};
+
+            return storeItem;
+        });
+
+        console.log(cartItemsCheck);
 
         // console.log("CART ITEMS: ", cartItems);
 
