@@ -57,6 +57,7 @@ const ArticlePage = ({
       store_product_id: data?.result.sync_variants[option.index].sync_product_id,
       base_product_variant_id: data?.result.sync_variants[option.index].variant_id,
       base_product_id: data?.result.sync_variants[option.index].product.product_id,
+      external_id: data?.result.sync_variants[option.index].external_id,
     };
 
     if (!payload) return;

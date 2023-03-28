@@ -20,6 +20,7 @@ export type TCartProduct = {
     base_product_id: number;
     color_name: string;
     color_code: string;
+    external_id: string;
 };
 
 const initialState: CartState = {
