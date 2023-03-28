@@ -130,7 +130,13 @@ const ArticlePage = ({
           <div className="flex flex-col items-center justify-center">
             <p>CURRENT COLOR: {product[color][0].color_name}</p>
             <p className="text-md">Size:</p>
-            <Dropdown state={option} setState={setOption} options={product[color]} />
+            <Dropdown
+              getValue={(option) => option.id}
+              getLabel={(option) => option.size}
+              state={option}
+              setState={setOption}
+              options={product[color]}
+            />
           </div>
           {/*  */}
           <div className="flex items-center justify-center gap-4">

@@ -20,11 +20,11 @@ export type TAddress = {
 const CheckoutPage = () => {
   const productsInCart = useSelector(cartSelector);
   const router = useRouter();
-
-  if (!productsInCart.length) {
-    router.push("/products");
-    return <div className="flex-1">Redirecting to shop</div>;
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   async function handleCompleteOrder() {
     const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
@@ -82,12 +82,12 @@ const CheckoutPage = () => {
 
   return (
     <div className="m-auto flex w-full max-w-screen-md flex-1 flex-col items-center justify-start gap-2">
-      <div className="w-full rounded-md border-2 p-6">Cart Overview</div>
+      {/* <div className="w-full rounded-md border-2 p-6">Cart Overview</div>
       <div className="flex w-full flex-col items-center gap-4">
         {productsInCart.map((product) => (
           <CartProduct key={product.sku} product={product} />
         ))}
-      </div>
+      </div> */}
       <div className="w-full rounded-md border-2 p-6">Shipping Cost & VAT</div>
       <form onSubmit={handleCheckShipping} className="w-full">
         <div className="mb-4 w-full border-2 p-2 md:flex md:justify-between">
@@ -99,7 +99,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="address1"
               type="text"
-              required={true}
               placeholder="Address Line 1"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="address2">
@@ -118,7 +117,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="city"
               type="text"
-              required={true}
               placeholder="City"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="zip">
@@ -128,7 +126,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="zip"
               type="text"
-              required={true}
               placeholder="ZIP Code"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="country">
