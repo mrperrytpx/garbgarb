@@ -57,6 +57,7 @@ const ArticlePage = ({
       store_product_id: data?.result.sync_variants[option.index].sync_product_id,
       base_product_variant_id: data?.result.sync_variants[option.index].variant_id,
       base_product_id: data?.result.sync_variants[option.index].product.product_id,
+      external_id: data?.result.sync_variants[option.index].external_id,
     };
 
     if (!payload) return;
@@ -129,7 +130,13 @@ const ArticlePage = ({
           <div className="flex flex-col items-center justify-center">
             <p>CURRENT COLOR: {product[color][0].color_name}</p>
             <p className="text-md">Size:</p>
-            <Dropdown state={option} setState={setOption} options={product[color]} />
+            <Dropdown
+              getValue={(option) => option.id}
+              getLabel={(option) => option.size}
+              state={option}
+              setState={setOption}
+              options={product[color]}
+            />
           </div>
           {/*  */}
           <div className="flex items-center justify-center gap-4">
