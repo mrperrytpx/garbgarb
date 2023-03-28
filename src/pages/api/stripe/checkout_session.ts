@@ -2,6 +2,7 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { z } from "zod";
+import { TShippingOption } from "../printful/shipping_rates";
 import type { TBaseVariants, TWarehouseSingleVariant } from "../product/availability";
 import type { TProductDetails, TProductVariant } from "../product/index";
 
@@ -47,17 +48,6 @@ interface PromiseFulfilledResult<T> {
     status: "fulfilled";
     value: T;
 }
-
-type TShippingOption = {
-    id: string;
-    name: string;
-    rate: string;
-    currency: "EUR";
-    minDeliveryDays: number;
-    maxDeliveryDays: number;
-    minDeliveryDate: string;
-    maxDeliveryDate: string;
-};
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
@@ -148,14 +138,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (!cartItemsInStock) return res.status(400).end("Cart items aren't in stock");
 
         const shippingOptionsResponse = await printfulStoreClient.post(
-            "https://api.printful.com/shipping/rates",
+            "/shipping/rates",
             {
                 recipient: {
                     address1: "",
                     address2: "",
                     city: "",
                     country_code: "",
-                    zip: 10432,
+                    zip: 0,
                 },
                 items: cartItemsInStock.map((item) => ({
                     quantity: item.quantity,
