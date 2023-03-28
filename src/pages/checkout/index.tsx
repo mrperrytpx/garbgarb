@@ -4,7 +4,7 @@ import { cartSelector } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";
 import { CartProduct } from "../../components/CartProduct";
 import Stripe from "stripe";
-import getStripe from "../../utils/getStripe";
+import { getStripe } from "../../utils/getStripe";
 import { axiosClient } from "../../utils/axiosClient";
 import { TCheckoutPayload } from "../api/stripe/checkout_session";
 

@@ -34,8 +34,8 @@ function formatAmountForStripe(amount: number, currency: string): number {
     return zeroDecimalCurrency ? amount : Math.round(amount * 100);
 }
 
-const printfulStore = axios.create({
-    baseURL: "https://api.printful.com/store",
+const printfulStoreClient = axios.create({
+    baseURL: "https://api.printful.com",
     headers: {
         Authorization: `Bearer ${process.env.PRINTFUL_API_KEY}`,
     },
@@ -47,6 +47,17 @@ interface PromiseFulfilledResult<T> {
     status: "fulfilled";
     value: T;
 }
+
+type TShippingOption = {
+    id: string;
+    name: string;
+    rate: string;
+    currency: "EUR";
+    minDeliveryDays: number;
+    maxDeliveryDays: number;
+    minDeliveryDate: string;
+    maxDeliveryDate: string;
+};
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
@@ -70,7 +81,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         uniqueProductIDsInCart.forEach((item) => {
             const promise: Promise<TProductVariant[] | Error> = new Promise(async (res, rej) => {
                 try {
-                    const response = await printfulStore.get<TProductDetails>(`/products/${item}`);
+                    const response = await printfulStoreClient.get<TProductDetails>(
+                        `/store/products/${item}`
+                    );
 
                     if (response.status === 404) {
                         throw new Error("Product not found");
@@ -134,6 +147,33 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         if (!cartItemsInStock) return res.status(400).end("Cart items aren't in stock");
 
+        const shippingOptionsResponse = await printfulStoreClient.post(
+            "https://api.printful.com/shipping/rates",
+            {
+                recipient: {
+                    address1: "",
+                    address2: "",
+                    city: "",
+                    country_code: "",
+                    zip: 10432,
+                },
+                items: cartItemsInStock.map((item) => ({
+                    quantity: item.quantity,
+                    external_variant_id: item.external_id,
+                })),
+                currency: "EUR",
+                locale: "en-US",
+            },
+            {
+                headers: {
+                    "X-PF-Store-Id": process.env.PRINTFUL_STORE_ID,
+                },
+            }
+        );
+        const shippingOptionsData: TShippingOption[] = shippingOptionsResponse.data.result;
+
+        if (!shippingOptionsData) return res.status(400).end("No shipping available");
+
         const params: Stripe.Checkout.SessionCreateParams = {
             submit_type: "pay",
             mode: "payment",
@@ -152,6 +192,30 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     quantity: item.quantity,
                 })),
             ],
+            shipping_options: shippingOptionsResponse.data.result.map(
+                (
+                    shipping: TShippingOption
+                ): Stripe.Checkout.SessionCreateParams.ShippingOption => ({
+                    shipping_rate_data: {
+                        type: "fixed_amount",
+                        fixed_amount: {
+                            amount: formatAmountForStripe(+shipping.rate, shipping.currency),
+                            currency: shipping.currency.toLowerCase(),
+                        },
+                        display_name: shipping.id,
+                        delivery_estimate: {
+                            minimum: {
+                                unit: "business_day",
+                                value: shipping.minDeliveryDays,
+                            },
+                            maximum: {
+                                unit: "business_day",
+                                value: shipping.maxDeliveryDays,
+                            },
+                        },
+                    },
+                })
+            ),
             success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success`,
             cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
         };
