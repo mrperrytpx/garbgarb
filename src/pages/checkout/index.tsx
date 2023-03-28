@@ -62,19 +62,23 @@ const CheckoutPage = () => {
   async function handleCheckShipping(e: React.SyntheticEvent) {
     e.preventDefault();
 
+    const address = {
+      address1: "",
+      address2: "",
+      zip: 1,
+      city: "",
+      country_code: "HR",
+    };
+
+    console.log("SENDING ADDRESS", address);
+
     const response = await axiosClient.post("/api/printful/shipping_rates", {
       cartItems: productsInCart,
-      address: {
-        address1: "Zdenečka 21",
-        address2: "Podvrh",
-        zip: 10432,
-        city: "Bregana",
-        country_code: "HR",
-      },
+      address,
     });
 
     const test = response.data;
-    console.log("test check", test);
+    console.log("SHIPPING RATES", test);
   }
 
   return (
@@ -96,7 +100,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="address1"
               type="text"
-              required={true}
               placeholder="Address Line 1"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="address2">
@@ -115,7 +118,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="city"
               type="text"
-              required={true}
               placeholder="City"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="zip">
@@ -125,7 +127,6 @@ const CheckoutPage = () => {
               className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
               id="zip"
               type="text"
-              required={true}
               placeholder="ZIP Code"
             />
             <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="country">

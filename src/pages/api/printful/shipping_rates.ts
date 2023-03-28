@@ -27,15 +27,14 @@ export type TShippingOption = {
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const { cartItems, address }: { cartItems: TCartProduct[]; address: TAddress } = req.body;
+
+        console.log("ADDRESS RECEIVED ON SERVER:", address);
+
         const shippingOptionsResponse = await printfulStoreClient.post(
             "/shipping/rates",
             {
                 recipient: {
                     country_code: address.country_code,
-                    address1: address.address1,
-                    address2: address.address2,
-                    zip: address.zip,
-                    city: address.city,
                 },
                 items: cartItems.map((item) => ({
                     quantity: item.quantity,
