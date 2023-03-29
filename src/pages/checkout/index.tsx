@@ -63,11 +63,10 @@ const CheckoutPage = () => {
     e.preventDefault();
 
     const address = {
-      address1: "",
-      address2: "",
-      zip: 1,
-      city: "",
-      country_code: "HR",
+      address1: "Bellavista 4",
+      zip: 50230,
+      city: "Alhama De Aragón",
+      country_code: "ES",
     };
 
     console.log("SENDING ADDRESS", address);

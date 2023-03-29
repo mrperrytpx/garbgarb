@@ -5,5 +5,7 @@ namespace NodeJS {
         STRIPE_PRIVATE_KEY: string;
         NEXT_PUBLIC_SERVER_URL: string;
         NEXT_PUBLIC_STRIPE_PUBLIC_KEY: string;
+        GOOGLE_MAPS_API_KEY: string;
+        POSTGRID_API_KEY: string;
     }
 }

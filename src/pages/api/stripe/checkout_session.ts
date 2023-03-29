@@ -55,6 +55,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         if (!cartItems) return res.status(400).end("Bad request");
 
+        //validate address
+
         let parsedCartItems: TCheckoutPayload = [];
         try {
             parsedCartItems = cartItemsSchema.parse(cartItems);
