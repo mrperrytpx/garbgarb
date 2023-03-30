@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiKeyInstance } from "../../utils/axiosClients";
-import { tryCatch } from "../../utils/tryCatchWrapper";
+import { tryCatchAsync } from "../../utils/tryCatchWrappers";
 
 export type TProduct = {
     id: number;
@@ -45,7 +45,7 @@ async function getStoreProducts(): Promise<TProduct[]> {
 }
 
 async function handler(_req: NextApiRequest, res: NextApiResponse) {
-    const [storeError, storeData] = await tryCatch(getStoreProducts)();
+    const [storeError, storeData] = await tryCatchAsync(getStoreProducts)();
 
     if (storeError || !storeData) return res.status(500).end(storeError?.message);
 

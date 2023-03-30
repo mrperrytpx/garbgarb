@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { TProduct } from "../store";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
-import { tryCatch } from "../../../utils/tryCatchWrapper";
+import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 
 export type TProductDetails = {
     code: number;
@@ -88,7 +88,7 @@ async function getStoreProductVariants(
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const [variantError, variantData] = await tryCatch(getStoreProductVariants)(id);
+    const [variantError, variantData] = await tryCatchAsync(getStoreProductVariants)(id);
 
     if (variantError || !variantData) return res.status(500).end(variantError?.message);
 

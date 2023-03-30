@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { TCartProduct } from "../../../redux/slices/cartSlice";
 import type { TAddress } from "../../checkout";
 import { allowedCountries } from "../../../utils/allowedCountries";
-import { tryCatch } from "../../../utils/tryCatchWrapper";
+import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 import { validateAddress } from "../../../lib/validateAddress";
 import { estimateShippingCost } from "../../../lib/estimateShippingCost";
 
@@ -13,15 +13,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (!allowedCountries.includes(address.country_code))
             return res.status(400).end("We don't ship to Your country, sorry!");
 
-        const [validateAddressError, validatedAddress] = await tryCatch(validateAddress)(address);
+        const [validateAddressError, validatedAddress] = await tryCatchAsync(validateAddress)(
+            address
+        );
 
         if (validateAddressError || !validatedAddress)
             return res.status(400).end(validateAddressError?.message);
 
-        const [estimateShippingCostError, estimatedCosts] = await tryCatch(estimateShippingCost)(
-            validatedAddress,
-            cartItems
-        );
+        const transformedItems = cartItems.map((item) => ({
+            quantity: item.quantity,
+            sync_variant_id: item.store_product_variant_id,
+            retail_price: item.price,
+        }));
+
+        const [estimateShippingCostError, estimatedCosts] = await tryCatchAsync(
+            estimateShippingCost
+        )(validatedAddress, transformedItems);
 
         if (estimateShippingCostError || !estimatedCosts)
             return res.status(400).end(estimateShippingCostError?.message);

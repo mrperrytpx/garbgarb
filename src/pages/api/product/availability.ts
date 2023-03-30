@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiInstance } from "../../../utils/axiosClients";
-import { tryCatch } from "../../../utils/tryCatchWrapper";
+import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 
 // ______________________________________________________________________________________
 
@@ -117,7 +117,7 @@ async function getWarehouseAvailability(
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const [availabilityError, availabilityData] = await tryCatch(getWarehouseAvailability)(id);
+    const [availabilityError, availabilityData] = await tryCatchAsync(getWarehouseAvailability)(id);
 
     if (availabilityError || !availabilityData)
         return res.status(500).end(availabilityError?.message);

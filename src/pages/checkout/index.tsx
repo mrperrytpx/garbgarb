@@ -34,9 +34,16 @@ const CheckoutPage = () => {
       quantity: item.quantity,
     }));
 
+    const address = {
+      address1: "Bellavista 4",
+      zip: 50230,
+      city: "Alhama De Aragón",
+      country_code: "ES",
+    };
+
     const checkoutResponse = await apiInstance.post("/api/stripe/checkout_session", {
       cartItems: checkoutPayload,
-      address: "test",
+      address,
     });
 
     const checkoutSession: Stripe.Checkout.Session = checkoutResponse.data;

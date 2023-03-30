@@ -2,16 +2,16 @@ import { TCartProduct } from "../redux/slices/cartSlice";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
 import { TPostgridValidatedAddress } from "./validateAddress";
 
-// export type TShippingOption = {
-//     id: string;
-//     name: string;
-//     rate: string;
-//     currency: "EUR";
-//     minDeliveryDays: number;
-//     maxDeliveryDays: number;
-//     minDeliveryDate: string;
-//     maxDeliveryDate: string;
-// };
+export type TShippingOption = {
+    id: string;
+    name: string;
+    rate: string;
+    currency: "EUR";
+    minDeliveryDays: number;
+    maxDeliveryDays: number;
+    minDeliveryDate: string;
+    maxDeliveryDate: string;
+};
 
 export type TAllCosts = {
     costs: Costs;
@@ -44,8 +44,10 @@ export type RetailCosts = {
 
 export const estimateShippingCost = async (
     address: TPostgridValidatedAddress,
-    items: TCartProduct[]
+    items: { quantity: number; sync_variant_id: number; retail_price: string }[]
 ): Promise<TAllCosts> => {
+    console.log("estimating for", items);
+
     const shippingCostsResponse = await printfulApiKeyInstance.post(
         "/orders/estimate-costs",
         {
@@ -58,8 +60,8 @@ export const estimateShippingCost = async (
             },
             items: items.map((item) => ({
                 quantity: item.quantity,
-                sync_variant_id: item.store_product_variant_id,
-                retail_price: item.price,
+                sync_variant_id: item.sync_variant_id,
+                retail_price: item.retail_price,
             })),
             locale: "en-US",
         },

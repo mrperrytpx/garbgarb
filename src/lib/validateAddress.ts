@@ -68,7 +68,8 @@ export const validateAddress = async (address: TAddress): Promise<TPostgridValid
         address: { ...postgridAddressFormat },
     });
 
-    if (validateAddressResponse.status >= 400) throw new Error("Provide a valid address");
+    if (validateAddressResponse.status >= 400)
+        throw new Error("Provide a valid address", { cause: validateAddressResponse.status });
 
     const validatedAddress = validateAddressResponse.data.data;
 
