@@ -1,5 +1,5 @@
 import React from "react";
-import { axiosClient } from "../../utils/axiosClient";
+import { apiInstance } from "../../utils/axiosClients";
 import type { TPrintfulStore } from "../api/store";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
@@ -25,7 +25,7 @@ export default ProductsPage;
 export const getServerSideProps: GetServerSideProps<{
   data: TPrintfulStore | undefined;
 }> = async () => {
-  const res = await axiosClient.get<TPrintfulStore>("/api/store");
+  const res = await apiInstance.get<TPrintfulStore>("/api/store");
   const data = res.data;
 
   return {

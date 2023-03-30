@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { CartProduct } from "../../components/CartProduct";
 import Stripe from "stripe";
 import { getStripe } from "../../utils/getStripe";
-import { axiosClient } from "../../utils/axiosClient";
+import { apiInstance } from "../../utils/axiosClients";
 import { TCheckoutPayload } from "../api/stripe/checkout_session";
 import { useForm } from "react-hook-form";
 import { allowedCountries } from "../../utils/allowedCountries";
@@ -34,7 +34,7 @@ const CheckoutPage = () => {
       quantity: item.quantity,
     }));
 
-    const checkoutResponse = await axiosClient.post("/api/stripe/checkout_session", {
+    const checkoutResponse = await apiInstance.post("/api/stripe/checkout_session", {
       cartItems: checkoutPayload,
       address: "test",
     });
@@ -71,7 +71,7 @@ const CheckoutPage = () => {
 
     console.log("SENDING ADDRESS", address);
 
-    const response = await axiosClient.post("/api/printful/shipping_rates", {
+    const response = await apiInstance.post("/api/printful/shipping_rates", {
       cartItems: productsInCart,
       address,
     });
@@ -132,8 +132,10 @@ const CheckoutPage = () => {
               Country
             </label>
             <select defaultValue="HR" className="w-38 p-4" name="country" id="country">
-              {allowedCountries.sort().map((country) => (
-                <option value={country}>{country}</option>
+              {allowedCountries.sort().map((country, i) => (
+                <option key={i} value={country}>
+                  {country}
+                </option>
               ))}
             </select>
           </div>

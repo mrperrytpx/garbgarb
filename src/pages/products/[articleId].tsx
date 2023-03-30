@@ -1,4 +1,4 @@
-import { axiosClient } from "../../utils/axiosClient";
+import { apiInstance } from "../../utils/axiosClients";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import type { TProductDetails } from "../api/product";
@@ -243,18 +243,20 @@ export const getServerSideProps: GetServerSideProps<{
   productColors: Array<string>;
 }> = async (context) => {
   const { articleId } = context.query;
-  const articleRes = await axiosClient.get<TProductDetails>("/api/product", {
+  const articleRes = await apiInstance.get<TProductDetails>("/api/product", {
     params: { id: articleId },
   });
   const articleData = articleRes.data;
 
-  const sizesRes = await axiosClient.get<TSizes>("/api/product/sizes", {
-    params: { id: articleData.result.sync_variants[0].product.product_id },
+  const productId = articleData.result.sync_variants[0].product.product_id;
+
+  const sizesRes = await apiInstance.get<TSizes>("/api/product/sizes", {
+    params: { id: productId },
   });
   const sizesData = sizesRes.data;
 
-  const availabilityRes = await axiosClient.get<TWarehouse>("/api/product/availability", {
-    params: { id: articleData.result.sync_variants[0].product.product_id },
+  const availabilityRes = await apiInstance.get<TWarehouse>("/api/product/availability", {
+    params: { id: productId },
   });
   const availabilityData = availabilityRes.data;
 

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
 import type { TProduct } from "../store";
+import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 
 export type TProductDetails = {
     code: number;
@@ -60,20 +60,12 @@ export type TProductVariant = {
 
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
-
-const printfulStore = axios.create({
-    baseURL: "https://api.printful.com/store",
-    headers: {
-        Authorization: `Bearer ${process.env.PRINTFUL_API_KEY}`,
-    },
-    timeout: 7000,
-    signal: new AbortController().signal,
-});
-
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const { data: product } = await printfulStore.get<TProductDetails>(`/products/${id}`);
+    const { data: product } = await printfulApiKeyInstance.get<TProductDetails>(
+        `/store/products/${id}`
+    );
 
     res.status(200).json(product);
 }
