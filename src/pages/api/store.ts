@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiKeyInstance } from "../../utils/axiosClients";
+import { tryCatch } from "../../utils/tryCatchWrapper";
 
 export type TProduct = {
     id: number;
@@ -29,10 +30,26 @@ export type TPrintfulStore = {
 
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
-async function handler(_req: NextApiRequest, res: NextApiResponse) {
-    const { data: products } = await printfulApiKeyInstance.get<TPrintfulStore>("/store/products");
 
-    res.status(200).json(products);
+async function getStoreProducts(): Promise<TProduct[]> {
+    const storeResponse = await printfulApiKeyInstance.get<TPrintfulStore>("/store/products");
+
+    if (storeResponse.status >= 400)
+        throw new Error("Something is wrong with Printful's store, try again later");
+
+    const data = storeResponse.data.result;
+
+    if (!data) throw new Error("Something is wrong with Printful's store, try again later");
+
+    return data;
+}
+
+async function handler(_req: NextApiRequest, res: NextApiResponse) {
+    const [storeError, storeData] = await tryCatch(getStoreProducts)();
+
+    if (storeError || !storeData) return res.status(500).end(storeError?.message);
+
+    res.status(200).json(storeData);
 }
 
 export default handler;

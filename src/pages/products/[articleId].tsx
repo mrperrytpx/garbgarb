@@ -1,13 +1,13 @@
 import { apiInstance } from "../../utils/axiosClients";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import type { TProductDetails } from "../api/product";
+import type { TProductDetailsResult } from "../api/product";
 import Image from "next/image";
 import { Dropdown } from "../../components/Dropdown";
 import { useState, useEffect } from "react";
 import parse from "html-react-parser";
-import type { TSizes } from "../api/product/sizes";
-import type { TWarehouse } from "../api/product/availability";
+import type { TProductSizes } from "../api/product/sizes";
+import type { TWarehouseResult } from "../api/product/availability";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
@@ -30,7 +30,7 @@ const ArticlePage = ({
 
   const dispatch = useDispatch();
 
-  const splitName = data?.result.sync_product.name.split(" ");
+  const splitName = data?.sync_product.name.split(" ");
   const splitIndex = splitName.indexOf("Unisex");
   const myShirtName = splitName.slice(0, splitIndex).join(" ");
   const baseShirtName = splitName.slice(splitIndex).join(" ");
@@ -44,20 +44,20 @@ const ArticlePage = ({
     if (!option || !data) return;
 
     const payload: TCartProduct = {
-      name: data?.result.sync_product.name,
+      name: data?.sync_product.name,
       quantity: quantity,
       color_code: option.color_code,
       color_name: option.color_name,
-      sku: data?.result.sync_variants[option.index].sku,
-      price: data?.result.sync_variants[option.index].retail_price,
+      sku: data?.sync_variants[option.index].sku,
+      price: data?.sync_variants[option.index].retail_price,
       size: option?.size,
       size_index: option.index,
-      variant_image: data?.result.sync_variants[option.index].files[1].thumbnail_url,
-      store_product_variant_id: data?.result.sync_variants[option.index].id,
-      store_product_id: data?.result.sync_variants[option.index].sync_product_id,
-      base_product_variant_id: data?.result.sync_variants[option.index].variant_id,
-      base_product_id: data?.result.sync_variants[option.index].product.product_id,
-      external_id: data?.result.sync_variants[option.index].external_id,
+      variant_image: data?.sync_variants[option.index].files[1].thumbnail_url,
+      store_product_variant_id: data?.sync_variants[option.index].id,
+      store_product_id: data?.sync_variants[option.index].sync_product_id,
+      base_product_variant_id: data?.sync_variants[option.index].variant_id,
+      base_product_id: data?.sync_variants[option.index].product.product_id,
+      external_id: data?.sync_variants[option.index].external_id,
     };
 
     if (!payload) return;
@@ -97,7 +97,7 @@ const ArticlePage = ({
             width={600}
             height={600}
             alt="Piece of clothing with some words written on it"
-            src={data?.result.sync_variants[option.index].files[1].preview_url}
+            src={data?.sync_variants[option.index].files[1].preview_url}
           />
         </div>
 
@@ -110,9 +110,7 @@ const ArticlePage = ({
             <div className="text-sm">{parse(productDescription)}</div>
           </div>
 
-          <p className="text-center text-sm">
-            {data?.result.sync_variants[option?.index].product.name}
-          </p>
+          <p className="text-center text-sm">{data?.sync_variants[option?.index].product.name}</p>
 
           <div className="flex justify-center gap-2">
             {productColors.map((color, i) => (
@@ -154,7 +152,7 @@ const ArticlePage = ({
             </div>
             <div className="flex flex-col items-center justify-center self-end">
               <p className="text-3xl">
-                {currency(+data?.result.sync_variants[option?.index].retail_price * +quantity)}
+                {currency(+data?.sync_variants[option?.index].retail_price * +quantity)}
               </p>
               <p className="text-xs">*VAT not included</p>
             </div>
@@ -180,7 +178,7 @@ const ArticlePage = ({
               Measure yourself
             </div>
             <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
-              {parse(sizes.result.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
+              {parse(sizes.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
             </div>
             <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
               <div className="w-[150px] self-center sm:self-start">
@@ -188,11 +186,11 @@ const ArticlePage = ({
                   width={150}
                   height={150}
                   alt="Visual guide for measuring yourself"
-                  src={sizes?.result.size_tables[0].image_url}
+                  src={sizes?.size_tables[0].image_url}
                 />
               </div>
               <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
-                {parse(sizes.result.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
+                {parse(sizes.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
               </div>
             </div>
             <div className="flex gap-4 self-start">
@@ -236,43 +234,43 @@ export type TWarehouseProduct = {
 };
 
 export const getServerSideProps: GetServerSideProps<{
-  data: TProductDetails;
-  sizes: TSizes;
+  data: TProductDetailsResult;
+  sizes: TProductSizes;
   product: { [key: string]: Array<TWarehouseProduct> };
   productDescription: string;
   productColors: Array<string>;
 }> = async (context) => {
   const { articleId } = context.query;
-  const articleRes = await apiInstance.get<TProductDetails>("/api/product", {
+  const articleRes = await apiInstance.get<TProductDetailsResult>("/api/product", {
     params: { id: articleId },
   });
   const articleData = articleRes.data;
 
-  const productId = articleData.result.sync_variants[0].product.product_id;
+  const productId = articleData.sync_variants[0].product.product_id;
 
-  const sizesRes = await apiInstance.get<TSizes>("/api/product/sizes", {
+  const sizesRes = await apiInstance.get<TProductSizes>("/api/product/sizes", {
     params: { id: productId },
   });
   const sizesData = sizesRes.data;
 
-  const availabilityRes = await apiInstance.get<TWarehouse>("/api/product/availability", {
+  const availabilityRes = await apiInstance.get<TWarehouseResult>("/api/product/availability", {
     params: { id: productId },
   });
   const availabilityData = availabilityRes.data;
 
-  const productDescription = availabilityData.result.product.description
+  const productDescription = availabilityData.product.description
     .split("\n")
     .map((x) => `<p>${x}</p>`)
     .join("");
 
-  const variantIds = new Array(articleData?.result.sync_variants.length)
+  const variantIds = new Array(articleData?.sync_variants.length)
     .fill("")
-    .map((_x, i) => articleData?.result.sync_variants[i].variant_id);
+    .map((_x, i) => articleData?.sync_variants[i].variant_id);
 
   const product: { [key: string]: Array<TWarehouseProduct> } = {};
 
   variantIds.forEach((id, i) => {
-    const variant = availabilityData.result.variants.filter((x) => x.id === id)[0];
+    const variant = availabilityData.variants.filter((x) => x.id === id)[0];
 
     const variantInfo = {
       index: i,

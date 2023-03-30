@@ -2,14 +2,17 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { TProduct } from "../store";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
+import { tryCatch } from "../../../utils/tryCatchWrapper";
 
 export type TProductDetails = {
     code: number;
-    result: {
-        sync_product: TProduct;
-        sync_variants: Array<TProductVariant>;
-    };
+    result: TProductDetailsResult;
     extra?: Array<unknown>;
+};
+
+export type TProductDetailsResult = {
+    sync_product: TProduct;
+    sync_variants: Array<TProductVariant>;
 };
 
 type BaseProduct = {
@@ -58,16 +61,38 @@ export type TProductVariant = {
 
 // ______________________________________________________________________________________
 
+async function getStoreProductVariants(
+    id: string | string[] | undefined
+): Promise<TProductDetailsResult> {
+    if (!id) throw new Error("Provide a valid store product ID");
+    if (Array.isArray(id)) {
+        if (id.length > 1) throw new Error("Please provide only a single store product ID");
+    }
+
+    const storeResponse = await printfulApiKeyInstance.get<TProductDetails>(
+        `/store/products/${id}`
+    );
+
+    if (storeResponse.status >= 400)
+        throw new Error("Something is wrong with Printful's store, try again later");
+
+    const data = storeResponse.data.result;
+
+    if (!data) throw new Error("Something is wrong with Printful's store, try again later");
+
+    return data;
+}
+
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const { data: product } = await printfulApiKeyInstance.get<TProductDetails>(
-        `/store/products/${id}`
-    );
+    const [variantError, variantData] = await tryCatch(getStoreProductVariants)(id);
 
-    res.status(200).json(product);
+    if (variantError || !variantData) return res.status(500).end(variantError?.message);
+
+    res.status(200).json(variantData);
 }
 
 export default handler;

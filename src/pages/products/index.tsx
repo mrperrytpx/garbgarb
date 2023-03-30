@@ -1,6 +1,6 @@
 import React from "react";
 import { apiInstance } from "../../utils/axiosClients";
-import type { TPrintfulStore } from "../api/store";
+import type { TPrintfulStore, TProduct } from "../api/store";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { ProductCard } from "../../components/ProductCard";
@@ -8,7 +8,7 @@ import { ProductCard } from "../../components/ProductCard";
 const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div className="flex flex-1 flex-col flex-wrap items-center justify-center gap-8 py-8 md:flex-row">
-      {data?.result.map((product) => (
+      {data?.map((product) => (
         <ProductCard
           key={product.id}
           id={product.id}
@@ -23,9 +23,9 @@ const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSide
 export default ProductsPage;
 
 export const getServerSideProps: GetServerSideProps<{
-  data: TPrintfulStore | undefined;
+  data: TProduct[] | undefined;
 }> = async () => {
-  const res = await apiInstance.get<TPrintfulStore>("/api/store");
+  const res = await apiInstance.get<TProduct[]>("/api/store");
   const data = res.data;
 
   return {

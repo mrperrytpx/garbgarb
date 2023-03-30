@@ -1,16 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiInstance } from "../../../utils/axiosClients";
+import { tryCatch } from "../../../utils/tryCatchWrapper";
 
 // ______________________________________________________________________________________
 
 export type TWarehouse = {
     code: number;
-    result: {
-        product: TBaseProduct;
-        variants: Array<TBaseVariants>;
-    };
+    result: TWarehouseResult;
     extra: Array<unknown>;
+};
+
+export type TWarehouseResult = {
+    product: TBaseProduct;
+    variants: Array<TBaseVariants>;
 };
 
 export type TWarehouseSingleVariant = {
@@ -87,12 +90,39 @@ export type TBaseVariants = {
     }>;
 };
 
+// ______________________________________________________________________________________
+
+async function getWarehouseAvailability(
+    id: string | string[] | undefined
+): Promise<TWarehouseResult> {
+    if (!id) throw new Error("Provide a valid store product ID");
+    if (Array.isArray(id)) {
+        if (id.length > 1) throw new Error("Please provide only a single store product ID");
+    }
+
+    const storeResponse = await printfulApiInstance.get<TWarehouse>(`/products/${id}`);
+
+    if (storeResponse.status >= 400)
+        throw new Error("Something is wrong with Printful's API, try again later");
+
+    const data = storeResponse.data.result;
+
+    if (!data) throw new Error("Something is wrong with Printful's API, try again later");
+
+    return data;
+}
+
+// products https://api.printful.com/store/products
+// single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
 
-    const { data: sizes } = await printfulApiInstance.get<TWarehouse>(`/products/${id}`);
+    const [availabilityError, availabilityData] = await tryCatch(getWarehouseAvailability)(id);
 
-    res.status(200).json(sizes);
+    if (availabilityError || !availabilityData)
+        return res.status(500).end(availabilityError?.message);
+
+    res.status(200).json(availabilityData);
 }
 
 export default handler;
