@@ -14,16 +14,18 @@ const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
 });
 
-const cartItemsSchema = z.array(
-    z.object({
-        store_product_id: z.number(),
-        store_product_variant_id: z.number(),
-        quantity: z.number({ description: "Quantity can't be 0" }).min(1),
-    })
-);
+const cartItemsSchema = z
+    .array(
+        z.object({
+            store_product_id: z.number(),
+            store_product_variant_id: z.number(),
+            quantity: z.number({ description: "Quantity can't be 0" }).min(1),
+        })
+    )
+    .min(1);
 export type TCheckoutPayload = z.infer<typeof cartItemsSchema>;
 
-function formatAmountForStripe(amount: number, currency: string): number {
+export function formatAmountForStripe(amount: number, currency: string): number {
     let numberFormat = new Intl.NumberFormat(["en-US"], {
         style: "currency",
         currency: currency,
