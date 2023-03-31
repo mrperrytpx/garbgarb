@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { TProduct } from "../store";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
+import { ApiError } from "next/dist/server/api-utils";
 
 export type TProductDetails = {
     code: number;
@@ -66,7 +67,7 @@ async function getStoreProductVariants(
 ): Promise<TProductDetailsResult> {
     if (!id) throw new Error("Provide a valid store product ID");
     if (Array.isArray(id)) {
-        if (id.length > 1) throw new Error("Please provide only a single store product ID");
+        if (id.length > 1) throw new ApiError(400, "Please provide only a single store product ID");
     }
 
     const storeResponse = await printfulApiKeyInstance.get<TProductDetails>(
@@ -74,11 +75,14 @@ async function getStoreProductVariants(
     );
 
     if (storeResponse.status >= 400)
-        throw new Error("Something is wrong with Printful's store, try again later");
+        throw new ApiError(
+            storeResponse.status,
+            "Something is wrong with Printful's store, try again later"
+        );
 
     const data = storeResponse.data.result;
 
-    if (!data) throw new Error("Something is wrong with Printful's store, try again later");
+    if (!data) throw new ApiError(500, "Something is wrong with Printful's store, try again later");
 
     return data;
 }
@@ -86,13 +90,19 @@ async function getStoreProductVariants(
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query;
+    if (req.method === "GET") {
+        const { id } = req.query;
 
-    const [variantError, variantData] = await tryCatchAsync(getStoreProductVariants)(id);
+        const [variantError, variantData] = await tryCatchAsync(getStoreProductVariants)(id);
 
-    if (variantError || !variantData) return res.status(500).end(variantError?.message);
+        if (variantError || !variantData)
+            return res.status(variantError?.statusCode || 500).end(variantError?.message);
 
-    res.status(200).json(variantData);
+        res.status(200).json(variantData);
+    } else {
+        res.setHeader("Allow", "GET");
+        res.status(405).end("Method Not Allowed");
+    }
 }
 
 export default handler;

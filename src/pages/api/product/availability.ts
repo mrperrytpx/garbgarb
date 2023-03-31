@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
+import { ApiError } from "next/dist/server/api-utils";
 
 // ______________________________________________________________________________________
 
@@ -97,17 +98,20 @@ async function getWarehouseAvailability(
 ): Promise<TWarehouseResult> {
     if (!id) throw new Error("Provide a valid store product ID");
     if (Array.isArray(id)) {
-        if (id.length > 1) throw new Error("Please provide only a single store product ID");
+        if (id.length > 1) throw new ApiError(400, "Please provide only a single store product ID");
     }
 
     const storeResponse = await printfulApiInstance.get<TWarehouse>(`/products/${id}`);
 
     if (storeResponse.status >= 400)
-        throw new Error("Something is wrong with Printful's API, try again later");
+        throw new ApiError(
+            storeResponse.status,
+            "Something is wrong with Printful's API, try again later"
+        );
 
     const data = storeResponse.data.result;
 
-    if (!data) throw new Error("Something is wrong with Printful's API, try again later");
+    if (!data) throw new ApiError(500, "Something is wrong with Printful's API, try again later");
 
     return data;
 }
@@ -115,14 +119,21 @@ async function getWarehouseAvailability(
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query;
+    if (req.method === "GET") {
+        const { id } = req.query;
 
-    const [availabilityError, availabilityData] = await tryCatchAsync(getWarehouseAvailability)(id);
+        const [availabilityError, availabilityData] = await tryCatchAsync(getWarehouseAvailability)(
+            id
+        );
 
-    if (availabilityError || !availabilityData)
-        return res.status(500).end(availabilityError?.message);
+        if (availabilityError || !availabilityData)
+            return res.status(availabilityError?.statusCode || 500).end(availabilityError?.message);
 
-    res.status(200).json(availabilityData);
+        res.status(200).json(availabilityData);
+    } else {
+        res.setHeader("Allow", "GET");
+        res.status(405).end("Method Not Allowed");
+    }
 }
 
 export default handler;

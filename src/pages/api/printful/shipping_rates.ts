@@ -18,7 +18,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         );
 
         if (validateAddressError || !validatedAddress)
-            return res.status(400).end(validateAddressError?.message);
+            return res
+                .status(validateAddressError?.statusCode || 500)
+                .end(validateAddressError?.message);
 
         const transformedItems = cartItems.map((item) => ({
             quantity: item.quantity,
@@ -31,7 +33,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         )(validatedAddress, transformedItems);
 
         if (estimateShippingCostError || !estimatedCosts)
-            return res.status(400).end(estimateShippingCostError?.message);
+            return res
+                .status(estimateShippingCostError?.statusCode || 500)
+                .end(estimateShippingCostError?.message);
 
         const calculatedVAT =
             Math.round(

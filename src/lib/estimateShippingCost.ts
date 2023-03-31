@@ -1,4 +1,4 @@
-import { TCartProduct } from "../redux/slices/cartSlice";
+import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
 import { TPostgridValidatedAddress } from "./validateAddress";
 
@@ -46,8 +46,6 @@ export const estimateShippingCost = async (
     address: TPostgridValidatedAddress,
     items: { quantity: number; sync_variant_id: number; retail_price: string }[]
 ): Promise<TAllCosts> => {
-    console.log("estimating for", items);
-
     const shippingCostsResponse = await printfulApiKeyInstance.post(
         "/orders/estimate-costs",
         {
@@ -73,12 +71,15 @@ export const estimateShippingCost = async (
     );
 
     if (shippingCostsResponse.status >= 400)
-        throw new Error("Cannot estimate shipping costs. Submit a valid address and valid items");
+        throw new ApiError(
+            shippingCostsResponse.status,
+            "Cannot estimate shipping costs. Submit a valid address and valid items"
+        );
 
     const estimatedCosts: TAllCosts = shippingCostsResponse.data.result;
 
     if (!estimatedCosts)
-        throw new Error("Something went wrong with extracting the estimated costs");
+        throw new ApiError(500, "Something went wrong with extracting the estimated costs");
 
     return estimatedCosts;
 };

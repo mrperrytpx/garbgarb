@@ -4,11 +4,9 @@ import { z } from "zod";
 import { estimateShippingCost, TShippingOption } from "../../../lib/estimateShippingCost";
 import { shippingRates } from "../../../lib/shippingRates";
 import { validateAddress } from "../../../lib/validateAddress";
-import { printfulApiInstance, printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
 import type { TAddress } from "../../checkout";
-import type { TBaseVariants, TWarehouseSingleVariant } from "../product/availability";
-import type { TProductDetails, TProductVariant } from "../product/index";
+import { checkPayloadStock } from "../../../lib/checkPayload";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
@@ -41,14 +39,15 @@ export function formatAmountForStripe(amount: number, currency: string): number 
     return zeroDecimalCurrency ? amount : Math.round(amount * 100);
 }
 
-interface PromiseFulfilledResult<T> {
-    status: "fulfilled";
-    value: T;
-}
-
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const { cartItems, address }: { cartItems: TCheckoutPayload; address: TAddress } = req.body;
+        const {
+            cartItems,
+            address,
+            fullName,
+            email,
+        }: { cartItems: TCheckoutPayload; address: TAddress; fullName: string; email: string } =
+            req.body;
 
         if (!cartItems) return res.status(400).end("Please add items to your cart");
 
@@ -73,77 +72,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             }
         }
 
-        // ID VALIDATIONS SO ITEMS EXIST
-        const uniqueProductIDsInCart = [
-            ...new Set(parsedCartItems.map((item) => item.store_product_id)),
-        ];
-
-        const printfulStoreItems = (
-            await Promise.allSettled(
-                uniqueProductIDsInCart.map(async (id) => {
-                    const res = await printfulApiKeyInstance.get<TProductDetails>(
-                        `store/products/${id}`
-                    );
-                    const data = res.data.result.sync_variants;
-                    return data;
-                })
-            )
-        )
-            .filter((x) => x.status === "fulfilled")
-            .map((x) => (x as PromiseFulfilledResult<TProductVariant[]>).value)
-            .flat();
-
-        if (!printfulStoreItems) return res.status(500).end("The store is empty");
-
-        //-------------------//
-        const cartItemsExistInStore = parsedCartItems
-            .map((item) => {
-                const storeItem = printfulStoreItems.filter(
-                    (x) => x.id === item.store_product_variant_id
-                )[0];
-                if (!storeItem) return null;
-                return { ...storeItem, quantity: item.quantity };
-            })
-            .filter(Boolean) as (TProductVariant & { quantity: number })[];
-
-        if (!cartItemsExistInStore)
-            return res.status(404).end("Cart items don't exist in the store");
-
-        const uniqueVariantIDsInCart = [
-            ...new Set(cartItemsExistInStore.map((item) => item?.variant_id)),
-        ];
-
-        const warehouseStock = (
-            await Promise.allSettled(
-                uniqueVariantIDsInCart.map(async (item) => {
-                    const res = await printfulApiInstance.get<TWarehouseSingleVariant>(
-                        `products/variant/${item}`
-                    );
-                    const data = res.data.result.variant;
-                    return data;
-                })
-            )
-        )
-            .filter((x) => x.status === "fulfilled")
-            .map((x) => (x as PromiseFulfilledResult<TBaseVariants>).value);
-
-        const cartItemsInStock = cartItemsExistInStore
-            .map((item) => {
-                const warehouseItem = warehouseStock.find((x) => x.id === item?.variant_id);
-                return {
-                    ...item,
-                    in_stock: !!warehouseItem?.availability_status.filter(
-                        (reg) => reg.region.includes("EU") && reg.status === "in_stock"
-                    ),
-                };
-            })
-            .filter((item) => item.in_stock);
-
-        if (!cartItemsInStock)
-            return res.status(400).end("None of the items in Your aren't in stock");
+        const [stockError, stockData] = await tryCatchAsync(checkPayloadStock)(cartItems);
+        if (stockError || !stockData) {
+            return res.status(stockError?.statusCode || 500).end(stockError?.message);
+        }
 
         // estimated shipping endpoint to get Printful VAT for valid address
-        const estimateItems = cartItemsInStock.map((item) => ({
+        const estimateItems = stockData.map((item) => ({
             quantity: item.quantity,
             sync_variant_id: item.id,
             retail_price: item.retail_price,
@@ -165,7 +100,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             ) / 100;
 
         // Shipping Options to get delivery estimates
-        const shippinOptsItems = cartItemsInStock.map((item) => ({
+        const shippinOptsItems = stockData.map((item) => ({
             quantity: item.quantity,
             external_variant_id: item.external_id,
         }));
@@ -186,13 +121,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             percentage: +calculatedVAT.toString().split(".")[1],
         });
 
+        // Stripe customer
+        const customer = await stripe.customers.create({
+            email: email,
+            name: fullName,
+            address: {
+                line1: validatedAddress.line1,
+                line2: validatedAddress.line2,
+                city: validatedAddress.city,
+                postal_code: validatedAddress.postalOrZip,
+                country: validatedAddress.country,
+            },
+        });
+
         // STRIPE CHECKOUT SESSION
         const params: Stripe.Checkout.SessionCreateParams = {
+            customer: customer.id,
             submit_type: "pay",
             mode: "payment",
+            phone_number_collection: {
+                enabled: true,
+            },
+            billing_address_collection: "auto",
             payment_method_types: ["card"],
             line_items: [
-                ...cartItemsInStock.map((item) => ({
+                ...stockData.map((item) => ({
                     price_data: {
                         currency: "eur",
                         unit_amount: formatAmountForStripe(+item?.retail_price, "eur"),

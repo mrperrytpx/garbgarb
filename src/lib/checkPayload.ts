@@ -96,7 +96,7 @@ export async function checkPayloadStock(
         .filter((item) => item.in_stock);
 
     if (!cartItemsInStock) {
-        throw new ApiError(400, "None of the items in Your cart are in stock");
+        throw new ApiError(404, "None of the items in Your cart are in stock");
     }
 
     return cartItemsInStock;

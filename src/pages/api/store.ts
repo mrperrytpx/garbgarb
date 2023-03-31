@@ -44,12 +44,17 @@ async function getStoreProducts(): Promise<TProduct[]> {
     return data;
 }
 
-async function handler(_req: NextApiRequest, res: NextApiResponse) {
-    const [storeError, storeData] = await tryCatchAsync(getStoreProducts)();
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method === "GET") {
+        const [storeError, storeData] = await tryCatchAsync(getStoreProducts)();
 
-    if (storeError || !storeData) return res.status(500).end(storeError?.message);
+        if (storeError || !storeData) return res.status(500).end(storeError?.message);
 
-    res.status(200).json(storeData);
+        res.status(200).json(storeData);
+    } else {
+        res.setHeader("Allow", "GET");
+        res.status(405).end("Method Not Allowed");
+    }
 }
 
 export default handler;

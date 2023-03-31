@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
+import { ApiError } from "next/dist/server/api-utils";
 
 // ______________________________________________________________________________________
 
@@ -36,17 +37,20 @@ export type TProductSizes = {
 async function getProductSizes(id: string | string[] | undefined): Promise<TProductSizes> {
     if (!id) throw new Error("Provide a valid store product ID");
     if (Array.isArray(id)) {
-        if (id.length > 1) throw new Error("Please provide only a single store product ID");
+        if (id.length > 1) throw new ApiError(404, "Please provide only a single store product ID");
     }
 
     const storeResponse = await printfulApiInstance.get<TSizes>(`/products/${id}/sizes`);
 
     if (storeResponse.status >= 400)
-        throw new Error("Something is wrong with Printful's API, try again later");
+        throw new ApiError(
+            storeResponse.status,
+            "Something is wrong with Printful's API, try again later"
+        );
 
     const data = storeResponse.data.result;
 
-    if (!data) throw new Error("Something is wrong with Printful's API, try again later");
+    if (!data) throw new ApiError(500, "Something is wrong with Printful's API, try again later");
 
     return data;
 }
@@ -54,13 +58,19 @@ async function getProductSizes(id: string | string[] | undefined): Promise<TProd
 // products https://api.printful.com/store/products
 // single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query;
+    if (req.method === "GET") {
+        const { id } = req.query;
 
-    const [sizesError, sizesData] = await tryCatchAsync(getProductSizes)(id);
+        const [sizesError, sizesData] = await tryCatchAsync(getProductSizes)(id);
 
-    if (sizesError || !sizesData) return res.status(500).end(sizesError?.message);
+        if (sizesError || !sizesData)
+            return res.status(sizesError?.statusCode || 500).end(sizesError?.message);
 
-    res.status(200).json(sizesData);
+        res.status(200).json(sizesData);
+    } else {
+        res.setHeader("Allow", "GET");
+        res.status(405).end("Method Not Allowed");
+    }
 }
 
 export default handler;

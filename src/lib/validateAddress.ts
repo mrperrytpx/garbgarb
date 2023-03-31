@@ -1,3 +1,4 @@
+import { ApiError } from "next/dist/server/api-utils";
 import { TAddress } from "../pages/checkout";
 import { postgridApiKeyInstance } from "../utils/axiosClients";
 
@@ -69,7 +70,7 @@ export const validateAddress = async (address: TAddress): Promise<TPostgridValid
     });
 
     if (validateAddressResponse.status >= 400)
-        throw new Error("Provide a valid address", { cause: validateAddressResponse.status });
+        throw new ApiError(validateAddressResponse.status, "Provide a valid address");
 
     const validatedAddress = validateAddressResponse.data.data;
 
@@ -78,7 +79,7 @@ export const validateAddress = async (address: TAddress): Promise<TPostgridValid
         validatedAddress.summary.verificationStatus !== "verified" &&
         validatedAddress.summary.verificationStatus !== "partially_verified"
     )
-        throw new Error("Could not accurately verify your address. Change it");
+        throw new ApiError(404, "Could not accurately verify your address. Change it");
 
     return validatedAddress;
 };
