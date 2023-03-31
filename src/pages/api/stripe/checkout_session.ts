@@ -7,6 +7,7 @@ import { validateAddress } from "../../../lib/validateAddress";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
 import type { TAddress } from "../../checkout";
 import { checkPayloadStock } from "../../../lib/checkPayload";
+import { TProductVariant } from "../product";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
@@ -145,19 +146,25 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             billing_address_collection: "auto",
             payment_method_types: ["card"],
             line_items: [
-                ...stockData.map((item) => ({
-                    price_data: {
-                        currency: "eur",
-                        unit_amount: formatAmountForStripe(+item?.retail_price, "eur"),
-                        product_data: {
-                            name: item.name,
-                            images: [item?.files[1].thumbnail_url],
-                            description: item.product.name,
+                ...stockData.map(
+                    (item): Stripe.Checkout.SessionCreateParams.LineItem => ({
+                        price_data: {
+                            currency: "eur",
+                            unit_amount: formatAmountForStripe(+item?.retail_price, "eur"),
+                            product_data: {
+                                name: item.name,
+                                images: [item?.files[1].thumbnail_url],
+                                description: item.product.name,
+                                metadata: {
+                                    printful_id: item.id,
+                                    quantity: item.quantity,
+                                },
+                            },
                         },
-                    },
-                    quantity: item.quantity,
-                    tax_rates: [taxRate.id],
-                })),
+                        quantity: item.quantity,
+                        tax_rates: [taxRate.id],
+                    })
+                ),
             ],
             shipping_options: shippingOptions.map(
                 (
@@ -186,8 +193,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     },
                 })
             ) as Stripe.Checkout.SessionCreateParams.ShippingOption[],
-            success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success`,
+            success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
+            invoice_creation: {
+                enabled: true,
+            },
         };
 
         const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
