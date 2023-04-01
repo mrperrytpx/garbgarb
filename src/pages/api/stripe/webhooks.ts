@@ -4,7 +4,6 @@ import { stripe } from "../../../lib/stripe";
 import { buffer } from "micro";
 import Stripe from "stripe";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
-import axios from "axios";
 
 export const config = {
     api: {
@@ -34,8 +33,6 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 expand: ["line_items"],
             });
 
-            // console.log(session);
-
             if (!session?.line_items)
                 return res.status(500).end("How did you place an order without items???");
 
@@ -52,48 +49,22 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
 
-            // const recipient = {
-            //     name: session.customer_details?.name,
-            //     address1: session.customer_details?.address?.line1,
-            //     city: session.customer_details?.address?.city,
-            //     county_code: session.customer_details?.address?.country,
-            //     zip: session.customer_details?.address?.postal_code,
-            //     phone: session.customer_details?.phone,
-            // };
-
-            // const items = orderedItems.map((item) => ({
-            //     quantity: item.metadata.quantity,
-            //     sync_variant_id: item.metadata.printful_id,
-            // }));
-
-            // console.log(recipient, items);
-
-            await axios.post(
-                "https://api.printful.com/orders",
-                {
-                    recipient: {
-                        name: session.customer_details?.name,
-                        address1: session.customer_details?.address?.line1,
-                        city: session.customer_details?.address?.city,
-                        country_code: session.customer_details?.address?.country,
-                        zip: session.customer_details?.address?.postal_code,
-                        phone: session.customer_details?.phone,
-                    },
-                    items: orderedItems.map((item) => ({
-                        quantity: item.metadata.quantity,
-                        sync_variant_id: item.metadata.printful_id,
-                    })),
+            await printfulApiKeyInstance.post("/orders", {
+                recipient: {
+                    name: session.customer_details?.name,
+                    address1: session.customer_details?.address?.line1,
+                    city: session.customer_details?.address?.city,
+                    country_code: session.customer_details?.address?.country,
+                    zip: session.customer_details?.address?.postal_code,
+                    phone: session.customer_details?.phone,
                 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${process.env.PRINTFUL_API_KEY}`,
-                        "Content-Type": "application/json",
-                        "X-PF-Store-Id": process.env.PRINTFUL_STORE_ID,
-                    },
-                }
-            );
+                items: orderedItems.map((item) => ({
+                    quantity: item.metadata.quantity,
+                    sync_variant_id: item.metadata.printful_id,
+                })),
+            });
 
-            //maybe add some DB stuff l8r
+            // save ID to DB if you do it
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }

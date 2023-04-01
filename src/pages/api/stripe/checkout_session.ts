@@ -7,7 +7,6 @@ import { validateAddress } from "../../../lib/validateAddress";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
 import type { TAddress } from "../../checkout";
 import { checkPayloadStock } from "../../../lib/checkPayload";
-import { TProductVariant } from "../product";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
