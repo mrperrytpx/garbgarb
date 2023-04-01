@@ -11,7 +11,7 @@ export function tryCatchAsync<T extends unknown[], U>(
             const data = await fn(...args);
             return [null, data] as AsyncResultTuple<U>;
         } catch (err) {
-            return [err as Error, null] as AsyncResultTuple<U>;
+            return [err as ApiError, null] as AsyncResultTuple<U>;
         }
     };
 }
