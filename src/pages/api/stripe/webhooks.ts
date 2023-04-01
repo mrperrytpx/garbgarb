@@ -68,14 +68,14 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
 
             // console.log(recipient, items);
 
-            const placeOrder = await axios.post(
+            await axios.post(
                 "https://api.printful.com/orders",
                 {
                     recipient: {
                         name: session.customer_details?.name,
                         address1: session.customer_details?.address?.line1,
                         city: session.customer_details?.address?.city,
-                        county_code: session.customer_details?.address?.country,
+                        country_code: session.customer_details?.address?.country,
                         zip: session.customer_details?.address?.postal_code,
                         phone: session.customer_details?.phone,
                     },
@@ -93,7 +93,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 }
             );
 
-            console.log("ORDER ????", placeOrder.data);
+            //maybe add some DB stuff l8r
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
