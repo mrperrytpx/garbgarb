@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { cartSelector } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";
-import Stripe from "stripe";
-import { getStripe } from "../../utils/getStripe";
-import { apiInstance } from "../../utils/axiosClients";
-import { TCheckoutPayload } from "../api/stripe/checkout_session";
 import { useForm } from "react-hook-form";
-import { allowedCountries } from "../../utils/allowedCountries";
+import { Libraries } from "use-google-maps-script/dist/utils/createUrl";
+import { useGoogleMapsScript } from "use-google-maps-script";
+import usePlacesAutocomplete, { getGeocode } from "use-places-autocomplete";
+import { SectionSeparator } from "../../components/SectionSeparator";
+import { MinimalCartProduct } from "../../components/MinimalCartProduct";
+import { currency } from "../../utils/currency";
 
 export type TAddress = {
   address1: string;
@@ -17,147 +18,291 @@ export type TAddress = {
   country_code: string;
 };
 
-const CheckoutPage = () => {
+type TGoogleAddressDetails = {
+  long_name: string;
+  short_name: string;
+  types: Array<string>;
+};
+
+const Form = () => {
+  const [address, setAddress] = useState<TGoogleAddressDetails[]>([]);
   const productsInCart = useSelector(cartSelector);
-  const router = useRouter();
+
+  const {
+    ready,
+    value,
+    setValue,
+    suggestions: { status, data },
+    clearSuggestions,
+  } = usePlacesAutocomplete({ debounce: 500 });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  async function handleCompleteOrder() {
-    const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
-      store_product_id: item.store_product_id,
-      store_product_variant_id: item.store_product_variant_id,
-      quantity: item.quantity,
-    }));
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    setAddress([]);
+  };
 
-    const address = {
-      address1: "Bellavista 4",
-      zip: 50230,
-      city: "Alhama De Aragón",
-      country_code: "ES",
-    };
+  const handleSelect = async (suggestion: any) => {
+    console.log("SELECTED: ", suggestion);
+    clearSuggestions();
+    const deets = await getGeocode({ placeId: suggestion.place_id });
+    setAddress(deets[0].address_components as TGoogleAddressDetails[]);
+    console.log("TEST deets", deets);
+  };
 
-    const checkoutResponse = await apiInstance.post("/api/stripe/checkout_session", {
-      cartItems: checkoutPayload,
-      address,
-      fullName: "CLown Show",
-      email: "420perrytp@gmail.com",
-    });
+  const onSubmit = () => console.log("submitting");
 
-    const checkoutSession: Stripe.Checkout.Session = checkoutResponse.data;
+  return (
+    <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-1 flex-col items-start gap-2 lg:flex-row lg:gap-6">
+      <main className="lg:max-w-3/4 mx-auto flex w-full max-w-screen-md flex-[3] flex-col gap-4">
+        <div>
+          <SectionSeparator name="Cart overview" number="1" />
+          <div className="flex w-full flex-col items-center gap-1 sm:p-2">
+            {productsInCart.map((item) => (
+              <MinimalCartProduct key={item.sku} item={item} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionSeparator name="Shipping Address" number="2" />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <fieldset className="relative flex w-full flex-col items-center gap-4 p-2 ">
+              <div className="w-full">
+                <label className="block p-1 text-sm" htmlFor="address1">
+                  <strong>Address</strong>
+                </label>
+                <input
+                  name="address1"
+                  className="w-full border p-2"
+                  {...(register("address1"),
+                  {
+                    required: true,
+                  })}
+                  type="text"
+                  placeholder="Type your address"
+                  onChange={handleInput}
+                  autoComplete="off"
+                  value={value}
+                  disabled={!ready}
+                />
+              </div>
+              {address.length ? (
+                <>
+                  {address.find((x) => x.types.includes("subpremise")) && (
+                    <div className="w-full">
+                      <label className="block p-1 text-sm" htmlFor="subpremise">
+                        <strong>Subpremise</strong>
+                      </label>
+                      <input
+                        name="subpremise"
+                        className="w-full cursor-not-allowed border bg-slate-200  p-2"
+                        {...(register("subpremise"),
+                        {
+                          required: !!address.find((x) => x.types.includes("subpremise")),
+                          value: address.find((x) => x.types.includes("subpremise"))?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="Apartment, Suite, Unit etc."
+                        autoComplete="off"
+                      />
+                    </div>
+                  )}
+                  <div className="flex w-full flex-col items-center justify-center gap-2 md:flex-row">
+                    <div className="w-full flex-[3]">
+                      <label className="block p-1 text-sm" htmlFor="streetName">
+                        <strong>Street name</strong>
+                      </label>
+                      <input
+                        name="streetName"
+                        className="w-full cursor-not-allowed border bg-slate-200  p-2"
+                        {...(register("streetName"),
+                        {
+                          required: true,
+                          value: address.find((x) => x.types.includes("route"))?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="Street Name"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="w-full flex-1">
+                      <label className="block p-1 text-sm" htmlFor="streetNumber">
+                        <strong>Street Number</strong>
+                      </label>
+                      <input
+                        name="streetNumber"
+                        className="w-full cursor-not-allowed border bg-slate-200  p-2"
+                        {...(register("streetNumber"),
+                        {
+                          required: true,
+                          value: address.find((x) => x.types.includes("street_number"))?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="Street Number"
+                        autoComplete="off"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <label className="block p-1 text-sm" htmlFor="city">
+                      <strong>City</strong>
+                    </label>
+                    <input
+                      name="city"
+                      className="w-full cursor-not-allowed border bg-slate-200  p-2"
+                      {...(register("city"),
+                      {
+                        required: true,
+                        value: address.find((x) => x.types.includes("locality"))?.long_name,
+                        readOnly: true,
+                      })}
+                      type="text"
+                      placeholder="City"
+                      autoComplete="off"
+                    />
+                  </div>
 
-    if ((checkoutSession as any).statusCode === 500) {
-      console.error((checkoutSession as any).message);
-      return;
-    }
+                  <div className="flex w-full flex-col gap-4 md:flex-row">
+                    <div className="w-full">
+                      <label className="block p-1 text-sm" htmlFor="country">
+                        <strong>Country</strong>
+                      </label>
+                      <input
+                        name="country"
+                        className="w-full cursor-not-allowed border bg-slate-200  p-2"
+                        {...(register("country"),
+                        {
+                          required: true,
+                          value: address.find((x) => x.types.includes("country"))?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="Country"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block p-1 text-sm" htmlFor="province">
+                        <strong>State / Province</strong>
+                      </label>
+                      <input
+                        name="province"
+                        className="w-full cursor-not-allowed border bg-slate-200 p-2"
+                        {...(register("province"),
+                        {
+                          required: true,
+                          value: address.find((x) =>
+                            x.types.includes("administrative_area_level_1")
+                          )?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="State / Province"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block p-1 text-sm" htmlFor="zip">
+                        <strong>Zip / Postal Code</strong>
+                      </label>
+                      <input
+                        name="zip"
+                        className="w-full cursor-not-allowed border bg-slate-200 p-2"
+                        {...(register("zip"),
+                        {
+                          required: true,
+                          value: address.find((x) => x.types.includes("postal_code"))?.long_name,
+                          readOnly: true,
+                        })}
+                        type="text"
+                        placeholder="Zip / Postal Code"
+                        autoComplete="off"
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </fieldset>
+            <ul className="flex w-full flex-col gap-0.5 p-2">
+              {status === "OK" &&
+                data.map((suggestion, i) => (
+                  <li
+                    className="cursor-pointer rounded-lg bg-slate-100 p-4
+                  "
+                    key={i}
+                    onClick={() => handleSelect(suggestion)}
+                  >
+                    <strong>{suggestion.description}</strong>
+                  </li>
+                ))}
+            </ul>
+          </form>
+        </div>
+      </main>
+      <aside className="lg:max-w-1/4 sticky top-[70px] mx-auto flex w-full max-w-screen-md flex-1 flex-col rounded-lg bg-slate-100 p-4">
+        <div className="flex flex-col items-start justify-center gap-4">
+          <p className="text-xl font-bold">ORDER SUMMARY</p>
+          <div className="flex w-full items-center justify-between">
+            <p className="text-sm">Subtotal:</p>
+            <p className="text-sm">
+              {currency(
+                productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0)
+              )}
+            </p>
+          </div>
+          <div className="flex w-full items-center justify-between">
+            <p className="text-sm">Estimated Shipping:</p>
+            <p className="text-sm">API</p>
+          </div>
+          <div className="flex w-full items-center justify-between">
+            <p className="text-sm">VAT:</p>
+            <p className="text-sm">API</p>
+          </div>
+          <div className="flex w-full items-center justify-between">
+            <p className="uppercase">
+              <strong>Estimated Total:</strong>
+            </p>
+            <p>
+              <strong>right</strong>
+            </p>
+          </div>
+          <button className="w-full bg-white p-2" type="button">
+            Finish
+          </button>
+        </div>
+      </aside>
+    </div>
+  );
+};
 
-    const stripe = await getStripe();
-    const { error } = await stripe!.redirectToCheckout({
-      sessionId: checkoutSession.id,
-    });
+const libraries: Libraries = ["places"];
 
-    console.warn(error.message);
-  }
+const CheckoutPage = () => {
+  const productsInCart = useSelector(cartSelector);
+  const router = useRouter();
+
+  const { isLoaded, loadError } = useGoogleMapsScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+    libraries,
+  });
 
   if (!productsInCart.length) {
     router.push("/products");
     return <div className="flex-1">Redirecting to shop</div>;
   }
 
-  async function handleCheckShipping(e: React.SyntheticEvent) {
-    e.preventDefault();
+  if (!isLoaded) return <div>Loading google...</div>;
+  if (loadError) return <div>Something is wrong... try reloading the page</div>;
 
-    const address = {
-      address1: "Bellavista 4",
-      zip: 50230,
-      city: "Alhama De Aragón",
-      country_code: "ES",
-    };
-
-    console.log("SENDING ADDRESS", address);
-
-    const response = await apiInstance.post("/api/printful/shipping_rates", {
-      cartItems: productsInCart,
-      address,
-    });
-
-    const test = response.data;
-    console.log("SHIPPING RATES", test);
-  }
-
-  return (
-    <div className="m-auto flex w-full max-w-screen-md flex-1 flex-col items-center justify-start gap-2">
-      {/* <div className="w-full rounded-md border-2 p-6">Cart Overview</div>
-      <div className="flex w-full flex-col items-center gap-4">
-        {productsInCart.map((product) => (
-          <CartProduct key={product.sku} product={product} />
-        ))}
-      </div> */}
-      <div className="w-full rounded-md border-2 p-6">Shipping Cost & VAT</div>
-      <form onSubmit={handleCheckShipping} className="w-full">
-        <div className="mb-4 w-full border-2 p-2 md:flex md:justify-between">
-          <div className="mb-4 md:mr-2 md:mb-0">
-            <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="address1">
-              Address Line 1
-            </label>
-            <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
-              id="address1"
-              type="text"
-              placeholder="Address Line 1"
-            />
-            <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="address2">
-              Address Line 2
-            </label>
-            <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
-              id="address2"
-              type="text"
-              placeholder="Address Line 2"
-            />
-            <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="city">
-              City
-            </label>
-            <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
-              id="city"
-              type="text"
-              placeholder="City"
-            />
-            <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="zip">
-              ZIP Code
-            </label>
-            <input
-              className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 text-sm leading-tight text-gray-700 focus:outline-none"
-              id="zip"
-              type="text"
-              placeholder="ZIP Code"
-            />
-            <label className="my-2 block text-sm font-bold text-gray-700" htmlFor="country">
-              Country
-            </label>
-            <select defaultValue="HR" className="w-38 p-4" name="country" id="country">
-              {allowedCountries.sort().map((country, i) => (
-                <option key={i} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button className="border-md self-end border p-4" type="submit">
-            Check shipping :)
-          </button>
-        </div>
-      </form>
-      <div className="w-full rounded-md border-2 p-6">Order Overview</div>
-      <button type="button" onClick={handleCompleteOrder} className="border-md self-end border p-4">
-        Submit & Pay
-      </button>
-    </div>
-  );
+  return <Form />;
 };
 
 export default CheckoutPage;

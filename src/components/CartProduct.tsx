@@ -16,7 +16,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
     <article className="relative flex w-full flex-col items-center justify-center gap-1 border-b-2 last-of-type:border-0 sm:flex-row">
       <Link
         className="select-nonerounded-md min-w-[100px] max-w-[150px] border"
-        href={`/products/${product.sync_id}`}
+        href={`/products/${product.store_product_variant_id}`}
       >
         <Image width={150} height={150} src={product.variant_image} alt="Product" />
       </Link>
@@ -24,7 +24,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
       <div className="flex w-full flex-col sm:gap-4">
         <div className="flex flex-1 flex-col p-2 text-center text-sm  sm:text-left">
           <Link
-            href={`/products/${product.sync_id}`}
+            href={`/products/${product.store_product_variant_id}`}
             className="hover:underline focus:underline sm:text-base"
           >
             {product.name}
