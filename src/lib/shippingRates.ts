@@ -1,7 +1,7 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
 import { TShippingOption } from "./estimateShippingCost";
-import type { TPostgridValidatedAddress } from "./validateAddress";
+import { ValidatedAddress } from "../pages/checkout";
 
 export type TShippingRatesItem = {
     quantity: number;
@@ -9,16 +9,16 @@ export type TShippingRatesItem = {
 };
 
 export const shippingRates = async (
-    address: TPostgridValidatedAddress,
+    address: ValidatedAddress,
     items: Array<TShippingRatesItem>
 ): Promise<TShippingOption[]> => {
     const shippingRatesResponse = await printfulApiKeyInstance.post("/shipping/rates", {
         recipient: {
-            address1: address.line1,
-            address2: address.line2,
+            address1: `${address.streetNumber} ${address.streetName}`,
+            address2: address.subpremise,
             city: address.city,
             country_code: address.country,
-            zip: address.postalOrZip,
+            zip: address.zip,
         },
         items,
         currency: "EUR",

@@ -3,9 +3,8 @@ import Stripe from "stripe";
 import { z } from "zod";
 import { estimateShippingCost, TShippingOption } from "../../../lib/estimateShippingCost";
 import { shippingRates } from "../../../lib/shippingRates";
-import { validateAddress } from "../../../lib/validateAddress";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
-import type { TAddress } from "../../checkout";
+import type { ValidatedAddress } from "../../checkout";
 import { checkPayloadStock } from "../../../lib/checkPayload";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
@@ -41,28 +40,15 @@ export function formatAmountForStripe(amount: number, currency: string): number 
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const {
-            cartItems,
-            address,
-            fullName,
-            email,
-        }: { cartItems: TCheckoutPayload; address: TAddress; fullName: string; email: string } =
+        const { cartItems, address }: { cartItems: TCheckoutPayload; address: ValidatedAddress } =
             req.body;
 
         if (!cartItems) return res.status(400).end("Please add items to your cart");
 
-        // ADDRESS VALIDATION
-        const [validateAddressError, validatedAddress] = await tryCatchAsync(validateAddress)(
-            address
-        );
-
-        if (validateAddressError || !validatedAddress)
-            return res
-                .status(+validateAddressError?.cause! || 400)
-                .end(validateAddressError?.message);
-
         // CART ITEMS VALIDATION
         const [zodError, parsedCartItems] = tryCatchSync(cartItemsSchema.parse)(cartItems);
+
+        console.log("2");
 
         if (zodError || !parsedCartItems) {
             if (zodError instanceof z.ZodError) {
@@ -84,12 +70,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             retail_price: item.retail_price,
         }));
 
+        console.log("estimateItems", estimateItems);
+
         const [estimateShippingCostError, estimatedCosts] = await tryCatchAsync(
             estimateShippingCost
-        )(validatedAddress, estimateItems);
+        )(address, estimateItems);
 
         if (estimateShippingCostError || !estimatedCosts) {
-            return res.status(400).end(estimateShippingCostError?.message);
+            return res
+                .status(estimateShippingCostError?.statusCode || 500)
+                .end(estimateShippingCostError?.message);
         }
 
         const calculatedVAT =
@@ -106,7 +96,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         }));
 
         const [shippingOptsError, shippingOptions] = await tryCatchAsync(shippingRates)(
-            validatedAddress,
+            address,
             shippinOptsItems
         );
 
@@ -119,18 +109,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             display_name: "VAT",
             inclusive: false,
             percentage: +calculatedVAT.toString().split(".")[1],
+            country: address.country,
         });
 
         // Stripe customer
         const customer = await stripe.customers.create({
-            email: email,
-            name: fullName,
+            email: "",
+            name: "",
             address: {
-                line1: validatedAddress.line1,
-                line2: validatedAddress.line2,
-                city: validatedAddress.city,
-                postal_code: validatedAddress.postalOrZip,
-                country: validatedAddress.country,
+                line1: `${address.streetNumber} ${address.streetName}`,
+                line2: address.subpremise,
+                city: address.city,
+                postal_code: address.zip,
+                country: address.country,
             },
         });
 

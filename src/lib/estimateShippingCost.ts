@@ -1,6 +1,6 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
-import { TPostgridValidatedAddress } from "./validateAddress";
+import { ValidatedAddress } from "../pages/checkout";
 
 export type TShippingOption = {
     id: string;
@@ -43,32 +43,26 @@ export type RetailCosts = {
 };
 
 export const estimateShippingCost = async (
-    address: TPostgridValidatedAddress,
+    address: ValidatedAddress,
     items: { quantity: number; sync_variant_id: number; retail_price: string }[]
 ): Promise<TAllCosts> => {
-    const shippingCostsResponse = await printfulApiKeyInstance.post(
-        "/orders/estimate-costs",
-        {
-            recipient: {
-                address1: address.line1,
-                address2: address.line2,
-                city: address.city,
-                zip: address.postalOrZip,
-                country_code: address.country,
-            },
-            items: items.map((item) => ({
-                quantity: item.quantity,
-                sync_variant_id: item.sync_variant_id,
-                retail_price: item.retail_price,
-            })),
-            locale: "en-US",
+    console.log("addy", address);
+
+    const shippingCostsResponse = await printfulApiKeyInstance.post("/orders/estimate-costs", {
+        recipient: {
+            address1: `${address.streetNumber} ${address.streetName}`,
+            address2: address.subpremise,
+            city: address.city,
+            zip: address.zip,
+            country_code: address.country,
         },
-        {
-            headers: {
-                "X-PF-Store-Id": process.env.PRINTFUL_STORE_ID,
-            },
-        }
-    );
+        items: items.map((item) => ({
+            quantity: item.quantity,
+            sync_variant_id: item.sync_variant_id,
+            retail_price: item.retail_price,
+        })),
+        locale: "en-US",
+    });
 
     if (shippingCostsResponse.status >= 400)
         throw new ApiError(

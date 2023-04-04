@@ -1,26 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { TCartProduct } from "../../../redux/slices/cartSlice";
-import type { TAddress } from "../../checkout";
+import type { ValidatedAddress } from "../../checkout";
 import { allowedCountries } from "../../../utils/allowedCountries";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
-import { validateAddress } from "../../../lib/validateAddress";
 import { estimateShippingCost } from "../../../lib/estimateShippingCost";
+
+export type TShippingRatesResp = {
+    shipping: number | string;
+    vat: number;
+};
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const { cartItems, address }: { cartItems: TCartProduct[]; address: TAddress } = req.body;
+        const { cartItems, address }: { cartItems: TCartProduct[]; address: ValidatedAddress } =
+            req.body;
 
-        if (!allowedCountries.includes(address.country_code))
+        if (!allowedCountries.includes(address.country))
             return res.status(400).end("We don't ship to Your country, sorry!");
-
-        const [validateAddressError, validatedAddress] = await tryCatchAsync(validateAddress)(
-            address
-        );
-
-        if (validateAddressError || !validatedAddress)
-            return res
-                .status(validateAddressError?.statusCode || 500)
-                .end(validateAddressError?.message);
 
         const transformedItems = cartItems.map((item) => ({
             quantity: item.quantity,
@@ -30,7 +26,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         const [estimateShippingCostError, estimatedCosts] = await tryCatchAsync(
             estimateShippingCost
-        )(validatedAddress, transformedItems);
+        )(address, transformedItems);
 
         if (estimateShippingCostError || !estimatedCosts)
             return res
@@ -44,7 +40,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     100
             ) / 100;
 
-        res.json({ shipping: estimatedCosts.retail_costs.shipping, vat: calculatedVAT });
+        res.json({
+            shipping: +estimatedCosts.retail_costs.shipping * calculatedVAT,
+            vat: calculatedVAT,
+        });
     } else {
         res.setHeader("Allow", "POST");
         res.status(405).end("Method Not Allowed");
