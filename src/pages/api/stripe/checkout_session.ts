@@ -48,8 +48,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         // CART ITEMS VALIDATION
         const [zodError, parsedCartItems] = tryCatchSync(cartItemsSchema.parse)(cartItems);
 
-        console.log("2");
-
         if (zodError || !parsedCartItems) {
             if (zodError instanceof z.ZodError) {
                 return res.status(400).end(zodError.message);
@@ -69,8 +67,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             sync_variant_id: item.id,
             retail_price: item.retail_price,
         }));
-
-        console.log("estimateItems", estimateItems);
 
         const [estimateShippingCostError, estimatedCosts] = await tryCatchAsync(
             estimateShippingCost
@@ -114,8 +110,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // Stripe customer
         const customer = await stripe.customers.create({
-            email: "",
-            name: "",
             address: {
                 line1: `${address.streetNumber} ${address.streetName}`,
                 line2: address.subpremise,

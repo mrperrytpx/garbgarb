@@ -156,7 +156,7 @@ const Form = () => {
   }
 
   return (
-    <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-1 flex-col items-start gap-2 lg:flex-row lg:gap-6">
+    <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-col items-start gap-2 lg:flex-row lg:gap-6">
       <main className="lg:max-w-3/4 mx-auto flex w-full max-w-screen-md flex-[3] flex-col gap-4">
         <div>
           <SectionSeparator name="Cart overview" number="1" />
@@ -399,7 +399,7 @@ const CheckoutPage = () => {
 
   if (!productsInCart.length) {
     router.push("/products");
-    return <div className="flex-1">Redirecting to shop</div>;
+    return <div>Redirecting to shop</div>;
   }
 
   if (!isLoaded) return <div>Loading google...</div>;

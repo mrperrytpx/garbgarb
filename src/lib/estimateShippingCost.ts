@@ -46,8 +46,6 @@ export const estimateShippingCost = async (
     address: ValidatedAddress,
     items: { quantity: number; sync_variant_id: number; retail_price: string }[]
 ): Promise<TAllCosts> => {
-    console.log("addy", address);
-
     const shippingCostsResponse = await printfulApiKeyInstance.post("/orders/estimate-costs", {
         recipient: {
             address1: `${address.streetNumber} ${address.streetName}`,
