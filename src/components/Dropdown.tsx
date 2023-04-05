@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, ChangeEvent } from "react";
 
-interface IDropdownProps<T> {
+interface ISizeDropdownProps<T> {
   options: T[];
   state: T;
   setState: Dispatch<SetStateAction<T>>;
@@ -8,13 +8,13 @@ interface IDropdownProps<T> {
   getLabel: (option: T) => string;
 }
 
-export const Dropdown = <T extends { id: number; inStock: boolean }>({
+export const SizeDropdown = <T extends { id: number; inStock: boolean }>({
   options,
   state,
   setState,
   getValue,
   getLabel,
-}: IDropdownProps<T>) => {
+}: ISizeDropdownProps<T>) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedId = e.target.value;
     const selectedState = options.filter((x) => x.id === +selectedId)[0];
@@ -28,7 +28,7 @@ export const Dropdown = <T extends { id: number; inStock: boolean }>({
     <select
       value={getValue(state)}
       onChange={handleChange}
-      className="w-[200px] select-none border p-2 text-lg"
+      className="w-full cursor-pointer select-none rounded-t-lg border p-3 text-lg"
     >
       {options.map((option) => (
         <option

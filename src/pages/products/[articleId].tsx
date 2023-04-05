@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import type { TProductDetailsResult } from "../api/product";
 import Image from "next/image";
-import { Dropdown } from "../../components/Dropdown";
+import { SizeDropdown } from "../../components/Dropdown";
 import { useState, useEffect } from "react";
 import parse from "html-react-parser";
 import type { TProductSizes } from "../api/product/sizes";
@@ -13,6 +13,22 @@ import { Portal } from "../../components/Portal";
 import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
 import { currency } from "../../utils/currency";
+import { Accordion } from "../../components/Accordion";
+
+const CheckmarkIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="white"
+      className="h-6 w-6"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
+  );
+};
 
 const ArticlePage = ({
   data,
@@ -88,47 +104,60 @@ const ArticlePage = ({
   if (!data || !product || !option) return <div>Something went wrong...</div>;
 
   return (
-    <div className="flex-1">
-      {/* {JSON.stringify(data, null, 2)} */}
-      <div className="flex flex-col items-center justify-center gap-4 p-6 lg:flex-row lg:gap-24">
-        <div className="max-w-[500px] self-start border-2">
+    <div className="mx-auto max-w-screen-lg">
+      <div className="flex flex-col items-center justify-center gap-6 p-4 md:flex-row lg:mt-6 lg:gap-28">
+        <div className="max-w-[350px] rounded-lg border-4 md:flex-1 md:self-start lg:max-w-[500px]">
           <Image
             priority={true}
-            width={600}
-            height={600}
+            width={500}
+            height={500}
             alt="Piece of clothing with some words written on it"
             src={data?.sync_variants[option.index].files[1].preview_url}
+            className="rounded-lg"
           />
         </div>
 
-        <article className="flex max-w-[90%] flex-col items-center justify-center gap-4 lg:max-w-[450px]">
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div>
-              <h1 className="text-center text-2xl font-bold">{myShirtName}</h1>
-              <p className="text-center text-xl">{baseShirtName}</p>
+        <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 md:flex-1 lg:max-w-[450px]">
+          <div className="flex w-full flex-col items-start justify-center gap-2">
+            <div className="w-full">
+              <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
+              <p className="text-left text-xl">{baseShirtName}</p>
+              <p
+                style={{ backgroundColor: option.color_code }}
+                className="block w-full rounded-lg pl-2 text-white"
+              >
+                {option.color_name}
+              </p>
             </div>
-            <div className="text-sm">{parse(productDescription)}</div>
+            {/* <div className="text-sm">{parse(productDescription)}</div> */}
+            <p className="text-left text-xl">
+              {currency(+data?.sync_variants[option?.index].retail_price * +quantity)}
+            </p>
           </div>
-
-          <p className="text-center text-sm">{data?.sync_variants[option?.index].product.name}</p>
-
-          <div className="flex justify-center gap-2">
-            {productColors.map((color, i) => (
-              <button
-                onClick={() => handleColorChange(color)}
-                key={i}
-                style={{
-                  backgroundColor: color,
-                }}
-                className="h-14 w-14 rounded-lg border-2"
-              />
+          <div className="flex w-full flex-wrap gap-2">
+            {productColors.map((prodColor) => (
+              <div
+                className="p-0.25 relative flex items-center justify-center rounded-lg"
+                key={prodColor}
+              >
+                <button
+                  onClick={() => handleColorChange(prodColor)}
+                  style={{
+                    backgroundColor: prodColor,
+                  }}
+                  className="h-10 w-10 rounded-lg border-2"
+                />
+                {prodColor === color && (
+                  <div className="absolute">
+                    <CheckmarkIcon />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-
-          <div className="flex flex-col items-center justify-center">
-            <p>CURRENT COLOR: {product[color][0].color_name}</p>
-            <p className="text-md">Size:</p>
-            <Dropdown
+          <div className="flex w-full flex-col items-start justify-center">
+            <p>Select Size:</p>
+            <SizeDropdown
               getValue={(option) => option.id}
               getLabel={(option) => option.size}
               state={option}
@@ -137,38 +166,47 @@ const ArticlePage = ({
             />
           </div>
           {/*  */}
-          <div className="flex items-center justify-center gap-4">
-            <div>
-              <p>Quantity:</p>
+          <div className="flex w-full flex-col gap-0.5">
+            <p className="px-1 text-sm font-semibold">Qty:</p>
+            <div className="flex w-full gap-2">
               <input
                 value={quantity}
                 onChange={(e) => setQuantity(+e.target.value)}
-                className="block w-32 border p-4 text-center"
+                className="block rounded-lg border p-3"
                 onBlur={handleQuantity}
                 min="1"
                 max="999"
                 type="number"
               />
-            </div>
-            <div className="flex flex-col items-center justify-center self-end">
-              <p className="text-3xl">
-                {currency(+data?.sync_variants[option?.index].retail_price * +quantity)}
-              </p>
-              <p className="text-xs">*VAT not included</p>
+              <button
+                onClick={handleAddToCart}
+                className="w-full self-end rounded-lg border p-3 hover:bg-slate-600 hover:text-white"
+              >
+                Add to cart!
+              </button>
             </div>
           </div>
-          <button
-            onClick={handleAddToCart}
-            className="min-w-[8rem] border p-4 hover:bg-slate-600 hover:text-white"
-          >
-            Add to cart!
-          </button>
-          <p
-            onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
-            className="cursor-pointer p-2 text-center text-sm font-bold"
-          >
-            Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
-          </p>
+          <div className="flex flex-col">
+            <Accordion title="More Details">{parse(productDescription)}</Accordion>
+            <Accordion title="Size Guide">
+              <p
+                onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                className="mb-4 cursor-pointer p-2 text-center text-sm font-bold   text-red-500"
+              >
+                Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
+              </p>
+            </Accordion>
+            <Accordion title="Quality Guarantee & Returns">
+              <li className="list-item text-sm font-normal">
+                Quality is guaranteed. If there is a print error or visible quality issue, we'll
+                replace or refund it.
+              </li>
+              <li className="list-item text-sm font-normal last-of-type:mb-4">
+                Because the products are made to order, we do not accept general returns or
+                sizing-related returns.
+              </li>
+            </Accordion>
+          </div>
         </article>
       </div>
       {isSizeGuideOpen && sizes && (
@@ -260,27 +298,30 @@ export const getServerSideProps: GetServerSideProps<{
 
   const productDescription = availabilityData.product.description
     .split("\n")
-    .map((x) => `<p>${x}</p>`)
+    .map((x) => `<li className="text-sm block w-full last-of-type:mb-4 font-normal">${x}</li>`)
+    .slice(2)
     .join("");
 
-  const variantIds = new Array(articleData?.sync_variants.length)
-    .fill("")
-    .map((_x, i) => articleData?.sync_variants[i].variant_id);
+  const variantIds = articleData?.sync_variants.reduce((acc: number[], variant) => {
+    acc.push(variant.variant_id);
+    return acc;
+  }, []);
 
   const product: { [key: string]: Array<TWarehouseProduct> } = {};
 
   variantIds.forEach((id, i) => {
-    const variant = availabilityData.variants.filter((x) => x.id === id)[0];
+    const variant = availabilityData.variants.find((x) => x.id === id);
+    if (!variant) return;
 
     const variantInfo = {
       index: i,
-      id: variant.id,
-      size: variant.size,
+      id: variant?.id,
+      size: variant?.size,
       inStock: !!variant?.availability_status.filter(
         (x) => x.region.includes("EU") && x.status === "in_stock"
       )[0],
-      color_name: variant.color,
-      color_code: variant.color_code,
+      color_name: variant?.color,
+      color_code: variant?.color_code,
     };
 
     product[variant.color_code] = product[variant.color_code]
