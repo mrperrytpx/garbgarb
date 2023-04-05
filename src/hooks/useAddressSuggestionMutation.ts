@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { ClearSuggestions, getGeocode } from "use-places-autocomplete";
 import { UseFormGetValues, UseFormSetValue } from "react-hook-form/dist/types";
-import { TGoogleAddressDetails } from "../pages/checkout";
+import { TGoogleAddressDetails } from "../components/AddressForm";
 import { useExtraCostsMutation } from "./useExtraCostsMutation";
 import { Dispatch, SetStateAction } from "react";
 import { TShippingRatesResp } from "../pages/api/printful/shipping_rates";

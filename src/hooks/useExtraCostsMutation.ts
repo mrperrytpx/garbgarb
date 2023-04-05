@@ -27,7 +27,7 @@ export const useExtraCostsMutation = (
         return data;
     };
 
-    return useMutation(postExtraCosts, {
+    return useMutation(["costs"], postExtraCosts, {
         onSuccess: (data) => setExtraCosts(data),
         onMutate: () => clearSuggestions(),
     });
