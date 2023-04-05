@@ -24,7 +24,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
       <div className="flex w-full flex-col sm:gap-4">
         <div className="flex flex-1 flex-col p-2 text-center text-sm  sm:text-left">
           <Link
-            href={`/products/${product.store_product_variant_id}`}
+            href={`/products/${product.store_product_id}`}
             className="hover:underline focus:underline sm:text-base"
           >
             {product.name}

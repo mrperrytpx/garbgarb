@@ -44,7 +44,7 @@ export const cartSlice = createSlice({
             } else {
                 product.quantity += payload.quantity;
                 state.value = [
-                    ...state.value.filter((product) => product.sku !== product.sku),
+                    ...state.value.filter((cartItem) => cartItem.sku !== product.sku),
                     product,
                 ];
             }
