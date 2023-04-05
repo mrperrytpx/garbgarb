@@ -41,7 +41,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             ) / 100;
 
         res.json({
-            shipping: +estimatedCosts.retail_costs.shipping * calculatedVAT,
+            shipping: Math.round(+estimatedCosts.retail_costs.shipping * calculatedVAT * 100) / 100,
             vat: calculatedVAT,
         });
     } else {

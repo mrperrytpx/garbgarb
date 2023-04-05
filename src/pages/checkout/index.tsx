@@ -2,21 +2,18 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { cartSelector } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Libraries } from "use-google-maps-script/dist/utils/createUrl";
 import { useGoogleMapsScript } from "use-google-maps-script";
-import usePlacesAutocomplete, { getGeocode } from "use-places-autocomplete";
+import usePlacesAutocomplete from "use-places-autocomplete";
 import { SectionSeparator } from "../../components/SectionSeparator";
 import { MinimalCartProduct } from "../../components/MinimalCartProduct";
 import { currency } from "../../utils/currency";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { AutocompletePrediction } from "react-places-autocomplete";
-import { apiInstance } from "../../utils/axiosClients";
 import { TShippingRatesResp } from "../api/printful/shipping_rates";
-import { getStripe } from "../../utils/getStripe";
-import { TCheckoutPayload } from "../api/stripe/checkout_session";
-import Stripe from "stripe";
+import { useAddressSuggestionMutation } from "../../hooks/useAddressSuggestionMutation";
+import { useCompleteOrderMutation } from "../../hooks/useCompleteOrderMutation";
 
 export type TAddress = {
   address1: string;
@@ -26,7 +23,7 @@ export type TAddress = {
   country_code: string;
 };
 
-type TGoogleAddressDetails = {
+export type TGoogleAddressDetails = {
   long_name: string;
   short_name: string;
   types: Array<string>;
@@ -59,7 +56,6 @@ const Form = () => {
 
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue: setFormValue,
     getValues,
@@ -72,88 +68,15 @@ const Form = () => {
     setAddress([]);
   };
 
-  const handleSelect = async (suggestion: AutocompletePrediction) => {
-    console.log("SELECTED: ", suggestion);
-    clearSuggestions();
-    const deets = await getGeocode({ placeId: suggestion.place_id });
-    setAddress(deets[0].address_components as TGoogleAddressDetails[]);
+  const addressSuggestionMutation = useAddressSuggestionMutation(
+    setExtraCosts,
+    setAddress,
+    setFormValue,
+    getValues,
+    clearSuggestions
+  );
 
-    setFormValue(
-      "streetName",
-      deets[0].address_components.find((x: TGoogleAddressDetails) => x.types.includes("route"))
-        ?.long_name || ""
-    );
-    setFormValue(
-      "streetNumber",
-      deets[0].address_components.find((x: TGoogleAddressDetails) =>
-        x.types.includes("street_number")
-      )?.long_name || ""
-    );
-    setFormValue(
-      "city",
-      deets[0].address_components.find((x: TGoogleAddressDetails) => x.types.includes("locality"))
-        ?.long_name || ""
-    );
-    setFormValue(
-      "country",
-      deets[0].address_components.find((x: TGoogleAddressDetails) => x.types.includes("country"))
-        ?.short_name || ""
-    );
-    setFormValue(
-      "province",
-      deets[0].address_components.find((x: TGoogleAddressDetails) =>
-        x.types.includes("administrative_area_level_1")
-      )?.long_name || ""
-    );
-    setFormValue(
-      "zip",
-      deets[0].address_components.find((x: TGoogleAddressDetails) =>
-        x.types.includes("postal_code")
-      )?.long_name || ""
-    );
-    setFormValue(
-      "subpremise",
-      deets[0].address_components.find((x: TGoogleAddressDetails) => x.types.includes("subpremise"))
-        ?.long_name || ""
-    );
-
-    onSubmit(getValues());
-  };
-
-  const onSubmit: SubmitHandler<ValidatedAddress> = async (data) => {
-    const response = await apiInstance.post<TShippingRatesResp>("/api/printful/shipping_rates", {
-      cartItems: productsInCart,
-      address: data,
-    });
-    setExtraCosts(response.data);
-  };
-
-  async function handleCompleteOrder() {
-    const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
-      store_product_id: item.store_product_id,
-      store_product_variant_id: item.store_product_variant_id,
-      quantity: item.quantity,
-    }));
-
-    const checkoutResponse = await apiInstance.post("/api/stripe/checkout_session", {
-      cartItems: checkoutPayload,
-      address: getValues(),
-    });
-
-    const checkoutSession: Stripe.Checkout.Session = checkoutResponse.data;
-
-    if ((checkoutSession as any).statusCode === 500) {
-      console.error((checkoutSession as any).message);
-      return;
-    }
-
-    const stripe = await getStripe();
-    const { error } = await stripe!.redirectToCheckout({
-      sessionId: checkoutSession.id,
-    });
-
-    console.warn(error.message);
-  }
+  const completeOrderMutation = useCompleteOrderMutation();
 
   return (
     <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-col items-start gap-2 lg:flex-row lg:gap-6">
@@ -168,7 +91,7 @@ const Form = () => {
         </div>
         <div>
           <SectionSeparator name="Shipping Address" number="2" />
-          <form className="min-h-[600px] md:min-h-[350px]" onSubmit={handleSubmit(onSubmit)}>
+          <form className="min-h-[600px] md:min-h-[350px]">
             <fieldset className="relative flex w-full flex-col items-center gap-4 p-2 ">
               <div className="w-full">
                 <label className="block p-1 text-sm" htmlFor="address1">
@@ -316,7 +239,7 @@ const Form = () => {
                   <li
                     className="cursor-pointer rounded-lg bg-slate-100 p-4"
                     key={i}
-                    onClick={() => handleSelect(suggestion)}
+                    onClick={() => addressSuggestionMutation.mutateAsync({ suggestion })}
                   >
                     <strong>{suggestion.description}</strong>
                   </li>
@@ -374,7 +297,7 @@ const Form = () => {
           </div>
           <button
             disabled={!extraCosts}
-            onClick={handleCompleteOrder}
+            onClick={() => completeOrderMutation.mutateAsync({ address: getValues() })}
             className="w-full bg-white p-2  disabled:opacity-50 "
             type="button"
           >

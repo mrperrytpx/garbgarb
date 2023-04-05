@@ -118,8 +118,8 @@ const ArticlePage = ({
         </div>
 
         <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 md:flex-1 lg:max-w-[450px]">
-          <div className="flex w-full flex-col items-start justify-center gap-2">
-            <div className="w-full">
+          <div className="flex w-full flex-col items-start justify-center gap-4">
+            <div className="flex w-full flex-col gap-0.5">
               <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
               <p className="text-left text-xl">{baseShirtName}</p>
               <p
@@ -131,7 +131,7 @@ const ArticlePage = ({
             </div>
             {/* <div className="text-sm">{parse(productDescription)}</div> */}
             <p className="text-left text-xl">
-              {currency(+data?.sync_variants[option?.index].retail_price * +quantity)}
+              {currency(+data?.sync_variants[option?.index].retail_price)}
             </p>
           </div>
           <div className="flex w-full flex-wrap gap-2">
