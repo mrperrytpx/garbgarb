@@ -21,9 +21,10 @@ export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => 
     };
 
     return useQuery({
-        queryKey: ["costs", JSON.stringify(address)],
+        queryKey: ["costs", address?.country],
         queryFn: postExtraCosts,
         enabled: !!address,
         refetchOnWindowFocus: false,
+        staleTime: Infinity,
     });
 };

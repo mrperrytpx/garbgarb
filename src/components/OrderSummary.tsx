@@ -32,7 +32,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">Estimated Shipping:</p>
-          {extraCosts.isFetching ? (
+          {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
             <LoadingSpinner size={12} />
           ) : extraCosts.data ? (
             <p className="text-sm font-bold">{currency(extraCosts.data?.shipping)}</p>
@@ -42,7 +42,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">VAT:</p>
-          {extraCosts.isFetching ? (
+          {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
             <LoadingSpinner size={12} />
           ) : extraCosts.data ? (
             <p className="text-sm font-bold">
@@ -77,12 +77,12 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
           )}
         </div>
         <button
-          disabled={!extraCosts.data}
+          disabled={!extraCosts.data || extraCosts.isFetching || completeOrderMutation.isLoading}
           onClick={() => completeOrderMutation.mutateAsync({ address: addressData })}
           className="flex w-full items-center justify-center  gap-2 bg-white p-2 disabled:opacity-50"
           type="button"
         >
-          {completeOrderMutation.isLoading && <LoadingSpinner />}
+          {completeOrderMutation.isLoading && <LoadingSpinner size={24} />}
           <p>Go to Payment</p>
         </button>
       </div>

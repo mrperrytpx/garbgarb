@@ -30,7 +30,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
     value,
     setValue,
     clearSuggestions,
-    suggestions: { status, data, loading },
+    suggestions: { status, data },
   } = usePlacesAutocomplete({ debounce: 500, cacheKey: "address" });
 
   const {
@@ -40,7 +40,6 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    suggestion && setSuggestion(null);
   };
 
   const addressData = useGetSuggestionsQuery(suggestion);
@@ -64,9 +63,8 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
             disabled={!ready}
           />
         </div>
-        {addressData.isFetching && <LoadingSpinner />}
-        {suggestion && !addressData.isFetching && (
-          <div className="mt-8 w-full rounded-lg border-2">
+        {suggestion && addressData.status !== "loading" && (
+          <div className="mt-8 w-full">
             {addressData.data?.subpremise && (
               <div className="w-full">
                 <label className="block p-1 text-sm" htmlFor="subpremise">
@@ -97,6 +95,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   {...(register("streetName"),
                   {
                     value: addressData.data?.streetName || "",
+                    required: true,
                   })}
                   name="streetName"
                   id="streetName"
@@ -116,6 +115,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   {...(register("streetNumber"),
                   {
                     value: addressData.data?.streetNumber || "",
+                    required: true,
                   })}
                   name="streetNumber"
                   id="streetNumber"
@@ -136,6 +136,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                 {...(register("city"),
                 {
                   value: addressData.data?.city || "",
+                  required: true,
                 })}
                 name="city"
                 id="city"
@@ -157,6 +158,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   {...(register("country"),
                   {
                     value: addressData.data?.country || "",
+                    required: true,
                   })}
                   name="country"
                   id="country"
@@ -176,6 +178,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   {...(register("province"),
                   {
                     value: addressData.data?.province || "",
+                    required: true,
                   })}
                   name="province"
                   id="province"
@@ -195,6 +198,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   {...(register("zip"),
                   {
                     value: addressData.data?.zip || "",
+                    required: true,
                   })}
                   name="zip"
                   id="zip"
@@ -204,14 +208,14 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
                   autoComplete="off"
                   disabled={true}
                 />
-                {/* {errors.zip && <span> {errors.zip.message}</span>} */}
+                {errors.zip && <span> {errors.zip.message}</span>}
               </div>
             </div>
           </div>
         )}
       </fieldset>
-      {loading ? (
-        <div className="absolute top-[50px] left-0 w-full gap-0.5 bg-white px-2">
+      {addressData.isFetching ? (
+        <div className="absolute top-[82px] left-0 z-20 w-full gap-0.5 bg-white px-2">
           <LoadingSpinner />
         </div>
       ) : (
@@ -219,7 +223,7 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
           {status === "OK" &&
             data.map((suggestion, i) => (
               <li
-                className="cursor-pointer border-b-2 p-2 last-of-type:border-0"
+                className="cursor-pointer rounded-md border-b-2 bg-slate-200 p-2 last-of-type:border-0"
                 key={i}
                 onClick={() => {
                   clearSuggestions();
