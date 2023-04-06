@@ -55,6 +55,9 @@ const CheckoutPage = () => {
     );
   if (loadError) return <div>Something is wrong... try reloading the page</div>;
 
+  const address = methods.getValues();
+  console.log(address);
+
   return (
     <FormProvider {...methods}>
       <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-col items-start gap-2 lg:flex-row lg:gap-6">
@@ -66,9 +69,9 @@ const CheckoutPage = () => {
             ))}
           </div>
           <SectionSeparator name="Shipping Address" number="2" />
-          <AddressForm setExtraCosts={setExtraCosts} />
+          <AddressForm />
         </main>
-        <OrderSummary extraCosts={extraCosts} />
+        <OrderSummary address={address} />
       </div>
     </FormProvider>
   );

@@ -1,10 +1,10 @@
 import usePlacesAutocomplete from "use-places-autocomplete";
-import { TShippingRatesResp } from "../pages/api/printful/shipping_rates";
-import { useAddressSuggestionMutation } from "../hooks/useAddressSuggestionMutation";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useFormContext } from "react-hook-form";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { ValidatedAddress } from "../pages/checkout";
+import { useSelector } from "react-redux";
+import { cartSelector } from "../redux/slices/cartSlice";
 
 export type TAddress = {
   address1: string;
@@ -20,42 +20,29 @@ export type TGoogleAddressDetails = {
   types: Array<string>;
 };
 
-interface IAddressFormProps {
-  setExtraCosts: Dispatch<SetStateAction<TShippingRatesResp | null>>;
-}
-
 export const getFormValues = (form: any) => form.getValues();
 
-export const AddressForm = ({ setExtraCosts }: IAddressFormProps) => {
-  const [address, setAddress] = useState<TGoogleAddressDetails[]>([]);
-
+export const AddressForm = () => {
   const {
     ready,
     value,
     setValue,
-    suggestions: { status, data },
     clearSuggestions,
+    suggestions: { status, data },
   } = usePlacesAutocomplete({ debounce: 500 });
 
   const {
     register,
     setValue: setFormValue,
-    getValues,
     formState: { errors },
+    getValues,
+    reset,
   } = useFormContext<ValidatedAddress>();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    setAddress([]);
+    reset();
   };
-
-  const addressSuggestionMutation = useAddressSuggestionMutation(
-    setExtraCosts,
-    setAddress,
-    setFormValue,
-    getValues,
-    clearSuggestions
-  );
 
   return (
     <form className="min-h-[300px] lg:min-h-0">
@@ -76,10 +63,10 @@ export const AddressForm = ({ setExtraCosts }: IAddressFormProps) => {
             disabled={!ready}
           />
         </div>
-        {addressSuggestionMutation.isLoading && <LoadingSpinner />}
-        {address.length ? (
+        {/* {suggestAddressMutation.isLoading && <LoadingSpinner />} */}
+        {getValues().city ? (
           <>
-            {address.find((x) => x.types.includes("subpremise")) && (
+            {getValues().subpremise && (
               <div className="w-full">
                 <label className="block p-1 text-sm" htmlFor="subpremise">
                   <strong>Subpremise</strong>
@@ -207,7 +194,59 @@ export const AddressForm = ({ setExtraCosts }: IAddressFormProps) => {
             <li
               className="cursor-pointer rounded-lg bg-slate-100 p-4"
               key={i}
-              onClick={() => addressSuggestionMutation.mutateAsync({ suggestion })}
+              // onClick={() =>
+              //   suggestAddressMutation.mutate(
+              //     { suggestion },
+              //     {
+              //       onSuccess: (mutData) => {
+              //         clearSuggestions();
+
+              //         setFormValue(
+              //           "streetName",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("route")
+              //           )?.long_name || ""
+              //         );
+              //         setFormValue(
+              //           "streetNumber",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("street_number")
+              //           )?.long_name || ""
+              //         );
+              //         setFormValue(
+              //           "city",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("locality")
+              //           )?.long_name || ""
+              //         );
+              //         setFormValue(
+              //           "country",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("country")
+              //           )?.short_name || ""
+              //         );
+              //         setFormValue(
+              //           "province",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("administrative_area_level_1")
+              //           )?.long_name || ""
+              //         );
+              //         setFormValue(
+              //           "zip",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("postal_code")
+              //           )?.long_name || ""
+              //         );
+              //         setFormValue(
+              //           "subpremise",
+              //           mutData[0].address_components.find((x: TGoogleAddressDetails) =>
+              //             x.types.includes("subpremise")
+              //           )?.long_name || ""
+              //         );
+              //       },
+              //     }
+              //   )
+              // }
             >
               <strong>{suggestion.description}</strong>
             </li>
