@@ -1,6 +1,6 @@
 import React from "react";
 import { apiInstance } from "../../utils/axiosClients";
-import type { TPrintfulStore, TProduct } from "../api/store";
+import type { TProduct } from "../api/store";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { ProductCard } from "../../components/ProductCard";

@@ -1,17 +1,27 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { cartSelector } from "../redux/slices/cartSlice";
 import { useSelector } from "react-redux";
 import { currency } from "../utils/currency";
-import { ValidatedAddress } from "../pages/checkout";
-import { useFormContext } from "react-hook-form";
+import { AutocompletePrediction } from "react-places-autocomplete";
+import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
+import { useGetExtraCostsQuery } from "../hooks/useGetExtraCostsQuery";
+import { useCompleteOrderMutation } from "../hooks/useCompleteOrderMutation";
 
-export const OrderSummary = ({ address }: { address: ValidatedAddress }) => {
+interface IOrderSummaryProps {
+  suggestion: AutocompletePrediction | null;
+}
+
+export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   const productsInCart = useSelector(cartSelector);
+
+  const { data: addressData } = useGetSuggestionsQuery(suggestion);
+  const extraCosts = useGetExtraCostsQuery(addressData);
+
+  const completeOrderMutation = useCompleteOrderMutation();
 
   return (
     <aside className="lg:max-w-1/4 sticky top-[70px] mx-auto flex w-full max-w-screen-md flex-1 flex-col rounded-lg bg-slate-100 p-4">
-      {/* {JSON.stringify(extraCostsQuery.data)}
       <div className="flex flex-col items-start justify-center gap-4">
         <p className="text-xl font-bold">ORDER SUMMARY</p>
         <div className="flex w-full items-center justify-between">
@@ -22,19 +32,21 @@ export const OrderSummary = ({ address }: { address: ValidatedAddress }) => {
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">Estimated Shipping:</p>
-          {extraCostsQuery.data ? (
-            <p className="text-sm">{currency(extraCostsQuery.data?.shipping)}</p>
+          {extraCosts.isFetching ? (
+            <LoadingSpinner size={12} />
+          ) : extraCosts.data ? (
+            <p className="text-sm font-bold">{currency(extraCosts.data?.shipping)}</p>
           ) : (
             <p className="text-sm font-bold">TBD</p>
           )}
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">VAT:</p>
-          {extraCostsQuery.data ? (
-            <p className="text-sm">
-              {new Intl.NumberFormat("en-US", { style: "percent" }).format(
-                extraCostsQuery.data.vat - 1
-              )}
+          {extraCosts.isFetching ? (
+            <LoadingSpinner size={12} />
+          ) : extraCosts.data ? (
+            <p className="text-sm font-bold">
+              {new Intl.NumberFormat("en-US", { style: "percent" }).format(extraCosts.data.vat - 1)}
             </p>
           ) : (
             <p className="text-sm font-bold">TBD</p>
@@ -44,13 +56,13 @@ export const OrderSummary = ({ address }: { address: ValidatedAddress }) => {
           <p className="uppercase">
             <strong>Estimated Total:</strong>
           </p>
-          {extraCostsQuery.data ? (
+          {extraCosts.data ? (
             <p>
               <strong>
                 {currency(
                   productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0) *
-                    extraCostsQuery.data?.vat +
-                    +extraCostsQuery.data.shipping
+                    extraCosts.data?.vat +
+                    +extraCosts.data.shipping
                 )}
               </strong>
             </p>
@@ -65,15 +77,15 @@ export const OrderSummary = ({ address }: { address: ValidatedAddress }) => {
           )}
         </div>
         <button
-          disabled={!extraCostsQuery.data || completeOrderMutation.isLoading}
-          onClick={() => completeOrderMutation.mutateAsync({ address: getValues() })}
+          disabled={!extraCosts.data}
+          onClick={() => completeOrderMutation.mutateAsync({ address: addressData })}
           className="flex w-full items-center justify-center  gap-2 bg-white p-2 disabled:opacity-50"
           type="button"
         >
           {completeOrderMutation.isLoading && <LoadingSpinner />}
           <p>Go to Payment</p>
         </button>
-      </div> */}
+      </div>
     </aside>
   );
 };

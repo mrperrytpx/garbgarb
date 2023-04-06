@@ -8,11 +8,11 @@ import { SectionSeparator } from "../../components/SectionSeparator";
 import { MinimalCartProduct } from "../../components/MinimalCartProduct";
 import { OrderSummary } from "../../components/OrderSummary";
 import { useState } from "react";
-import { TShippingRatesResp } from "../api/printful/shipping_rates";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { AutocompletePrediction } from "react-places-autocomplete";
 
 const libraries: Libraries = ["places"];
 
@@ -31,7 +31,7 @@ export type ValidatedAddress = z.infer<typeof validationSchema>;
 const CheckoutPage = () => {
   const productsInCart = useSelector(cartSelector);
   const router = useRouter();
-  const [extraCosts, setExtraCosts] = useState<TShippingRatesResp | null>(null);
+  const [suggestion, setSuggestion] = useState<AutocompletePrediction | null>(null);
 
   const { isLoaded, loadError } = useGoogleMapsScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
@@ -55,9 +55,6 @@ const CheckoutPage = () => {
     );
   if (loadError) return <div>Something is wrong... try reloading the page</div>;
 
-  const address = methods.getValues();
-  console.log(address);
-
   return (
     <FormProvider {...methods}>
       <div className="mx-auto mb-6 flex w-full max-w-screen-lg flex-col items-start gap-2 lg:flex-row lg:gap-6">
@@ -69,9 +66,9 @@ const CheckoutPage = () => {
             ))}
           </div>
           <SectionSeparator name="Shipping Address" number="2" />
-          <AddressForm />
+          <AddressForm suggestion={suggestion} setSuggestion={setSuggestion} />
         </main>
-        <OrderSummary address={address} />
+        <OrderSummary suggestion={suggestion} />
       </div>
     </FormProvider>
   );
