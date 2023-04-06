@@ -53,7 +53,7 @@ const Layout = ({ children }: ILayoutProps) => {
         </div>
       ) : (
         <>
-          <div className="flex-1">{children}</div>
+          <div className="flex min-h-[calc(100vh-60px)] flex-1">{children}</div>
           <div className="flex h-[100px] items-center justify-center bg-red-400">I AM FOOTER</div>
         </>
       )}

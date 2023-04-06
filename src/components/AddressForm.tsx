@@ -58,7 +58,7 @@ export const AddressForm = ({ setExtraCosts }: IAddressFormProps) => {
   );
 
   return (
-    <form className="min-h-[600px] md:min-h-[350px]">
+    <form className="min-h-[300px] lg:min-h-0">
       <fieldset className="relative flex w-full flex-col items-center gap-4 p-2 ">
         <div className="w-full">
           <label className="block p-1 text-sm" htmlFor="address1">

@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import type { TProductDetailsResult } from "../api/product";
 import Image from "next/image";
-import { SizeDropdown } from "../../components/Dropdown";
+import { SizeDropdown } from "../../components/SizeDropdown";
 import { useState, useEffect } from "react";
 import parse from "html-react-parser";
 import type { TProductSizes } from "../api/product/sizes";
@@ -168,11 +168,11 @@ const ArticlePage = ({
           {/*  */}
           <div className="flex w-full flex-col gap-0.5">
             <p className="px-1 text-sm font-semibold">Qty:</p>
-            <div className="flex w-full gap-2">
+            <div className="flex gap-2">
               <input
                 value={quantity}
                 onChange={(e) => setQuantity(+e.target.value)}
-                className="block rounded-lg border p-3"
+                className="w-[100px] rounded-lg border p-3"
                 onBlur={handleQuantity}
                 min="1"
                 max="999"

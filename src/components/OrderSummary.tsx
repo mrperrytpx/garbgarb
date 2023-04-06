@@ -30,14 +30,20 @@ export const OrderSummary = ({ extraCosts }: IOrderSummary) => {
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">Estimated Shipping:</p>
-          {extraCosts && <p className="text-sm">{currency(extraCosts?.shipping)}</p>}
+          {extraCosts ? (
+            <p className="text-sm">{currency(extraCosts?.shipping)}</p>
+          ) : (
+            <p className="text-sm font-bold">TBD</p>
+          )}
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">VAT:</p>
-          {extraCosts && (
+          {extraCosts ? (
             <p className="text-sm">
               {new Intl.NumberFormat("en-US", { style: "percent" }).format(extraCosts.vat - 1)}
             </p>
+          ) : (
+            <p className="text-sm font-bold">TBD</p>
           )}
         </div>
         <div className="flex w-full items-center justify-between">

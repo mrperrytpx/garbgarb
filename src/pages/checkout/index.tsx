@@ -12,6 +12,7 @@ import { TShippingRatesResp } from "../api/printful/shipping_rates";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 const libraries: Libraries = ["places"];
 
@@ -45,7 +46,13 @@ const CheckoutPage = () => {
     return <div>Redirecting to shop</div>;
   }
 
-  if (!isLoaded) return <div>Loading google...</div>;
+  if (!isLoaded)
+    return (
+      <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
+        <p className="text-sm">Creating Your Session...</p>
+        <LoadingSpinner size={50} />
+      </div>
+    );
   if (loadError) return <div>Something is wrong... try reloading the page</div>;
 
   return (
