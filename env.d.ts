@@ -7,5 +7,8 @@ namespace NodeJS {
         NEXT_PUBLIC_SERVER_URL: string;
         NEXT_PUBLIC_STRIPE_PUBLIC_KEY: string;
         NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: string;
+        GOOGLE_CLIENT_ID: string;
+        GOOGLE_CLIENT_SECRET: string;
+        NEXTAUTH_URL: string;
     }
 }
