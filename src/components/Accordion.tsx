@@ -37,7 +37,7 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
   }, []);
 
   return (
-    <div className="flex w-full flex-col items-center justify-start border-b-2">
+    <div className="flex w-full select-none flex-col items-center justify-start border-b-2">
       <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex w-full cursor-pointer items-center justify-between py-2"

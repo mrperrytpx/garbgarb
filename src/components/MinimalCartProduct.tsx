@@ -21,7 +21,9 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
       <div className="flex w-full items-center justify-between gap-2 sm:flex-[2] sm:justify-start">
         <div>
           <p>{item.name}</p>
-          <p className="text-xs">({item.color_name})</p>
+          <p className="text-xs">
+            ({item.color_name} - {item.size})
+          </p>
         </div>
         <strong className="self-start">x{item.quantity}</strong>
       </div>
