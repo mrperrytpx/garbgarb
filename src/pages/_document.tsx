@@ -12,11 +12,7 @@ export default function Document() {
       <body>
         <Main />
         <div id="portal" />
-        <NextScript></NextScript>
-        {/* <script
-          async
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuJE7r4MTt-S-zIY6tcG1GL0oI3X2RS6M&libraries=places&callback=initMap"
-        ></script> */}
+        <NextScript />
       </body>
     </Html>
   );

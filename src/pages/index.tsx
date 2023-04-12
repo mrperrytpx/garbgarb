@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function Home() {
+function HomePage() {
   return (
     <main className="h-[calc(max(600px,100vh)-60px)] w-full">
       <div className="flex h-full flex-col items-center justify-center gap-6 bg-gray-500 pb-8">
@@ -13,4 +13,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;

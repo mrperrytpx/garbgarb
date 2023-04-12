@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { emptyCart } from "../../redux/slices/cartSlice";
 
-const Success = () => {
+const SuccessPage = () => {
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -12,4 +12,4 @@ const Success = () => {
   return <div className="flex-1">Success</div>;
 };
 
-export default Success;
+export default SuccessPage;
