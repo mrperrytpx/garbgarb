@@ -8,6 +8,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
+import { ErrorBoundary } from "../utils/ErrorBoundary";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -27,9 +28,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <Hydrate state={pageProps.dehydratedState}>
           <Provider store={store}>
             <PersistGate persistor={persistor} loading={null}>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
+              <ErrorBoundary>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </ErrorBoundary>
               <ReactQueryDevtools initialIsOpen={false} />
             </PersistGate>
           </Provider>

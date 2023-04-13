@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { CartIconWithNumber } from "../components/CartIconWithNumber";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { ErrorBoundary } from "../utils/ErrorBoundary";
 
 interface ILayoutProps {
   children: JSX.Element | JSX.Element[];
@@ -88,9 +89,11 @@ const Layout = ({ children }: ILayoutProps) => {
         </div>
       ) : (
         <>
-          <main className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-screen-2xl flex-1">
-            {children}
-          </main>
+          <ErrorBoundary>
+            <main className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-screen-2xl flex-1">
+              {children}
+            </main>
+          </ErrorBoundary>
           {/* Footer */}
           <footer className="bg-slate-200 px-4 shadow-2xl shadow-slate-100 ">
             <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4 py-8">

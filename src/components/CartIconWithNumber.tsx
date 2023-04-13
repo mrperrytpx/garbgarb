@@ -31,7 +31,7 @@ export const CartIconWithNumber = () => {
         <CartIcon />
       </div>
       {productsInCart.length > 0 && (
-        <p className="absolute bottom-0 right-0 rounded-full text-sm font-bold">
+        <p className="absolute -bottom-1 right-0 rounded-full text-xs font-bold">
           {productsInCart.length}
         </p>
       )}
