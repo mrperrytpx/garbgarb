@@ -17,7 +17,7 @@ export function sortStuffByProductColor(
         const variant = availabilityData?.variants.find((x) => x.id === id);
         if (!variant) return;
 
-        const variantInfo = {
+        const variantInfo: TWarehouseProduct = {
             index: i,
             id: variant?.id,
             size: variant?.size,
@@ -28,9 +28,11 @@ export function sortStuffByProductColor(
             color_code: variant?.color_code,
         };
 
-        product[variant.color_code] = product[variant.color_code]
-            ? [...product[variant.color_code], variantInfo]
-            : [variantInfo];
+        if (product[variant.color_code]) {
+            product[variant.color_code].push(variantInfo);
+        } else {
+            product[variant.color_code] = [variantInfo];
+        }
     });
 
     const productColors = Object.keys(product);

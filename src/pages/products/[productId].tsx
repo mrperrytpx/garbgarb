@@ -122,8 +122,8 @@ const ArticlePage = () => {
 
   return (
     <div className="mx-auto max-w-screen-lg">
-      <div className="flex flex-col items-center justify-center gap-6 p-4 md:flex-row lg:mt-6 lg:gap-28">
-        <div className="max-w-[350px] rounded-md  border-2 md:sticky md:top-[76px] md:flex-1 md:self-start lg:max-w-[500px]">
+      <div className="flex flex-col items-center justify-center gap-6  p-4 md:flex-row lg:mt-4 lg:gap-12">
+        <div className="max-w-[350px] rounded-md border-2 md:sticky md:top-[76px] md:flex-1 md:self-start lg:max-w-[500px]">
           <Image
             priority={true}
             width={500}
@@ -134,7 +134,7 @@ const ArticlePage = () => {
           />
         </div>
         {/*  */}
-        <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 md:flex-1 lg:max-w-[450px]">
+        <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-slate-100 p-4 md:flex-1 lg:max-w-[450px]">
           <div className="flex w-full flex-col items-start justify-center gap-4">
             <div className="flex w-full flex-col gap-0.5">
               <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
@@ -198,7 +198,7 @@ const ArticlePage = () => {
               />
               <button
                 onClick={handleAddToCart}
-                className="w-full self-end rounded-lg border p-3 hover:bg-slate-600 hover:text-white"
+                className="w-full self-end rounded-lg border bg-white p-3 hover:bg-slate-600 hover:text-white"
               >
                 Add to cart!
               </button>
@@ -231,10 +231,10 @@ const ArticlePage = () => {
       {/*  */}
       {isSizeGuideOpen && (
         <Portal>
-          {!sizesData ? (
-            <LoadingSpinner />
-          ) : (
-            <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
+          <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
+            {!sizesData ? (
+              <LoadingSpinner />
+            ) : (
               <>
                 <div role="heading" className="w-full border-b-2 font-bold">
                   Measure yourself
@@ -284,8 +284,8 @@ const ArticlePage = () => {
                   X
                 </span>
               </>
-            </div>
-          )}
+            )}
+          </div>
         </Portal>
       )}
     </div>
