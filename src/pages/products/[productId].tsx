@@ -152,25 +152,28 @@ const ArticlePage = () => {
           </div>
           {/*  */}
           <div className="flex w-full flex-wrap gap-2">
-            {productColors.map((prodColor) => (
-              <div
-                className="p-0.25 relative flex items-center justify-center rounded-lg"
-                key={prodColor}
-              >
-                <button
-                  onClick={() => handleColorChange(prodColor)}
-                  style={{
-                    backgroundColor: prodColor,
-                  }}
-                  className="h-10 w-10 rounded-lg border-2"
-                />
-                {prodColor === color && (
-                  <div className="absolute">
-                    <CheckmarkIcon />
-                  </div>
-                )}
-              </div>
-            ))}
+            {productColors.map((prodColor) => {
+              console.log(prodColor);
+              return (
+                <div
+                  className="p-0.25 relative flex items-center justify-center rounded-lg"
+                  key={prodColor}
+                >
+                  <button
+                    onClick={() => handleColorChange(prodColor)}
+                    style={{
+                      backgroundColor: prodColor,
+                    }}
+                    className="h-10 w-10 rounded-lg border-2"
+                  />
+                  {prodColor === color && (
+                    <div className="absolute">
+                      <CheckmarkIcon />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
           {/*  */}
           <div className="flex w-full flex-col items-start justify-center">
