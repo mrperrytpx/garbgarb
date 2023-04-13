@@ -1,19 +1,25 @@
-import { apiInstance } from "../../utils/axiosClients";
-import { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType } from "next";
-import type { TProductDetailsResult } from "../api/product";
+import { GetServerSidePropsContext, PreviewData } from "next";
 import Image from "next/image";
 import { SizeDropdown } from "../../components/SizeDropdown";
 import { useState, useEffect } from "react";
 import parse from "html-react-parser";
-import type { TProductSizes } from "../api/product/sizes";
-import type { TWarehouseResult } from "../api/product/availability";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
 import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
 import { currency } from "../../utils/currency";
 import { Accordion } from "../../components/Accordion";
+import { QueryClient, dehydrate } from "@tanstack/react-query";
+import { ParsedUrlQuery } from "querystring";
+import { useRouter } from "next/router";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { sortStuffByProductColor } from "../../utils/sortStuffByProductColor";
+import { getProduct, useGetProduct } from "../../hooks/useGetProduct";
+import {
+  getProductAvailability,
+  useGetProductAvailability,
+} from "../../hooks/useGetProductAvailability";
+import { useGetProductSizes } from "../../hooks/useGetProductSizes";
 
 const CheckmarkIcon = () => {
   return (
@@ -30,50 +36,59 @@ const CheckmarkIcon = () => {
   );
 };
 
-const ArticlePage = ({
-  data,
-  sizes,
-  product,
-  productColors,
-  productDescription,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const ArticlePage = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { productId } = router.query;
+
+  const { data: productData } = useGetProduct(productId);
+  const storeProductId = productData?.sync_variants[0].product.product_id;
+
+  const { data: availabilityData } = useGetProductAvailability(storeProductId);
+
+  const { product, productColors } = sortStuffByProductColor(productData, availabilityData);
+
   const [color, setColor] = useState(productColors[0]);
   const [option, setOption] = useState(product[color].filter((x) => x.inStock)[0]);
-
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCentimeters, setIsCentimeters] = useState(true);
 
-  const dispatch = useDispatch();
+  const productDescription = availabilityData?.product.description
+    .split("\n")
+    .map((x) => `<li className="text-sm block w-full last-of-type:mb-4 font-normal">${x}</li>`)
+    .slice(2)
+    .join("")!;
 
-  const splitName = data?.sync_product.name.split(" ");
-  const splitIndex = splitName.indexOf("Unisex");
-  const myShirtName = splitName.slice(0, splitIndex).join(" ");
-  const baseShirtName = splitName.slice(splitIndex).join(" ");
+  const splitName = productData?.sync_product.name.split(" ");
+  const splitIndex = splitName?.indexOf("Unisex");
+  const myShirtName = splitName?.slice(0, splitIndex).join(" ");
+  const baseShirtName = splitName?.slice(splitIndex).join(" ");
 
   const handleQuantity = () => {
     if (!quantity) setQuantity(1);
-    if (+quantity < 1 || +quantity > 999) setQuantity(1);
+    if (+quantity < 1 || +quantity > 99) setQuantity(1);
   };
 
   function handleAddToCart() {
-    if (!option || !data) return;
+    if (!productData) return;
 
     const payload: TCartProduct = {
-      name: data?.sync_product.name,
+      name: productData.sync_product.name,
       quantity: quantity,
       color_code: option.color_code,
       color_name: option.color_name,
-      sku: data?.sync_variants[option.index].sku,
-      price: data?.sync_variants[option.index].retail_price,
-      size: option?.size,
+      sku: productData.sync_variants[option.index].sku,
+      price: productData.sync_variants[option.index].retail_price,
+      size: option.size,
       size_index: option.index,
-      variant_image: data?.sync_variants[option.index].files[1].thumbnail_url,
-      store_product_variant_id: data?.sync_variants[option.index].id,
-      store_product_id: data?.sync_variants[option.index].sync_product_id,
-      base_product_variant_id: data?.sync_variants[option.index].variant_id,
-      base_product_id: data?.sync_variants[option.index].product.product_id,
-      external_id: data?.sync_variants[option.index].external_id,
+      variant_image: productData.sync_variants[option.index].files[1].thumbnail_url,
+      store_product_variant_id: productData.sync_variants[option.index].id,
+      store_product_id: productData.sync_variants[option.index].sync_product_id,
+      base_product_variant_id: productData.sync_variants[option.index].variant_id,
+      base_product_id: productData.sync_variants[option.index].product.product_id,
+      external_id: productData.sync_variants[option.index].external_id,
     };
 
     if (!payload) return;
@@ -101,22 +116,24 @@ const ArticlePage = ({
     };
   }, [isSizeGuideOpen]);
 
-  if (!data || !product || !option) return <div>Something went wrong...</div>;
+  const { data: sizesData } = useGetProductSizes(storeProductId, isSizeGuideOpen);
+
+  if (!productData || !availabilityData) return <div>Yikes bro...</div>;
 
   return (
     <div className="mx-auto max-w-screen-lg">
       <div className="flex flex-col items-center justify-center gap-6 p-4 md:flex-row lg:mt-6 lg:gap-28">
-        <div className="max-w-[350px] rounded-lg  border-4 md:sticky md:top-[76px] md:flex-1 md:self-start lg:max-w-[500px]">
+        <div className="max-w-[350px] rounded-md  border-2 md:sticky md:top-[76px] md:flex-1 md:self-start lg:max-w-[500px]">
           <Image
             priority={true}
             width={500}
             height={500}
             alt="Piece of clothing with some words written on it"
-            src={data?.sync_variants[option.index].files[1].preview_url}
+            src={productData?.sync_variants[option.index].files[1].preview_url!}
             className="rounded-lg"
           />
         </div>
-
+        {/*  */}
         <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 md:flex-1 lg:max-w-[450px]">
           <div className="flex w-full flex-col items-start justify-center gap-4">
             <div className="flex w-full flex-col gap-0.5">
@@ -130,9 +147,10 @@ const ArticlePage = ({
               </p>
             </div>
             <p className="text-left text-xl">
-              {currency(+data?.sync_variants[option?.index].retail_price)}
+              {currency(+productData?.sync_variants[option?.index].retail_price)}
             </p>
           </div>
+          {/*  */}
           <div className="flex w-full flex-wrap gap-2">
             {productColors.map((prodColor) => (
               <div
@@ -154,6 +172,7 @@ const ArticlePage = ({
               </div>
             ))}
           </div>
+          {/*  */}
           <div className="flex w-full flex-col items-start justify-center">
             <p>Select Size:</p>
             <SizeDropdown
@@ -185,6 +204,7 @@ const ArticlePage = ({
               </button>
             </div>
           </div>
+          {/*  */}
           <div className="flex flex-col">
             <Accordion title="More Details">{parse(productDescription)}</Accordion>
             <Accordion title="Size Guide">
@@ -208,51 +228,64 @@ const ArticlePage = ({
           </div>
         </article>
       </div>
-      {isSizeGuideOpen && sizes && (
+      {/*  */}
+      {isSizeGuideOpen && (
         <Portal>
-          <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
-            <div role="heading" className="w-full border-b-2 font-bold">
-              Measure yourself
+          {!sizesData ? (
+            <LoadingSpinner />
+          ) : (
+            <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
+              <>
+                <div role="heading" className="w-full border-b-2 font-bold">
+                  Measure yourself
+                </div>
+                <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
+                  {parse(sizesData.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
+                </div>
+                <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
+                  <div className="w-[150px] self-center sm:self-start">
+                    <Image
+                      width={150}
+                      height={150}
+                      alt="Visual guide for measuring yourself"
+                      src={sizesData?.size_tables[0].image_url}
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
+                    {parse(
+                      sizesData.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, "")
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-4 self-start">
+                  <span
+                    onClick={() => setIsCentimeters(true)}
+                    className={`cursor-pointer p-2 ${
+                      isCentimeters && "border-b-4 border-gray-500"
+                    }`}
+                  >
+                    Centimeters
+                  </span>
+                  <span
+                    onClick={() => setIsCentimeters(false)}
+                    className={`cursor-pointer p-2 ${
+                      !isCentimeters && "border-b-4 border-gray-500"
+                    }`}
+                  >
+                    Inches
+                  </span>
+                </div>
+                <SizesTable isCentimeters={isCentimeters} sizes={sizesData} />
+                <span
+                  tabIndex={1}
+                  onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                  className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
+                >
+                  X
+                </span>
+              </>
             </div>
-            <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
-              {parse(sizes.size_tables[0].description.replace(/(\r\n|\n|\r)/gm, ""))}
-            </div>
-            <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
-              <div className="w-[150px] self-center sm:self-start">
-                <Image
-                  width={150}
-                  height={150}
-                  alt="Visual guide for measuring yourself"
-                  src={sizes?.size_tables[0].image_url}
-                />
-              </div>
-              <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
-                {parse(sizes.size_tables[0].image_description.replace(/(\r\n|\n|\r)/gm, ""))}
-              </div>
-            </div>
-            <div className="flex gap-4 self-start">
-              <span
-                onClick={() => setIsCentimeters(true)}
-                className={`cursor-pointer p-2 ${isCentimeters && "border-b-4 border-gray-500"}`}
-              >
-                Centimeters
-              </span>
-              <span
-                onClick={() => setIsCentimeters(false)}
-                className={`cursor-pointer p-2 ${!isCentimeters && "border-b-4 border-gray-500"}`}
-              >
-                Inches
-              </span>
-            </div>
-            <SizesTable isCentimeters={isCentimeters} sizes={sizes} />
-            <span
-              tabIndex={1}
-              onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
-              className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
-            >
-              X
-            </span>
-          </div>
+          )}
         </Portal>
       )}
     </div>
@@ -270,73 +303,26 @@ export type TWarehouseProduct = {
   color_code: string;
 };
 
-export const getServerSideProps: GetServerSideProps<{
-  data: TProductDetailsResult;
-  sizes: TProductSizes;
-  product: { [key: string]: Array<TWarehouseProduct> };
-  productDescription: string;
-  productColors: Array<string>;
-}> = async (context) => {
-  const { articleId } = context.query;
-  const articleRes = await apiInstance.get<TProductDetailsResult>("/api/product", {
-    params: { id: articleId },
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
+  const { productId } = context.query;
+  const queryClient = new QueryClient();
+
+  const storeData = await queryClient.fetchQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProduct(productId),
   });
-  const articleData = articleRes.data;
+  const storeProductId = storeData.sync_variants[0].product.product_id;
 
-  const productId = articleData.sync_variants[0].product.product_id;
-
-  const sizesRes = await apiInstance.get<TProductSizes>("/api/product/sizes", {
-    params: { id: productId },
+  await queryClient.prefetchQuery({
+    queryKey: ["availability", storeProductId],
+    queryFn: () => getProductAvailability(storeProductId),
   });
-  const sizesData = sizesRes.data;
-
-  const availabilityRes = await apiInstance.get<TWarehouseResult>("/api/product/availability", {
-    params: { id: productId },
-  });
-  const availabilityData = availabilityRes.data;
-
-  const productDescription = availabilityData.product.description
-    .split("\n")
-    .map((x) => `<li className="text-sm block w-full last-of-type:mb-4 font-normal">${x}</li>`)
-    .slice(2)
-    .join("");
-
-  const variantIds = articleData?.sync_variants.reduce((acc: number[], variant) => {
-    acc.push(variant.variant_id);
-    return acc;
-  }, []);
-
-  const product: { [key: string]: Array<TWarehouseProduct> } = {};
-
-  variantIds.forEach((id, i) => {
-    const variant = availabilityData.variants.find((x) => x.id === id);
-    if (!variant) return;
-
-    const variantInfo = {
-      index: i,
-      id: variant?.id,
-      size: variant?.size,
-      inStock: !!variant?.availability_status.filter(
-        (x) => x.region.includes("EU") && x.status === "in_stock"
-      )[0],
-      color_name: variant?.color,
-      color_code: variant?.color_code,
-    };
-
-    product[variant.color_code] = product[variant.color_code]
-      ? [...product[variant.color_code], variantInfo]
-      : [variantInfo];
-  });
-
-  const productColors = Object.keys(product);
 
   return {
     props: {
-      data: articleData,
-      sizes: sizesData,
-      product,
-      productDescription,
-      productColors,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

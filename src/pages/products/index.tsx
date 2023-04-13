@@ -16,6 +16,7 @@ const ProductsPage = () => {
   const { data } = useQuery({
     queryKey: ["store"],
     queryFn: getStoreData,
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   if (!data) return <div>Yikes lmao</div>;

@@ -12,7 +12,7 @@ interface ILayoutProps {
 
 const Layout = ({ children }: ILayoutProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const pathname = usePathname();
 
@@ -30,9 +30,9 @@ const Layout = ({ children }: ILayoutProps) => {
             {session?.user && (
               <Link href="/profile">
                 <Image
-                  className="rounded-full"
-                  width={24}
-                  height={24}
+                  className="w-7 rounded-full"
+                  width={100}
+                  height={100}
                   src={session?.user?.image!}
                   alt="User's profile"
                 />
@@ -55,7 +55,7 @@ const Layout = ({ children }: ILayoutProps) => {
       </header>
       {/* Mobile Menu */}
       {isExpanded ? (
-        <div className="overflow-hidde flex h-[calc(max(600px,100vh)-60px)] flex-col items-center justify-center bg-slate-100">
+        <div className="overflow-hidde flex h-[calc(max(600px,100vh)-56px)] flex-col items-center justify-center bg-slate-100">
           <div className="flex flex-1 flex-col items-center justify-center gap-6">
             <Link
               className="text-2xl font-medium hover:underline  focus:underline"
@@ -92,7 +92,7 @@ const Layout = ({ children }: ILayoutProps) => {
             {children}
           </main>
           {/* Footer */}
-          <footer className="border-t-2 border-slate-300 bg-slate-200 px-4 shadow-2xl shadow-slate-100 ">
+          <footer className="bg-slate-200 px-4 shadow-2xl shadow-slate-100 ">
             <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4 py-8">
               <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
                 <div className="flex flex-col items-center justify-center gap-4 p-2 md:flex-row md:gap-6">
@@ -109,15 +109,21 @@ const Layout = ({ children }: ILayoutProps) => {
                     Privacy Policy
                   </Link>
                 </div>
-                <div className="flex justify-center gap-2 p-2 md:gap-6">
+                <div className="flex justify-center gap-2 p-2 md:gap-4">
                   <a
+                    className="p-2"
                     target="_blank"
                     referrerPolicy="no-referrer"
                     href="https://github.com/mrperrytpx/garbgarb"
                   >
                     <FiGithub stroke="black" size={24} />
                   </a>
-                  <a target="_blank" referrerPolicy="no-referrer" href="https://www.linkedin.com/">
+                  <a
+                    className="p-2"
+                    target="_blank"
+                    referrerPolicy="no-referrer"
+                    href="https://www.linkedin.com/"
+                  >
                     <FiLinkedin stroke="black" size={24} />
                   </a>
                 </div>

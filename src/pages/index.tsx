@@ -8,7 +8,7 @@ function HomePage() {
           GarbGarb™
         </h1>
         <LinkButton
-          className="rounded-lg border py-2 px-4 text-2xl uppercase transition-all hover:bg-slate-200"
+          className="rounded-lg border py-2 px-4 text-2xl font-medium uppercase shadow-lg transition-all hover:bg-slate-200"
           href="/products"
         >
           Shop
