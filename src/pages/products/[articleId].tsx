@@ -106,7 +106,7 @@ const ArticlePage = ({
   return (
     <div className="mx-auto max-w-screen-lg">
       <div className="flex flex-col items-center justify-center gap-6 p-4 md:flex-row lg:mt-6 lg:gap-28">
-        <div className="sticky top-[76px]  max-w-[350px] rounded-lg border-4 md:flex-1 md:self-start lg:max-w-[500px]">
+        <div className="max-w-[350px] rounded-lg  border-4 md:sticky md:top-[76px] md:flex-1 md:self-start lg:max-w-[500px]">
           <Image
             priority={true}
             width={500}

@@ -1,14 +1,28 @@
-import React from "react";
 import { apiInstance } from "../../utils/axiosClients";
 import type { TProduct } from "../api/store";
-import { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType } from "next";
 import { ProductCard } from "../../components/ProductCard";
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 
-const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+async function getStoreData() {
+  const res = await apiInstance.get<TProduct[]>("/api/store");
+
+  if (res.status >= 400) throw new Error("Invalid store? or something idno");
+
+  const data = res.data;
+  return data;
+}
+
+const ProductsPage = () => {
+  const { data } = useQuery({
+    queryKey: ["store"],
+    queryFn: getStoreData,
+  });
+
+  if (!data) return <div>Yikes lmao</div>;
+
   return (
     <div className="flex flex-1 flex-col flex-wrap items-center justify-center gap-8 py-8 md:flex-row">
-      {data?.map((product) => (
+      {data.map((product) => (
         <ProductCard
           key={product.id}
           id={product.id}
@@ -22,15 +36,14 @@ const ProductsPage = ({ data }: InferGetServerSidePropsType<typeof getServerSide
 
 export default ProductsPage;
 
-export const getServerSideProps: GetServerSideProps<{
-  data: TProduct[] | undefined;
-}> = async () => {
-  const res = await apiInstance.get<TProduct[]>("/api/store");
-  const data = res.data;
+export const getServerSideProps = async () => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(["store"], getStoreData);
 
   return {
     props: {
-      data,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

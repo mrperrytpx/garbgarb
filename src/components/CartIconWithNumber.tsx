@@ -10,7 +10,7 @@ const CartIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="white"
+      stroke="black"
       className="h-6 w-6"
     >
       <path
@@ -31,7 +31,9 @@ export const CartIconWithNumber = () => {
         <CartIcon />
       </div>
       {productsInCart.length > 0 && (
-        <p className="absolute bottom-0 right-0 rounded-full  text-xs">{productsInCart.length}</p>
+        <p className="absolute bottom-0 right-0 rounded-full text-sm font-bold">
+          {productsInCart.length}
+        </p>
       )}
     </div>
   );
