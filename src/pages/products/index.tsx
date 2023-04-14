@@ -4,6 +4,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { PageError } from "../../utils/PageError";
 import { ChangeEvent, useState } from "react";
 import { stripe } from "../../lib/stripe";
+import { Breadcrumbs } from "../../components/Breadcrumbs";
 
 type Size = "S" | "M" | "L" | "XL" | "2XL" | "3XL";
 const SIZES: Size[] = ["S", "M", "L", "XL", "2XL", "3XL"];
@@ -71,7 +72,8 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-1 flex-col items-center justify-start gap-8 px-2 py-8 md:gap-8">
+    <div className="mb-8 flex flex-1 flex-col items-center justify-start gap-6 p-4 md:gap-8">
+      <Breadcrumbs />
       <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 px-1 sm:flex-row lg:justify-start ">
         <input
           type="text"

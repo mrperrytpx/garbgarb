@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
 import Image from "next/image";
 import { SizeDropdown } from "../../components/SizeDropdown";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import parse from "html-react-parser";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
@@ -20,18 +20,12 @@ import {
   useGetProductAvailability,
 } from "../../hooks/useGetProductAvailability";
 import { useGetProductSizes } from "../../hooks/useGetProductSizes";
+import { Breadcrumbs } from "../../components/Breadcrumbs";
 
-const CheckmarkIcon = () => {
+const CheckedIcon = () => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="white"
-      className="h-6 w-6"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    <svg className="h-6 w-6" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="25" r="20" fill="#ffffff" stroke="#000000" stroke-width="2" />
     </svg>
   );
 };
@@ -122,8 +116,11 @@ const ArticlePage = () => {
 
   return (
     <div className="mx-auto max-w-screen-lg">
-      <div className="flex flex-col items-center justify-center gap-6  p-4 md:flex-row lg:mt-4 lg:gap-12">
-        <div className="max-w-[350px] rounded-md border-2 sm:max-w-[500px] md:sticky md:top-[88px] md:flex-1 md:self-start">
+      <div className="p-4">
+        <Breadcrumbs />
+      </div>
+      <div className="flex flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
+        <div className="max-w-[350px] rounded-md border-2 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
           <Image
             priority={true}
             width={500}
@@ -138,7 +135,7 @@ const ArticlePage = () => {
           <div className="flex w-full flex-col items-start justify-center gap-4">
             <div className="flex w-full flex-col gap-0.5">
               <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
-              <p className="text-left text-xl">{baseShirtName}</p>
+              <p className="text-left">{baseShirtName}</p>
               <p
                 style={{ backgroundColor: option.color_code }}
                 className="block w-full rounded-lg pl-2 text-white"
@@ -156,7 +153,10 @@ const ArticlePage = () => {
           <div className="flex w-full flex-wrap gap-2">
             {productColors.map((prodColor) => (
               <div
-                className="p-0.25 relative flex items-center justify-center rounded-lg"
+                style={{
+                  backgroundColor: prodColor,
+                }}
+                className="relative  flex items-center justify-center gap-2 rounded-lg"
                 key={prodColor}
               >
                 <button
@@ -164,11 +164,11 @@ const ArticlePage = () => {
                   style={{
                     backgroundColor: prodColor,
                   }}
-                  className="h-10 w-10 rounded-lg border-2"
+                  className="h-10 w-10 rounded-lg border border-slate-500"
                 />
                 {prodColor === color && (
                   <div className="absolute">
-                    <CheckmarkIcon />
+                    <CheckedIcon />
                   </div>
                 )}
               </div>
@@ -211,8 +211,9 @@ const ArticlePage = () => {
             <Accordion title="More Details">{parse(productDescription)}</Accordion>
             <Accordion title="Size Guide">
               <p
+                tabIndex={0}
                 onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
-                className="mb-4 cursor-pointer p-2 text-center text-sm font-bold   text-red-500"
+                className="mb-4 cursor-pointer p-2 text-center text-sm font-bold hover:underline focus:underline"
               >
                 Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
               </p>
@@ -238,6 +239,13 @@ const ArticlePage = () => {
               <LoadingSpinner />
             ) : (
               <>
+                <span
+                  tabIndex={1}
+                  onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                  className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
+                >
+                  X
+                </span>
                 <div role="heading" className="w-full border-b-2 font-bold">
                   Measure yourself
                 </div>
@@ -261,6 +269,7 @@ const ArticlePage = () => {
                 </div>
                 <div className="flex gap-4 self-start">
                   <span
+                    tabIndex={1}
                     onClick={() => setIsCentimeters(true)}
                     className={`cursor-pointer p-2 ${
                       isCentimeters && "border-b-4 border-gray-500"
@@ -269,6 +278,7 @@ const ArticlePage = () => {
                     Centimeters
                   </span>
                   <span
+                    tabIndex={1}
                     onClick={() => setIsCentimeters(false)}
                     className={`cursor-pointer p-2 ${
                       !isCentimeters && "border-b-4 border-gray-500"
@@ -278,13 +288,6 @@ const ArticlePage = () => {
                   </span>
                 </div>
                 <SizesTable isCentimeters={isCentimeters} sizes={sizesData} />
-                <span
-                  tabIndex={1}
-                  onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
-                  className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
-                >
-                  X
-                </span>
               </>
             )}
           </div>

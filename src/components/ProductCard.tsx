@@ -31,17 +31,14 @@ export const ProductCard = ({ product }: IProductCard) => {
             <p className="text-lg font-bold md:text-xl">{shirtName}</p>
             <p className="text-sm">{defualtShirtName}</p>
           </div>
-          <div className="flex flex-wrap items-center justify-start gap-2">
+          <div className="flex flex-wrap items-center justify-start gap-2 ">
             {parsedColorHexs.map((hex) => (
-              <div
-                className="p-0.25 relative flex items-center justify-center rounded-lg"
-                key={hex}
-              >
+              <div className="relative flex items-center justify-center rounded-md" key={hex}>
                 <div
                   style={{
                     backgroundColor: hex,
                   }}
-                  className="h-5 w-5 rounded-lg border"
+                  className="h-5 w-5  rounded-md border border-slate-500"
                 />
               </div>
             ))}
