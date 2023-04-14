@@ -123,7 +123,7 @@ const ArticlePage = () => {
   return (
     <div className="mx-auto max-w-screen-lg">
       <div className="flex flex-col items-center justify-center gap-6  p-4 md:flex-row lg:mt-4 lg:gap-12">
-        <div className="max-w-[350px] rounded-md border-2 md:sticky md:top-[88px] md:flex-1 md:self-start lg:max-w-[500px]">
+        <div className="max-w-[350px] rounded-md border-2 sm:max-w-[500px] md:sticky md:top-[88px] md:flex-1 md:self-start">
           <Image
             priority={true}
             width={500}
@@ -143,7 +143,9 @@ const ArticlePage = () => {
                 style={{ backgroundColor: option.color_code }}
                 className="block w-full rounded-lg pl-2 text-white"
               >
-                {option.color_name}
+                <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
+                  {option.color_name}
+                </span>
               </p>
             </div>
             <p className="text-left text-xl">
@@ -152,28 +154,25 @@ const ArticlePage = () => {
           </div>
           {/*  */}
           <div className="flex w-full flex-wrap gap-2">
-            {productColors.map((prodColor) => {
-              console.log(prodColor);
-              return (
-                <div
-                  className="p-0.25 relative flex items-center justify-center rounded-lg"
-                  key={prodColor}
-                >
-                  <button
-                    onClick={() => handleColorChange(prodColor)}
-                    style={{
-                      backgroundColor: prodColor,
-                    }}
-                    className="h-10 w-10 rounded-lg border-2"
-                  />
-                  {prodColor === color && (
-                    <div className="absolute">
-                      <CheckmarkIcon />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {productColors.map((prodColor) => (
+              <div
+                className="p-0.25 relative flex items-center justify-center rounded-lg"
+                key={prodColor}
+              >
+                <button
+                  onClick={() => handleColorChange(prodColor)}
+                  style={{
+                    backgroundColor: prodColor,
+                  }}
+                  className="h-10 w-10 rounded-lg border-2"
+                />
+                {prodColor === color && (
+                  <div className="absolute">
+                    <CheckmarkIcon />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
           {/*  */}
           <div className="flex w-full flex-col items-start justify-center">

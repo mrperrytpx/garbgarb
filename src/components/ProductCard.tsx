@@ -15,7 +15,7 @@ export const ProductCard = ({ product }: IProductCard) => {
   const defualtShirtName = splitName.slice(whichIndex).join(" ");
 
   const parsedSizes: string[] = JSON.parse(product.metadata.sizes);
-  const parsedColors: string[] = JSON.parse(product.metadata.colors);
+  const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
 
   return (
     <div className="max-w-[300px] rounded-md border-2 border-b-8 md:self-start">
@@ -27,32 +27,35 @@ export const ProductCard = ({ product }: IProductCard) => {
           width={400}
           height={400}
         />
-        <div className="p-2">
-          <p className="text-center text-lg md:text-xl">{shirtName}</p>
-          <p className="text-center md:text-lg">{defualtShirtName}</p>
-          <p className="text-center text-sm md:text-base">
-            from <span className="underline">{currency(product.metadata.starting_price)}</span>
-          </p>
-          <div className="flex w-full justify-center gap-1">
-            Sizes:{" "}
-            {parsedSizes.map((size, i) => (
-              <span key={i}>
-                {size}
-                {i !== parsedSizes.length - 1 && ","}
-              </span>
-            ))}
-          </div>
-          <div className="flex w-full justify-center gap-1">
-            Sizes:{" "}
-            {parsedColors.map((color, i) => (
-              <span key={i} className="capitalize">
-                {color}
-                {i !== parsedColors.length - 1 && ","}
-              </span>
-            ))}
-          </div>
-        </div>
       </Link>
+      <div className="p-2">
+        <p className="text-center text-lg md:text-xl">{shirtName}</p>
+        <p className="text-center md:text-lg">{defualtShirtName}</p>
+        <p className="text-center text-sm md:text-base">
+          from <span className="underline">{currency(product.metadata.starting_price)}</span>
+        </p>
+        <div className="flex w-full flex-wrap justify-center gap-1">
+          Sizes:{" "}
+          {parsedSizes.map((size, i) => (
+            <span key={i}>
+              {size}
+              {i !== parsedSizes.length - 1 && ","}
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-2 self-center">
+          {parsedColorHexs.map((hex) => (
+            <div className="p-0.25 relative flex items-center justify-center rounded-lg" key={hex}>
+              <div
+                style={{
+                  backgroundColor: hex,
+                }}
+                className="h-5 w-5 rounded-lg border"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
