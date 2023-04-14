@@ -15,8 +15,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const { cartItems, address }: { cartItems: TCartProduct[]; address: ValidatedAddress } =
             req.body;
 
-        if (!allowedCountries.includes(address.country))
+        if (!allowedCountries.includes(address.country)) {
+            console.log("Country not allowed", address.country);
             return res.status(400).end("We don't ship to Your country, sorry!");
+        }
 
         const transformedItems = cartItems.map((item) => ({
             quantity: item.quantity,
@@ -28,10 +30,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             estimateShippingCost
         )(address, transformedItems);
 
-        if (estimateShippingCostError || !estimatedCosts)
+        if (estimateShippingCostError || !estimatedCosts) {
+            console.log(estimateShippingCostError);
             return res
                 .status(estimateShippingCostError?.statusCode || 500)
                 .end(estimateShippingCostError?.message);
+        }
 
         const calculatedVAT =
             Math.round(

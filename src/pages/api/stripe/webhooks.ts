@@ -25,6 +25,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
         } catch (error) {
             let message = "Unknown Error";
             if (error instanceof Error) message = error.message;
+            console.log(error);
             return res.status(400).end(`"Webhook error:" ${message}`);
         }
 
@@ -33,8 +34,10 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 expand: ["line_items"],
             });
 
-            if (!session?.line_items)
+            if (!session?.line_items) {
+                console.log("No line items");
                 return res.status(500).end("How did you place an order without items???");
+            }
 
             const orderedItems = (
                 await Promise.allSettled(

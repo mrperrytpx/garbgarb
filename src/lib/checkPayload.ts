@@ -22,6 +22,7 @@ export async function checkPayloadStock(
     const [zodError, parsedCartItems] = tryCatchSync(cartItemsSchema.parse)(items);
 
     if (zodError || !parsedCartItems) {
+        console.log(zodError);
         if (zodError instanceof z.ZodError) {
             throw new ApiError(400, zodError.message);
         } else {

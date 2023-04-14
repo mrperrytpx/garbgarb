@@ -95,8 +95,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         const [variantError, variantData] = await tryCatchAsync(getStoreProductVariants)(id);
 
-        if (variantError || !variantData)
+        if (variantError || !variantData) {
+            console.log(variantError);
             return res.status(variantError?.statusCode || 500).end(variantError?.message);
+        }
 
         res.status(200).json(variantData);
     } else {

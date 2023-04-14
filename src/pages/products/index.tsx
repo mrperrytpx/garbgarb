@@ -29,13 +29,15 @@ const ProductsPage = () => {
     staleTime: 1000 * 60 * 60, // 1 hour
     retry: 1,
     select: (data) => {
-      const filteredByName = data.filter((x) =>
-        x.name.toLowerCase().includes(productFilter.toLowerCase())
+      const filteredByName = data.filter(
+        (product) =>
+          product.name.toLowerCase().includes(productFilter) ||
+          product.metadata.color_names.includes(productFilter)
       );
 
       if (selectedSizes.length === 0) return filteredByName;
-      const filteredBySize = filteredByName.filter((x) =>
-        selectedSizes.some((y) => JSON.parse(x.metadata.sizes).includes(y))
+      const filteredBySize = filteredByName.filter((product) =>
+        selectedSizes.some((size) => JSON.parse(product.metadata.sizes).includes(size))
       );
       return filteredBySize;
     },
@@ -62,9 +64,15 @@ const ProductsPage = () => {
       </div>
     );
 
+  const handleSizeSelect = (size: string) => {
+    setSelectedSizes((old) =>
+      old.includes(size) ? old.filter((x) => x !== size) : [...old, size]
+    );
+  };
+
   return (
-    <div className="flex flex-1 flex-col items-center justify-start gap-8 px-2 py-8 md:gap-8">
-      <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 sm:flex-row lg:justify-start ">
+    <div className="mb-8 flex flex-1 flex-col items-center justify-start gap-8 px-2 py-8 md:gap-8">
+      <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 px-1 sm:flex-row lg:justify-start ">
         <input
           type="text"
           placeholder="Filter by name or color..."
@@ -72,16 +80,19 @@ const ProductsPage = () => {
           value={productFilter}
           onChange={handleChange}
         />
-        <div className="flex gap-2">
+        <div className="flex h-full items-center justify-center gap-2">
           {SIZES.map((size) => (
             <div
               key={size}
-              onClick={() =>
-                setSelectedSizes((old) =>
-                  old.includes(size) ? old.filter((x) => x !== size) : [...old, size]
-                )
-              }
-              className="z-10 min-w-[40px] cursor-pointer select-none rounded-md border-2 border-black py-1 px-2 text-center font-bold transition-all"
+              tabIndex={0}
+              onClick={() => handleSizeSelect(size)}
+              onKeyDown={(e) => {
+                if (e.code === "Space") {
+                  e.preventDefault();
+                  handleSizeSelect(size);
+                }
+              }}
+              className="z-10 cursor-pointer select-none rounded-md border-2 border-slate-200 py-1 px-2 text-center font-bold transition-all"
               style={{
                 backgroundColor: selectedSizes.includes(size) ? "black" : "",
                 color: selectedSizes.includes(size) ? "white" : "",

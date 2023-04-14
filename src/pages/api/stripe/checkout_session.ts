@@ -43,12 +43,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const { cartItems, address }: { cartItems: TCheckoutPayload; address: ValidatedAddress } =
             req.body;
 
-        if (!cartItems) return res.status(400).end("Please add items to your cart");
+        if (!cartItems) {
+            console.log("No items in cart");
+            return res.status(400).end("Please add items to your cart");
+        }
 
         // CART ITEMS VALIDATION
         const [zodError, parsedCartItems] = tryCatchSync(cartItemsSchema.parse)(cartItems);
 
         if (zodError || !parsedCartItems) {
+            console.log(zodError);
             if (zodError instanceof z.ZodError) {
                 return res.status(400).end(zodError.message);
             } else {
@@ -58,6 +62,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         const [stockError, stockData] = await tryCatchAsync(checkPayloadStock)(cartItems);
         if (stockError || !stockData) {
+            console.log(stockError);
             return res.status(stockError?.statusCode || 500).end(stockError?.message);
         }
 
@@ -97,6 +102,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         );
 
         if (shippingOptsError || !shippingOptions) {
+            console.log(shippingOptsError);
             return res.status(400).end(shippingOptsError?.message);
         }
 

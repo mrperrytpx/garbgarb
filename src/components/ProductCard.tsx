@@ -14,48 +14,43 @@ export const ProductCard = ({ product }: IProductCard) => {
   const shirtName = splitName.slice(0, whichIndex).join(" ");
   const defualtShirtName = splitName.slice(whichIndex).join(" ");
 
-  const parsedSizes: string[] = JSON.parse(product.metadata.sizes);
   const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
 
   return (
-    <div className="max-w-[300px] rounded-md border-2 border-b-8 md:self-start">
+    <div className="max-w-[300px] rounded-md shadow-xl hover:outline focus:outline md:self-start">
       <Link href={`/products/${product.metadata.id}`}>
         <Image
-          className="border border-b-2"
+          className="rounded-md border border-b-2"
           src={product.metadata.thumbnail_url}
           alt=""
           width={400}
           height={400}
         />
-      </Link>
-      <div className="p-2">
-        <p className="text-center text-lg md:text-xl">{shirtName}</p>
-        <p className="text-center md:text-lg">{defualtShirtName}</p>
-        <p className="text-center text-sm md:text-base">
-          from <span className="underline">{currency(product.metadata.starting_price)}</span>
-        </p>
-        <div className="flex w-full flex-wrap justify-center gap-1">
-          Sizes:{" "}
-          {parsedSizes.map((size, i) => (
-            <span key={i}>
-              {size}
-              {i !== parsedSizes.length - 1 && ","}
-            </span>
-          ))}
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-2 self-center">
-          {parsedColorHexs.map((hex) => (
-            <div className="p-0.25 relative flex items-center justify-center rounded-lg" key={hex}>
+        <div className="flex flex-col items-start justify-center gap-2 py-2 px-4">
+          <div>
+            <p className="text-lg font-bold md:text-xl">{shirtName}</p>
+            <p className="text-sm">{defualtShirtName}</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-start gap-2">
+            {parsedColorHexs.map((hex) => (
               <div
-                style={{
-                  backgroundColor: hex,
-                }}
-                className="h-5 w-5 rounded-lg border"
-              />
-            </div>
-          ))}
+                className="p-0.25 relative flex items-center justify-center rounded-lg"
+                key={hex}
+              >
+                <div
+                  style={{
+                    backgroundColor: hex,
+                  }}
+                  className="h-5 w-5 rounded-lg border"
+                />
+              </div>
+            ))}
+          </div>
+          <p>
+            from <span className="font-semibold">{currency(product.metadata.starting_price)}</span>
+          </p>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };
