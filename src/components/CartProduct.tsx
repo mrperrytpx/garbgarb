@@ -8,60 +8,67 @@ import {
   TCartProduct,
 } from "../redux/slices/cartSlice";
 import { currency } from "../utils/currency";
+import { FiX } from "react-icons/fi";
 
 export const CartProduct = ({ product }: { product: TCartProduct }) => {
   const dispatch = useDispatch();
 
   return (
-    <article className="relative flex w-full flex-col items-center justify-center gap-1 border-b-2 last-of-type:border-0 sm:flex-row">
+    <article className="relative flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-slate-200 p-2 shadow sm:flex-row">
       <Link
-        className="select-nonerounded-md min-w-[100px] max-w-[150px] border"
-        href={`/products/${product.store_product_variant_id}`}
+        className="select-nonerounded-md min-w-[100px] max-w-[150px]"
+        href={`/products/${product.store_product_id}`}
       >
-        <Image width={150} height={150} src={product.variant_image} alt="Product" />
+        <div className="max-w-[150px]">
+          <Image width={200} height={200} src={product.variant_image} alt="Product" />
+        </div>
       </Link>
       {/*  */}
-      <div className="flex w-full flex-col sm:gap-4">
-        <div className="flex flex-1 flex-col p-2 text-center text-sm  sm:text-left">
+      <div className="flex w-full flex-col gap-4 sm:gap-4">
+        <div className="flex flex-1 flex-col items-center justify-center gap-1 text-sm sm:items-start sm:text-left">
           <Link
             href={`/products/${product.store_product_id}`}
-            className="hover:underline focus:underline sm:text-base"
+            className="font-semibold hover:underline focus:underline sm:mr-8 sm:text-base"
           >
             {product.name}
           </Link>
-          <p>
-            Size: <span className="font-bold">{product.size}</span>
-          </p>
-          <p>
-            Color: <span className="font-bold">{product.color_name}</span>
-          </p>
+          <div className="flex gap-4">
+            <p>
+              Size: <span className="font-bold">{product.size}</span>
+            </p>
+            <p>
+              Color: <span className="font-bold">{product.color_name}</span>
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center gap-4 p-2 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">
+        <div className="flex flex-1 items-center justify-center gap-4 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">
           <p>{currency(product.price)}</p>
           <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => dispatch(decreaseQuantity({ sku: product.sku }))}
-              className="select-none border px-2"
+              className="select-none rounded-sm border px-2"
             >
               -
             </button>
             <p>{product.quantity}</p>
             <button
               onClick={() => dispatch(increaseQuantity({ sku: product.sku }))}
-              className="select-none border px-2"
+              className="select-none rounded-sm border px-2"
             >
               +
             </button>
           </div>
           <p>Total: {currency(+product.price * product.quantity)}</p>
-          <button
-            className="absolute top-0 right-0 select-none bg-black px-1 text-white"
-            onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
-            type="button"
-          >
-            X
-          </button>
+          {/*  */}
+          <div className="absolute top-1 right-1 cursor-pointer select-none rounded-full border border-slate-400 bg-white shadow transition-all hover:bg-black ">
+            <FiX
+              onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
+              size="28"
+              stroke="black"
+              className="p-1 hover:stroke-white"
+            />
+          </div>
         </div>
       </div>
     </article>

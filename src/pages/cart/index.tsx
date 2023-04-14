@@ -19,28 +19,28 @@ const CartPage = () => {
     );
 
   return (
-    <div className="m-auto mt-2 flex w-full max-w-[900px] flex-1 flex-col gap-4 p-2 sm:mt-4">
-      <div className="flex w-full flex-col items-center gap-4">
+    <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-4 p-2 sm:flex-row sm:items-start ">
+      <div className="flex w-full flex-col items-center gap-2 ">
         {productsInCart.map((product) => (
           <CartProduct key={product.sku} product={product} />
         ))}
       </div>
       {/*  */}
-      <div className="mt-auto flex flex-col items-end justify-center border-t-2 sm:m-0">
-        <div className="flex flex-col justify-center gap-1 py-4 text-center">
-          <p className="block w-full sm:text-right">
-            TOTAL:{" "}
-            <span className="text-2xl font-bold underline">
+      <div className="mt-auto flex flex-col justify-center gap-2 border-t-2 sm:m-0 sm:justify-start sm:rounded-md sm:border sm:border-slate-300 sm:px-4 sm:py-6 sm:shadow-md">
+        <div className="flex w-full flex-col items-center justify-center gap-0.5 py-3 sm:rounded-md">
+          <div className="flex items-center justify-start gap-2">
+            <p>Subtotal:</p>
+            <p className="text-lg font-bold">
               {currency(
                 productsInCart.reduce((prev, curr) => prev + +curr.price * curr.quantity, 0)
               )}
-            </span>
-          </p>
-          <p className="text-right text-xs">VAT not included</p>
+            </p>
+          </div>
+          <p className="text-xs sm:self-start">Fees not applied</p>
         </div>
         <Link
           href="/checkout"
-          className="w-full border-2 p-4 text-center hover:bg-slate-700 hover:text-white focus:bg-slate-700 focus:text-white sm:w-36 sm:self-end"
+          className="w-full self-center rounded-md border-2 p-2 text-center transition-all hover:bg-slate-700 hover:text-white focus:bg-slate-700 focus:text-white sm:w-36"
         >
           CHECKOUT
         </Link>

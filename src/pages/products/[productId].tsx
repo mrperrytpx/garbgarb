@@ -145,9 +145,12 @@ const ArticlePage = () => {
                 </span>
               </p>
             </div>
-            <p className="text-left text-xl">
-              {currency(+productData?.sync_variants[option?.index].retail_price)}
-            </p>
+            <div className="flex w-full items-center justify-between gap-2">
+              <p className="text-xl">
+                {currency(+productData?.sync_variants[option?.index].retail_price)}
+              </p>
+              <p className="text-xs">Tax / VAT not included</p>
+            </div>
           </div>
           {/*  */}
           <div className="flex w-full flex-wrap gap-2">
@@ -200,7 +203,7 @@ const ArticlePage = () => {
               />
               <button
                 onClick={handleAddToCart}
-                className="w-full self-end rounded-lg border bg-white p-3 hover:bg-slate-600 hover:text-white"
+                className="w-full self-end rounded-lg border bg-white p-3 hover:bg-slate-700 hover:text-white"
               >
                 Add to cart!
               </button>
