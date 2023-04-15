@@ -17,7 +17,9 @@ import { OrderSummary } from "../../components/OrderSummary";
 
 const libraries: Libraries = ["places"];
 
-export type ValidatedAddress = z.infer<typeof validationSchema>;
+export type ValidatedForm = z.infer<typeof validationSchema>;
+
+export type ValidatedAddress = Omit<ValidatedForm, "email">;
 
 export const validationSchema = z.object({
   email: z.string().min(1, "Required").email(),

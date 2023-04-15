@@ -11,7 +11,7 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
     const response = await getGeocode({ placeId: suggestion?.place_id });
     const data = response[0].address_components;
 
-    const address: Partial<ValidatedAddress> = {
+    const address: ValidatedAddress = {
         streetName:
             data.find((x: TGoogleAddressDetails) => x.types.includes("route"))?.long_name || "",
         streetNumber:
