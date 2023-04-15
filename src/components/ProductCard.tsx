@@ -17,7 +17,7 @@ export const ProductCard = ({ product }: IProductCard) => {
   const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
 
   return (
-    <div className="max-w-[300px] rounded-md shadow-xl hover:outline focus:outline md:self-start">
+    <div className="max-w-[300px] rounded-md shadow-xl hover:outline hover:outline-1 md:self-start">
       <Link href={`/products/${product.metadata.id}`}>
         <Image
           className="rounded-md border border-b-2"
