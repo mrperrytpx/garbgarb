@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { TCartProduct } from "../../../redux/slices/cartSlice";
-import type { ValidatedAddress } from "../../checkout/old";
 import { allowedCountries } from "../../../utils/allowedCountries";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 import { estimateShippingCost } from "../../../lib/estimateShippingCost";
+import { ValidatedAddress } from "../../checkout";
 
 export type TShippingRatesResp = {
     shipping: number | string;

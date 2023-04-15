@@ -4,8 +4,8 @@ import { z } from "zod";
 import { estimateShippingCost, TShippingOption } from "../../../lib/estimateShippingCost";
 import { shippingRates } from "../../../lib/shippingRates";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
-import type { ValidatedAddress } from "../../checkout/old";
 import { checkPayloadStock } from "../../../lib/checkPayload";
+import { ValidatedAddress } from "../../checkout";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",

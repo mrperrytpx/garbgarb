@@ -1,6 +1,6 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
-import { ValidatedAddress } from "../pages/checkout/old";
+import { ValidatedAddress } from "../pages/checkout";
 
 export type TShippingOption = {
     id: string;

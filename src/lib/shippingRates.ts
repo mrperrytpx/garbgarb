@@ -1,7 +1,7 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiKeyInstance } from "../utils/axiosClients";
 import { TShippingOption } from "./estimateShippingCost";
-import { ValidatedAddress } from "../pages/checkout/old";
+import { ValidatedAddress } from "../pages/checkout";
 
 export type TShippingRatesItem = {
     quantity: number;

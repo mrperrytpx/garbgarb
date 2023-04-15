@@ -4,7 +4,6 @@ import { Libraries, useGoogleMapsScript } from "use-google-maps-script";
 import { z } from "zod";
 import { cartSelector } from "../../redux/slices/cartSlice";
 import { AutocompletePrediction } from "react-places-autocomplete";
-import { ValidatedAddress } from "./old";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { PageError } from "../../utils/PageError";
@@ -18,13 +17,16 @@ import { OrderSummary } from "../../components/OrderSummary";
 
 const libraries: Libraries = ["places"];
 
-const validationSchema = z.object({
-  city: z.string().min(1, { message: "City is required" }),
-  country: z.string().min(1, { message: "Country is required" }),
-  province: z.string().min(1, { message: "State / Province is required" }),
-  zip: z.string().min(1, { message: "Zip / Postal Code is required" }),
-  streetName: z.string().min(1, { message: "Street Name is required" }),
-  streetNumber: z.string().min(1, { message: "Street Number is required" }),
+export type ValidatedAddress = z.infer<typeof validationSchema>;
+
+export const validationSchema = z.object({
+  email: z.string().min(1, "Required").email(),
+  city: z.string().min(1, { message: "Required" }),
+  country: z.string().min(1, { message: "Required" }),
+  province: z.string().min(1, { message: "Required" }),
+  zip: z.string().min(1, { message: "Required" }),
+  streetName: z.string().min(1, { message: "Required" }),
+  streetNumber: z.string().min(1, { message: "Required" }),
   subpremise: z.string().optional(),
 });
 
@@ -32,12 +34,14 @@ const CheckoutPage = () => {
   const session = useSession();
   const [checkoutStep, setCheckoutStep] = useState(1);
 
-  const nextStep = () => setCheckoutStep((prev) => prev + 1);
-  const prevStep = () => setCheckoutStep((prev) => prev - 1);
-
-  //   useEffect(() => {
-  //     if (session.data?.user) setCheckoutStep(2);
-  //   }, [session]);
+  const nextStep = () => {
+    if (checkoutStep === 4) return;
+    setCheckoutStep((prev) => prev + 1);
+  };
+  const prevStep = () => {
+    if (checkoutStep === 1) return;
+    setCheckoutStep((prev) => prev - 1);
+  };
 
   const productsInCart = useSelector(cartSelector);
   const router = useRouter();
@@ -68,7 +72,7 @@ const CheckoutPage = () => {
   return (
     <FormProvider {...methods}>
       <div className="mx-auto mb-2 flex w-full max-w-screen-md flex-col items-start gap-2 px-2 lg:gap-6">
-        <div className="w-full flex-1">
+        <div className="w-full">
           {checkoutStep === 1 && (
             <>
               <SectionSeparator name="Login" number={checkoutStep} />
@@ -81,14 +85,15 @@ const CheckoutPage = () => {
                       signIn();
                     }
                   }}
-                  className="flex w-full flex-1 cursor-pointer flex-col rounded-lg bg-slate-200 p-4 text-center font-semibold"
+                  className="w-full flex-1 cursor-pointer
+                   rounded-lg bg-slate-200 p-4 text-center font-semibold"
                 >
                   Use an existing account
                 </div>
                 <p>Or</p>
                 <div
                   onClick={nextStep}
-                  className="w-full flex-1 rounded-lg bg-slate-200 p-4 text-center font-semibold"
+                  className="w-full flex-1 cursor-pointer rounded-lg bg-slate-200 p-4 text-center font-semibold"
                 >
                   Proceed as guest
                 </div>
@@ -96,7 +101,7 @@ const CheckoutPage = () => {
             </>
           )}
           {checkoutStep === 2 && (
-            <div className="flex h-full flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <SectionSeparator name="Cart overview" number={checkoutStep} />
               <div className="flex w-full flex-col items-center gap-1 sm:p-2">
                 {productsInCart.map((item) => (
@@ -107,16 +112,18 @@ const CheckoutPage = () => {
             </div>
           )}
           {checkoutStep === 3 && (
-            <div className="flex h-full flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <SectionSeparator name="Shipping Address" number={checkoutStep} />
-              <AddressForm suggestion={suggestion} setSuggestion={setSuggestion} />
-              <StepButtons checkoutStep={checkoutStep} prevStep={prevStep} nextStep={nextStep} />
+              <AddressForm
+                setCheckoutStep={setCheckoutStep}
+                suggestion={suggestion}
+                setSuggestion={setSuggestion}
+              />
             </div>
           )}
           {checkoutStep === 4 && (
-            <div className="flex h-full flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <SectionSeparator name="Summary" number={checkoutStep} />
-
               <OrderSummary suggestion={suggestion} />
               <StepButtons checkoutStep={checkoutStep} prevStep={prevStep} nextStep={nextStep} />
             </div>
@@ -138,20 +145,24 @@ interface IStepButtonsProps {
 const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) => {
   return (
     <div className="mt-auto mb-2 flex w-full items-center justify-between px-2">
-      <button
-        disabled={checkoutStep === 1}
-        className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
-        onClick={prevStep}
-      >
-        Back
-      </button>
-      <button
-        className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
-        onClick={nextStep}
-        disabled={checkoutStep === 4}
-      >
-        Next
-      </button>
+      {checkoutStep > 1 && (
+        <button
+          disabled={checkoutStep === 1}
+          className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
+          onClick={prevStep}
+        >
+          Back
+        </button>
+      )}
+      {checkoutStep < 4 && (
+        <button
+          className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
+          onClick={nextStep}
+          disabled={checkoutStep === 4}
+        >
+          Next
+        </button>
+      )}
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { getGeocode } from "use-places-autocomplete";
-import { ValidatedAddress } from "../pages/checkout/old";
 import { TGoogleAddressDetails } from "../components/AddressForm";
+import { UseFormSetValue } from "react-hook-form";
+import { ValidatedAddress } from "../pages/checkout";
 
 export type TSuggestion = ReturnType<typeof getAddressSuggestion>;
 
@@ -10,7 +11,7 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
     const response = await getGeocode({ placeId: suggestion?.place_id });
     const data = response[0].address_components;
 
-    const address: ValidatedAddress = {
+    const address: Partial<ValidatedAddress> = {
         streetName:
             data.find((x: TGoogleAddressDetails) => x.types.includes("route"))?.long_name || "",
         streetNumber:
@@ -32,10 +33,24 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
     return address;
 };
 
-export const useGetSuggestionsQuery = (suggestion: AutocompletePrediction | null) => {
+export const useGetSuggestionsQuery = (
+    suggestion: AutocompletePrediction | null,
+    setValue?: UseFormSetValue<ValidatedAddress>
+) => {
     return useQuery({
         queryKey: ["address", suggestion?.description],
         queryFn: () => getAddressSuggestion(suggestion),
         enabled: !!suggestion,
+        onSuccess: (data) => {
+            if (setValue) {
+                setValue("streetName", data.streetName || "");
+                setValue("streetNumber", data.streetNumber || "");
+                setValue("city", data.city || "");
+                setValue("country", data.country || "");
+                setValue("province", data.province || "");
+                setValue("zip", data.zip || "");
+                setValue("subpremise", data?.subpremise);
+            }
+        },
     });
 };

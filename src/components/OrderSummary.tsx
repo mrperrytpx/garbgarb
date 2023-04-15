@@ -21,7 +21,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   const completeOrderMutation = useCompleteOrderMutation();
 
   return (
-    <aside className=" mx-auto flex w-full max-w-screen-md flex-1 flex-col rounded-lg bg-slate-100 p-4">
+    <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4">
       <div className="flex flex-col items-start justify-center gap-4">
         <p className="text-xl font-bold">ORDER SUMMARY</p>
         <div className="flex w-full items-center justify-between">
