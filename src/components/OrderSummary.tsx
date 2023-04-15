@@ -19,21 +19,30 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
 
   const { data: addressData } = useGetSuggestionsQuery(suggestion);
   const extraCosts = useGetExtraCostsQuery(addressData);
+  const completeOrderMutation = useCompleteOrderMutation();
 
   const { getValues } = useFormContext<ValidatedForm>();
 
   const formData = getValues();
   const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.province}, ${formData.zip}-${formData.country}`;
 
-  const completeOrderMutation = useCompleteOrderMutation();
-
   return (
     <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4">
       <div className="flex flex-col items-start justify-center gap-4">
         <h1 className="text-xl font-bold">ORDER SUMMARY</h1>
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+          <p className="text-sm">Items:</p>
+          <div className="flex flex-col rounded-md border p-1 ">
+            {productsInCart.map((product) => (
+              <p className="text-xs sm:text-right" key={product.sku}>
+                {product.name}, ({product.size} - {product.color_name}), x{product.quantity}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
           <p className="text-sm">Address:</p>
-          <p className="text-sm">{formattedAddress}</p>
+          {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
         </div>
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
           <p className="text-sm">Email:</p>

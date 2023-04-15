@@ -39,7 +39,7 @@ export const validationSchema = z.object({
 
 const CheckoutPage = () => {
   const session = useSession();
-  const [checkoutStep, setCheckoutStep] = useState(3);
+  const [checkoutStep, setCheckoutStep] = useState(4);
 
   const nextStep = () => {
     if (checkoutStep === 4) return;
