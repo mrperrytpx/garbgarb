@@ -1,6 +1,6 @@
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { useFormContext } from "react-hook-form";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress } from "../pages/checkout/old";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { LoadingSpinner } from "./LoadingSpinner";
@@ -45,8 +45,8 @@ export const AddressForm = ({ suggestion, setSuggestion }: IAddressFormProps) =>
   const addressData = useGetSuggestionsQuery(suggestion);
 
   return (
-    <form className="relative min-h-[300px] p-2 lg:min-h-0">
-      <fieldset className="flex w-full flex-col items-center gap-4">
+    <form className="relative h-full p-2 lg:min-h-0">
+      <fieldset className="flex w-full flex-col items-center">
         <div className="w-full">
           <label className="block p-1 text-sm" htmlFor="address1">
             <strong>Address</strong>

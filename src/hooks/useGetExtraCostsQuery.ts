@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { cartSelector } from "../redux/slices/cartSlice";
 import { apiInstance } from "../utils/axiosClients";
 import { TShippingRatesResp } from "../pages/api/printful/shipping_rates";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress } from "../pages/checkout/old";
 
 export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => {
     const productsInCart = useSelector(cartSelector);

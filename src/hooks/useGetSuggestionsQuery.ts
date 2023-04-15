@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { getGeocode } from "use-places-autocomplete";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress } from "../pages/checkout/old";
 import { TGoogleAddressDetails } from "../components/AddressForm";
 
 export type TSuggestion = ReturnType<typeof getAddressSuggestion>;

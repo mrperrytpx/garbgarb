@@ -5,7 +5,7 @@ import { TCheckoutPayload } from "../lib/checkPayload";
 import { apiInstance } from "../utils/axiosClients";
 import Stripe from "stripe";
 import { getStripe } from "../utils/getStripe";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress } from "../pages/checkout/old";
 
 interface IPostCompleteOrder {
     address: ValidatedAddress | undefined;

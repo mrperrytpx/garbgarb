@@ -8,7 +8,7 @@ interface IMinimalCartProduct {
 
 export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
   return (
-    <article className="flex w-full flex-col items-center justify-center gap-4 border-b-2 p-2 last:border-0 sm:flex-row">
+    <article className="flex w-full flex-col items-center justify-center gap-4 border-y-2 p-2 sm:flex-row">
       <div className="hidden max-h-[36px] max-w-[36px] sm:block">
         <Image
           className="h-full w-full"
@@ -28,8 +28,8 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
         <strong className="self-start">x{item.quantity}</strong>
       </div>
       <div className="flex w-full items-center justify-between gap-2 sm:flex-1 sm:justify-end sm:gap-16 sm:self-start">
-        <div>{currency(item.price)}</div>
-        <strong>{currency(+item.price * item.quantity)}</strong>
+        <div className="min-w-[80px] text-left sm:text-right">{currency(item.price)}</div>
+        <strong className="min-w-[80px] text-right">{currency(+item.price * item.quantity)}</strong>
       </div>
     </article>
   );
