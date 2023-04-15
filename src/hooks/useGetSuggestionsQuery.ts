@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { getGeocode } from "use-places-autocomplete";
 import { TGoogleAddressDetails } from "../components/AddressForm";
-import { UseFormSetValue } from "react-hook-form";
-import { ValidatedAddress, ValidatedForm } from "../pages/checkout";
+import { ValidatedAddress } from "../pages/checkout";
+import { allowedCountries } from "../utils/allowedCountries";
 
 export type TSuggestion = ReturnType<typeof getAddressSuggestion>;
+
+type TAllowed = typeof allowedCountries;
 
 const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) => {
     const response = await getGeocode({ placeId: suggestion?.place_id });
@@ -20,7 +22,8 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
         city:
             data.find((x: TGoogleAddressDetails) => x.types.includes("locality"))?.long_name || "",
         country:
-            data.find((x: TGoogleAddressDetails) => x.types.includes("country"))?.short_name || "",
+            (data.find((x: TGoogleAddressDetails) => x.types.includes("country"))
+                ?.short_name as TAllowed[number]) || "",
         province:
             data.find((x: TGoogleAddressDetails) => x.types.includes("administrative_area_level_1"))
                 ?.long_name || "",
@@ -33,24 +36,10 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
     return address;
 };
 
-export const useGetSuggestionsQuery = (
-    suggestion: AutocompletePrediction | null,
-    setValue?: UseFormSetValue<ValidatedForm>
-) => {
+export const useGetSuggestionsQuery = (suggestion: AutocompletePrediction | null) => {
     return useQuery({
         queryKey: ["address", suggestion?.description],
         queryFn: () => getAddressSuggestion(suggestion),
         enabled: !!suggestion,
-        onSuccess: (data) => {
-            if (setValue) {
-                setValue("streetName", data.streetName || "");
-                setValue("streetNumber", data.streetNumber || "");
-                setValue("city", data.city || "");
-                setValue("country", data.country || "");
-                setValue("province", data.province || "");
-                setValue("zip", data.zip || "");
-                setValue("subpremise", data?.subpremise);
-            }
-        },
     });
 };

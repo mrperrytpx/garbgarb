@@ -6,7 +6,6 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import { useEffect, useRef } from "react";
 import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
-import { allowedCountries } from "../utils/allowedCountries";
 
 export type TAddress = {
   address1: string;
@@ -37,11 +36,11 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
   } = usePlacesAutocomplete({
     debounce: 500,
     cacheKey: "address",
-    requestOptions: {
-      componentRestrictions: {
-        country: [...allowedCountries],
-      },
-    },
+    // requestOptions: {
+    //   componentRestrictions: {
+    //     country: [...allowedCountries],
+    //   },
+    // },
   });
 
   const session = useSession();
@@ -59,6 +58,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
   };
 
   const ref = useRef<HTMLUListElement>(null);
+  const addressData = useGetSuggestionsQuery(suggestion);
 
   useEffect(() => {
     function handleClickOutside(event: Event) {
@@ -81,7 +81,17 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     }
   }, [session]);
 
-  const addressData = useGetSuggestionsQuery(suggestion, setFormValue);
+  useEffect(() => {
+    if (addressData.data) {
+      setFormValue("streetName", addressData.data.streetName || "");
+      setFormValue("streetNumber", addressData.data.streetNumber || "");
+      setFormValue("city", addressData.data.city || "");
+      setFormValue("country", addressData.data.country || "");
+      setFormValue("province", addressData.data.province || "");
+      setFormValue("zip", addressData.data.zip || "");
+      setFormValue("subpremise", addressData.data?.subpremise);
+    }
+  }, [addressData.data]);
 
   const onSubmit = handleSubmit(() => {
     setCheckoutStep((prev) => prev + 1);
