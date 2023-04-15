@@ -7,6 +7,8 @@ import { AutocompletePrediction } from "react-places-autocomplete";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { useGetExtraCostsQuery } from "../hooks/useGetExtraCostsQuery";
 import { useCompleteOrderMutation } from "../hooks/useCompleteOrderMutation";
+import { useFormContext } from "react-hook-form";
+import { ValidatedForm } from "../pages/checkout";
 
 interface IOrderSummaryProps {
   suggestion: AutocompletePrediction | null;
@@ -18,15 +20,28 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   const { data: addressData } = useGetSuggestionsQuery(suggestion);
   const extraCosts = useGetExtraCostsQuery(addressData);
 
+  const { getValues } = useFormContext<ValidatedForm>();
+
+  const formData = getValues();
+  const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.province}, ${formData.zip}-${formData.country}`;
+
   const completeOrderMutation = useCompleteOrderMutation();
 
   return (
     <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4">
       <div className="flex flex-col items-start justify-center gap-4">
-        <p className="text-xl font-bold">ORDER SUMMARY</p>
+        <h1 className="text-xl font-bold">ORDER SUMMARY</h1>
+        <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+          <p className="text-sm">Address:</p>
+          <p className="text-sm">{formattedAddress}</p>
+        </div>
+        <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+          <p className="text-sm">Email:</p>
+          <p className="text-sm">{formData.email}</p>
+        </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">Subtotal:</p>
-          <p className="text-sm">
+          <p className="text-sm font-bold">
             {currency(productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0))}
           </p>
         </div>

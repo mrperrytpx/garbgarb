@@ -1,4 +1,4 @@
-export const allowedCountries: string[] = [
+export const allowedCountries = [
     "AD",
     "AL",
     "AT",
@@ -51,4 +51,4 @@ export const allowedCountries: string[] = [
     "LI",
     "NO",
     "CH",
-];
+] as const;

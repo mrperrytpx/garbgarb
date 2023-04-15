@@ -3,7 +3,7 @@ import { AutocompletePrediction } from "react-places-autocomplete";
 import { getGeocode } from "use-places-autocomplete";
 import { TGoogleAddressDetails } from "../components/AddressForm";
 import { UseFormSetValue } from "react-hook-form";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress, ValidatedForm } from "../pages/checkout";
 
 export type TSuggestion = ReturnType<typeof getAddressSuggestion>;
 
@@ -35,7 +35,7 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
 
 export const useGetSuggestionsQuery = (
     suggestion: AutocompletePrediction | null,
-    setValue?: UseFormSetValue<ValidatedAddress>
+    setValue?: UseFormSetValue<ValidatedForm>
 ) => {
     return useQuery({
         queryKey: ["address", suggestion?.description],

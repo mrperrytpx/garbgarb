@@ -4,8 +4,9 @@ import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEffect, useRef } from "react";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
+import { allowedCountries } from "../utils/allowedCountries";
 
 export type TAddress = {
   address1: string;
@@ -33,7 +34,15 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     setValue,
     clearSuggestions,
     suggestions: { status, data },
-  } = usePlacesAutocomplete({ debounce: 500, cacheKey: "address" });
+  } = usePlacesAutocomplete({
+    debounce: 500,
+    cacheKey: "address",
+    requestOptions: {
+      componentRestrictions: {
+        country: [...allowedCountries],
+      },
+    },
+  });
 
   const session = useSession();
 
@@ -43,7 +52,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     setValue: setFormValue,
     handleSubmit,
     clearErrors,
-  } = useFormContext<ValidatedAddress>();
+  } = useFormContext<ValidatedForm>();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -97,7 +106,6 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
               className="h-10 w-full border p-2 text-sm"
               placeholder="Email address"
               autoComplete="off"
-              onChange={handleInput}
               disabled={!ready}
             />
             {errors.email && (

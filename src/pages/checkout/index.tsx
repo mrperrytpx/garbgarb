@@ -14,6 +14,7 @@ import { MinimalCartProduct } from "../../components/MinimalCartProduct";
 import { useSession, signIn } from "next-auth/react";
 import { AddressForm } from "../../components/AddressForm";
 import { OrderSummary } from "../../components/OrderSummary";
+import { allowedCountries } from "../../utils/allowedCountries";
 
 const libraries: Libraries = ["places"];
 
@@ -24,7 +25,11 @@ export type ValidatedAddress = Omit<ValidatedForm, "email">;
 export const validationSchema = z.object({
   email: z.string().min(1, "Required").email(),
   city: z.string().min(1, { message: "Required" }),
-  country: z.string().min(1, { message: "Required" }),
+  country: z.enum([...allowedCountries], {
+    errorMap: () => ({
+      message: `Invalid country 2-letter code`,
+    }),
+  }),
   province: z.string().min(1, { message: "Required" }),
   zip: z.string().min(1, { message: "Required" }),
   streetName: z.string().min(1, { message: "Required" }),
@@ -34,7 +39,7 @@ export const validationSchema = z.object({
 
 const CheckoutPage = () => {
   const session = useSession();
-  const [checkoutStep, setCheckoutStep] = useState(1);
+  const [checkoutStep, setCheckoutStep] = useState(3);
 
   const nextStep = () => {
     if (checkoutStep === 4) return;
@@ -146,7 +151,7 @@ interface IStepButtonsProps {
 
 const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) => {
   return (
-    <div className="mt-auto mb-2 flex w-full items-center justify-between px-2">
+    <div className="mt-auto mb-2 flex w-full items-center justify-between">
       {checkoutStep > 1 && (
         <button
           disabled={checkoutStep === 1}
