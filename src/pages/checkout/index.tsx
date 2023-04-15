@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { AutocompletePrediction } from "react-places-autocomplete";
+import { PageError } from "../../utils/PageError";
 
 const libraries: Libraries = ["places"];
 
@@ -41,11 +42,6 @@ const CheckoutPage = () => {
     resolver: zodResolver(validationSchema),
   });
 
-  if (!productsInCart.length) {
-    router.push("/products");
-    return <div>Redirecting to shop</div>;
-  }
-
   if (!isLoaded)
     return (
       <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
@@ -53,7 +49,12 @@ const CheckoutPage = () => {
         <LoadingSpinner size={50} />
       </div>
     );
-  if (loadError) return <div>Something is wrong... try reloading the page</div>;
+
+  if (!productsInCart.length) {
+    router.push("/products");
+  }
+
+  if (loadError) return <PageError error={loadError} />;
 
   return (
     <FormProvider {...methods}>
@@ -73,5 +74,7 @@ const CheckoutPage = () => {
     </FormProvider>
   );
 };
+
+CheckoutPage.auth = true;
 
 export default CheckoutPage;
