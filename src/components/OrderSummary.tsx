@@ -78,7 +78,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
             <p className="text-sm font-bold">TBD</p>
           )}
         </div>
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between border-t">
           <p className="uppercase">
             <strong>Estimated Total:</strong>
           </p>
