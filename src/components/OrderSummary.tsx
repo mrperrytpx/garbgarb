@@ -63,7 +63,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
           ) : extraCosts.data ? (
             <p className="text-sm font-bold">{currency(extraCosts.data?.shipping)}</p>
           ) : (
-            <p className="text-sm font-bold">TBD</p>
+            <p className="text-sm font-bold">{extraCosts.isError ? "💀" : "TBD"}</p>
           )}
         </div>
         <div className="flex w-full items-center justify-between">
@@ -75,15 +75,15 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
               {new Intl.NumberFormat("en-US", { style: "percent" }).format(extraCosts.data.vat - 1)}
             </p>
           ) : (
-            <p className="text-sm font-bold">TBD</p>
+            <p className="text-sm font-bold">{extraCosts.isError ? "💀" : "TBD"}</p>
           )}
         </div>
-        <div className="flex w-full items-center justify-between border-t">
-          <p className="uppercase">
+        <div className="flex w-full items-center justify-between border-t-2">
+          <p className="text-lg uppercase">
             <strong>Estimated Total:</strong>
           </p>
           {extraCosts.data ? (
-            <p>
+            <p className="text-lg">
               <strong>
                 {currency(
                   productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0) *
@@ -93,7 +93,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
               </strong>
             </p>
           ) : (
-            <p>
+            <p className="text-lg">
               <strong>
                 {currency(
                   productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0)
