@@ -32,7 +32,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
         <h1 className="text-xl font-bold">ORDER SUMMARY</h1>
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
           <p className="text-sm">Items:</p>
-          <div className="flex flex-col rounded-md border p-1 ">
+          <div className="flex flex-col gap-0.5 rounded-md bg-white p-1 ">
             {productsInCart.map((product) => (
               <p className="text-xs sm:text-right" key={product.sku}>
                 {product.name}, ({product.size} - {product.color_name}), x{product.quantity}

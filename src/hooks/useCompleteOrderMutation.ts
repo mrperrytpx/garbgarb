@@ -15,7 +15,6 @@ export const useCompleteOrderMutation = () => {
     const productsInCart = useSelector(cartSelector);
 
     const postCompleteOrder = async ({ address }: IPostCompleteOrder) => {
-        console.log(address);
         const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
             store_product_id: item.store_product_id,
             store_product_variant_id: item.store_product_variant_id,

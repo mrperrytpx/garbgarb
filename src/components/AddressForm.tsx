@@ -6,6 +6,7 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import { useEffect, useRef } from "react";
 import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export type TAddress = {
   address1: string;
@@ -35,12 +36,9 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     suggestions: { status, data },
   } = usePlacesAutocomplete({
     debounce: 500,
-    cacheKey: "address",
-    // requestOptions: {
-    //   componentRestrictions: {
-    //     country: [...allowedCountries],
-    //   },
-    // },
+    requestOptions: {
+      types: ["address"],
+    },
   });
 
   const session = useSession();
@@ -119,9 +117,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
               disabled={!ready}
             />
             {errors.email && (
-              <span className="mb-1 pl-1 text-sm font-semibold underline">
-                {errors.email.message}
-              </span>
+              <span className="mb-1 pl-1 text-sm font-semibold">{errors.email.message}</span>
             )}
           </div>
           <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
@@ -141,9 +137,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                 disabled={!ready}
               />
               {errors.streetName && (
-                <span className="mb-1 pl-1 text-sm font-semibold underline">
-                  {errors.streetName.message}
-                </span>
+                <span className="mb-1 pl-1 text-sm font-semibold">{errors.streetName.message}</span>
               )}
               {addressData.isLoading && addressData.fetchStatus !== "idle" ? (
                 <div className="absolute top-[68px] left-0 z-20 w-full gap-0.5 bg-white px-2">
@@ -188,7 +182,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.streetNumber && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline">
+                  <span className="mb-1 pl-1 text-sm font-semibold">
                     {errors.streetNumber.message}
                   </span>
                 )}
@@ -209,7 +203,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.subpremise && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline">
+                  <span className="mb-1 pl-1 text-sm font-semibold">
                     {errors.subpremise.message}
                   </span>
                 )}
@@ -234,7 +228,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.city && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline" role="error">
+                  <span className="mb-1 pl-1 text-sm font-semibold" role="error">
                     {errors.city.message}
                   </span>
                 )}
@@ -254,9 +248,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.province && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline">
-                    {errors.province.message}
-                  </span>
+                  <span className="mb-1 pl-1 text-sm font-semibold">{errors.province.message}</span>
                 )}
               </div>
             </div>
@@ -276,9 +268,12 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.country && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline">
-                    {errors.country.message}
-                  </span>
+                  <>
+                    <p className="mb-1 pl-1 text-sm font-semibold">{errors.country.message}</p>
+                    <Link className="mb-1 pl-1 text-sm uppercase underline" href="/returns-faq">
+                      Check available countries
+                    </Link>
+                  </>
                 )}
               </div>
 
@@ -297,9 +292,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                   disabled={!ready}
                 />
                 {errors.zip && (
-                  <span className="mb-1 pl-1 text-sm font-semibold underline">
-                    {errors.zip.message}
-                  </span>
+                  <span className="mb-1 pl-1 text-sm font-semibold">{errors.zip.message}</span>
                 )}
               </div>
             </div>

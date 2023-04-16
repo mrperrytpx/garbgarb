@@ -21,10 +21,9 @@ export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => 
     };
 
     return useQuery({
-        queryKey: ["costs", address?.country],
+        queryKey: ["costs", address?.country, productsInCart.length],
         queryFn: postExtraCosts,
         enabled: !!address,
         refetchOnWindowFocus: false,
-        staleTime: Infinity,
     });
 };

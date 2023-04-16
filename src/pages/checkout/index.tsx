@@ -27,7 +27,7 @@ export const validationSchema = z.object({
   city: z.string().min(1, { message: "Required" }),
   country: z.enum([...allowedCountries], {
     errorMap: () => ({
-      message: `Invalid country 2-letter code`,
+      message: `We don't ship to that country.`,
     }),
   }),
   province: z.string().min(1, { message: "Required" }),
