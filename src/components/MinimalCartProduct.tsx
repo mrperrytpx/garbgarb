@@ -8,7 +8,7 @@ interface IMinimalCartProduct {
 
 export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
   return (
-    <article className="flex w-full flex-col items-center justify-center gap-4 border-y-2 p-2 sm:flex-row">
+    <article className="flex w-full flex-col items-center justify-center gap-4 border-b-2 p-2 sm:flex-row">
       <div className="hidden max-h-[36px] max-w-[36px] sm:block">
         <Image
           className="h-full w-full"

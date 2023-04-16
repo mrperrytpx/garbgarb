@@ -27,19 +27,10 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.province}, ${formData.zip}-${formData.country}`;
 
   return (
-    <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4">
+    <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4 font-medium">
       <div className="flex flex-col items-start justify-center gap-4">
         <h1 className="text-xl font-bold">ORDER SUMMARY</h1>
-        <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
-          <p className="text-sm">Items:</p>
-          <div className="flex flex-col gap-0.5 rounded-md bg-white p-1 ">
-            {productsInCart.map((product) => (
-              <p className="text-xs sm:text-right" key={product.sku}>
-                {product.name}, ({product.size} - {product.color_name}), x{product.quantity}
-              </p>
-            ))}
-          </div>
-        </div>
+
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
           <p className="text-sm">Address:</p>
           {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
@@ -47,6 +38,16 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
           <p className="text-sm">Email:</p>
           <p className="text-sm">{formData.email}</p>
+        </div>
+        <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+          <p className="text-sm">Items:</p>
+          <div className="flex flex-col gap-0.5 rounded-md">
+            {productsInCart.map((product) => (
+              <p className="border-b border-slate-300 text-xs sm:text-right" key={product.sku}>
+                {product.name}, ({product.size} - {product.color_name}), x{product.quantity}
+              </p>
+            ))}
+          </div>
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="text-sm">Subtotal:</p>
