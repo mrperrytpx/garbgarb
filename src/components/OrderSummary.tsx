@@ -29,34 +29,35 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   return (
     <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4 font-medium">
       <div className="flex flex-col items-start justify-center gap-4">
-        <h1 className="text-xl font-bold">ORDER SUMMARY</h1>
+        <h1 className="w-full border-b border-slate-300 text-xl font-bold">ORDER SUMMARY</h1>
 
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
-          <p className="text-sm">Address:</p>
+          <p className="text-sm uppercase">Address:</p>
           {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
         </div>
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
-          <p className="text-sm">Email:</p>
+          <p className="text-sm uppercase">Email:</p>
           <p className="text-sm">{formData.email}</p>
         </div>
         <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
-          <p className="text-sm">Items:</p>
+          <p className="text-sm uppercase">Items:</p>
           <div className="flex flex-col gap-0.5 rounded-md">
             {productsInCart.map((product) => (
-              <p className="border-b border-slate-300 text-xs sm:text-right" key={product.sku}>
-                {product.name}, ({product.size} - {product.color_name}), x{product.quantity}
+              <p className="text-xs sm:text-right" key={product.sku}>
+                {product.name}, ({product.size} - {product.color_name}),{" "}
+                <strong>x{product.quantity}</strong>
               </p>
             ))}
           </div>
         </div>
         <div className="flex w-full items-center justify-between">
-          <p className="text-sm">Subtotal:</p>
+          <p className="text-sm uppercase">Subtotal:</p>
           <p className="text-sm font-bold">
             {currency(productsInCart.reduce((prev, curr) => +curr.price * curr.quantity + prev, 0))}
           </p>
         </div>
         <div className="flex w-full items-center justify-between">
-          <p className="text-sm">Estimated Shipping:</p>
+          <p className="text-sm uppercase">Est. Shipping:</p>
           {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
             <LoadingSpinner size={12} />
           ) : extraCosts.data ? (
@@ -66,7 +67,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
           )}
         </div>
         <div className="flex w-full items-center justify-between">
-          <p className="text-sm">VAT:</p>
+          <p className="text-sm uppercase">VAT:</p>
           {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
             <LoadingSpinner size={12} />
           ) : extraCosts.data ? (
@@ -104,7 +105,7 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
         <button
           disabled={!extraCosts.data || extraCosts.isFetching || completeOrderMutation.isLoading}
           onClick={() => completeOrderMutation.mutateAsync({ address: addressData })}
-          className="flex w-full items-center justify-center  gap-2 bg-white p-2 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 self-center rounded-lg bg-white  p-2 shadow-md disabled:opacity-50 sm:w-52"
           type="button"
         >
           {completeOrderMutation.isLoading && <LoadingSpinner size={24} />}

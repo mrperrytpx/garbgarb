@@ -42,7 +42,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center gap-4 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">
+        <div className="flex flex-1 items-center justify-evenly gap-4 text-sm sm:w-full sm:justify-start sm:gap-8 sm:text-base">
           <p>{currency(product.price)}</p>
           <div className="flex items-center justify-center gap-2">
             <button
@@ -59,7 +59,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
               +
             </button>
           </div>
-          <p>Total: {currency(+product.price * product.quantity)}</p>
+          <strong>{currency(+product.price * product.quantity)}</strong>
           {/*  */}
           <div className="absolute top-1 right-1 cursor-pointer select-none rounded-full bg-white shadow outline outline-1 outline-slate-400 transition-all hover:bg-black ">
             <FiX

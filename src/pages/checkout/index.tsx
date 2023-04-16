@@ -113,7 +113,7 @@ const CheckoutPage = () => {
           )}
           {checkoutStep === 2 && (
             <div className="flex flex-col gap-4">
-              <div className="flex w-full flex-col items-center gap-1">
+              <div className="flex w-full flex-col items-center gap-1 shadow">
                 {productsInCart.map((item) => (
                   <MinimalCartProduct key={item.sku} item={item} />
                 ))}

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiGithub, FiLinkedin, FiMenu } from "react-icons/fi";
+import { FiGithub, FiLinkedin, FiLogIn, FiLogOut, FiMenu } from "react-icons/fi";
+import { BsShop } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 import { CartIconWithNumber } from "../components/CartIconWithNumber";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { ErrorBoundary } from "../utils/ErrorBoundary";
 
 interface ILayoutProps {
@@ -13,7 +14,7 @@ interface ILayoutProps {
 
 const Layout = ({ children }: ILayoutProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const pathname = usePathname();
 
@@ -28,8 +29,14 @@ const Layout = ({ children }: ILayoutProps) => {
             <Link className="p-1 text-3xl" href="/">
               L
             </Link>
+            <Link
+              className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline"
+              href="/products"
+            >
+              <BsShop size="24" />
+            </Link>
             {session?.user && (
-              <Link href="/profile">
+              <Link className="sm:hidden" href="/profile">
                 <Image
                   className="w-7 rounded-full"
                   width={100}
@@ -41,12 +48,41 @@ const Layout = ({ children }: ILayoutProps) => {
             )}
           </div>
           <div className="flex items-center justify-center gap-4">
-            <Link className="p-1 text-3xl" href="/cart">
+            {session?.user && (
+              <Link className="hidden sm:inline" href="/profile">
+                <Image
+                  className="w-7 rounded-full"
+                  width={100}
+                  height={100}
+                  src={session?.user?.image!}
+                  alt="User's profile"
+                />
+              </Link>
+            )}
+            {session?.user && (
+              <button
+                onClick={() => signOut()}
+                title="Sign out"
+                className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline-block"
+              >
+                <FiLogOut size="24" />
+              </button>
+            )}
+            {!session?.user && (
+              <button
+                onClick={() => signIn()}
+                title="Sign in"
+                className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline-block"
+              >
+                <FiLogIn size="24" />
+              </button>
+            )}
+            <Link className="text-3xl" href="/cart">
               <CartIconWithNumber />
             </Link>
             <button
               onClick={() => setIsExpanded((old) => !old)}
-              className="selext-none text-3xl lg:hidden"
+              className="selext-none text-3xl sm:hidden"
               role="button"
             >
               <FiMenu />
@@ -58,15 +94,35 @@ const Layout = ({ children }: ILayoutProps) => {
       {isExpanded ? (
         <div className="overflow-hidde flex h-[calc(max(600px,100vh)-56px)] flex-col items-center justify-center bg-slate-100">
           <div className="flex flex-1 flex-col items-center justify-center gap-6">
-            <Link
-              className="text-2xl font-medium hover:underline  focus:underline"
-              href="/products"
-            >
+            <Link className="text-xl font-medium hover:underline  focus:underline" href="/products">
               Shop
             </Link>
-            <Link className="text-2xl font-medium hover:underline focus:underline" href="/login">
-              Login
-            </Link>
+            {session?.user && (
+              <Link
+                className="text-xl font-medium hover:underline  focus:underline"
+                href="/profile"
+              >
+                Profile
+              </Link>
+            )}
+            {session?.user && (
+              <button
+                onClick={() => signOut()}
+                title="Sign out"
+                className="text-xl font-medium hover:underline  focus:underline"
+              >
+                Sign Out
+              </button>
+            )}
+            {!session?.user && (
+              <button
+                onClick={() => signIn()}
+                title="Sign in"
+                className="text-xl font-medium hover:underline  focus:underline"
+              >
+                Sign In
+              </button>
+            )}
           </div>
           <div className="mt-auto flex gap-4">
             <a
