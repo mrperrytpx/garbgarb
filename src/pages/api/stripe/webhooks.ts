@@ -6,8 +6,6 @@ import Stripe from "stripe";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { Costs } from "../../../lib/estimateShippingCost";
 import { RetailCosts } from "../../../lib/estimateShippingCost";
-import { getSession } from "next-auth/react";
-import { prisma } from "../../../../prisma/prisma";
 
 export const config = {
     api: {
@@ -70,17 +68,6 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                     sync_variant_id: item.metadata.printful_id,
                 })),
             });
-
-            // const orderId = order.data.result.id;
-
-            // await prisma.order.create({
-            //     data: {
-            //         id: orderId,
-            //         totalAmount: order.data.costs.total,
-            //         // userId
-            //     }
-            // })
-            // console.log(order);
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
