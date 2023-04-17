@@ -10,6 +10,9 @@ async function getAllOrders(userId: string) {
             where: {
                 userId,
             },
+            orderBy: {
+                createdAt: "desc",
+            },
         })) ?? [];
 
     return orders;

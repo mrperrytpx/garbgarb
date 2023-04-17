@@ -36,7 +36,7 @@ const Layout = ({ children }: ILayoutProps) => {
               <BsShop size="24" />
             </Link>
             {session?.user && (
-              <Link className="sm:hidden" href="/profile">
+              <Link className="sm:hidden" href="/my_orders">
                 <Image
                   className="w-7 rounded-full"
                   width={100}
@@ -49,7 +49,7 @@ const Layout = ({ children }: ILayoutProps) => {
           </div>
           <div className="flex items-center justify-center gap-4">
             {session?.user && (
-              <Link className="hidden sm:inline" href="/profile">
+              <Link className="hidden sm:inline" href="/my_orders">
                 <Image
                   className="w-7 rounded-full"
                   width={100}
@@ -100,7 +100,7 @@ const Layout = ({ children }: ILayoutProps) => {
             {session?.user && (
               <Link
                 className="text-xl font-medium hover:underline  focus:underline"
-                href="/profile"
+                href="/my_orders"
               >
                 Profile
               </Link>

@@ -17,6 +17,7 @@ const OrderPage = () => {
         },
       });
       const data = res.data.result;
+      console.log(data);
       return data;
     },
     enabled: !!orderId,
@@ -26,7 +27,11 @@ const OrderPage = () => {
 
   if (orderData.isLoading) return <LoadingSpinner size={100} />;
 
-  return <div>{JSON.stringify(orderData.data)}</div>;
+  return (
+    <div className="mx-auto my-2 w-full max-w-screen-md p-2">
+      {/* {JSON.stringify(orderData.data, null, 2)} */}
+    </div>
+  );
 };
 
 OrderPage.auth = true;

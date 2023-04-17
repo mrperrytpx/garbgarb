@@ -42,6 +42,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 return res.status(500).end("How did you place an order without items???");
             }
 
+            // console.log("Sess", session);
+
             const orderedItems = (
                 await Promise.allSettled(
                     session?.line_items?.data.map(async (item) => {
@@ -54,6 +56,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
             )
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
+
+            console.log("Subtotal?", session.amount_subtotal); // 2149
 
             const orderRes = await printfulApiKeyInstance.post<TOrderResponse>("/orders", {
                 recipient: {
@@ -68,7 +72,25 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                     quantity: item.metadata.quantity,
                     sync_variant_id: item.metadata.printful_id,
                 })),
+                retail_costs: {
+                    currency: "EUR",
+                    shipping: session.shipping_cost?.amount_total! / 100,
+                    discount: "0.00",
+                    subtotal: session.amount_subtotal! / 100,
+                    tax: session.total_details?.amount_tax! / 100,
+                },
             });
+
+            console.log(orderRes.data.result); // retail_costs: {
+            //     currency: 'EUR',
+            //     subtotal: 0, <- REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+            //     discount: 0,
+            //     shipping: 7.49,
+            //     tax: 5.37,
+            //     vat: null,
+            //     total: 12.86
+            //   },
+
             const orderId = +orderRes.data.result.id;
 
             if (session && session.metadata?.user) {
@@ -80,6 +102,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                     },
                 });
             }
+        } else if (event.type === "charge.refunded") {
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
