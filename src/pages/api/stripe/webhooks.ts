@@ -42,7 +42,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 return res.status(500).end("How did you place an order without items???");
             }
 
-            // console.log("Sess", session);
+            console.log("Sess", session);
 
             const orderedItems = (
                 await Promise.allSettled(
@@ -57,8 +57,6 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
 
-            console.log("Subtotal?", session.amount_subtotal); // 2149
-
             const orderRes = await printfulApiKeyInstance.post<TOrderResponse>("/orders", {
                 recipient: {
                     name: session.customer_details?.name,
@@ -71,25 +69,15 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 items: orderedItems.map((item) => ({
                     quantity: item.metadata.quantity,
                     sync_variant_id: item.metadata.printful_id,
+                    retail_price: item.metadata.retail_costs,
                 })),
                 retail_costs: {
                     currency: "EUR",
                     shipping: session.shipping_cost?.amount_total! / 100,
                     discount: "0.00",
-                    subtotal: session.amount_subtotal! / 100,
                     tax: session.total_details?.amount_tax! / 100,
                 },
             });
-
-            console.log(orderRes.data.result); // retail_costs: {
-            //     currency: 'EUR',
-            //     subtotal: 0, <- REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-            //     discount: 0,
-            //     shipping: 7.49,
-            //     tax: 5.37,
-            //     vat: null,
-            //     total: 12.86
-            //   },
 
             const orderId = +orderRes.data.result.id;
 
@@ -99,6 +87,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                         userId: session.metadata.user,
                         id: orderId,
                         totalAmount: session.amount_total ?? 0,
+                        payment: session.payment_intent as string,
+                        invoice: session.invoice as string,
                     },
                 });
             }

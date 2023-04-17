@@ -157,6 +157,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                                 metadata: {
                                     printful_id: item.id,
                                     quantity: item.quantity,
+                                    retail_costs: item.retail_price,
                                 },
                             },
                         },

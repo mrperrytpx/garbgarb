@@ -61,6 +61,8 @@ model User {
 
 model Order {
   id          Int   @id @default(autoincrement())
+  payment     String
+  invoice     String
   totalAmount Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
