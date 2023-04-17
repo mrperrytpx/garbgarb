@@ -4,6 +4,8 @@ import { stripe } from "../../../lib/stripe";
 import { buffer } from "micro";
 import Stripe from "stripe";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
+import { Costs } from "../../../lib/estimateShippingCost";
+import { RetailCosts } from "../../../lib/estimateShippingCost";
 
 export const config = {
     api: {
@@ -52,7 +54,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
 
-            await printfulApiKeyInstance.post("/orders", {
+            const order = await printfulApiKeyInstance.post<TOrder>("/orders", {
                 recipient: {
                     name: session.customer_details?.name,
                     address1: session.customer_details?.address?.line1,
@@ -67,7 +69,9 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 })),
             });
 
-            // save ID to DB if you do it
+            console.log(order.data);
+
+            const orderId = order.data.id;
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
@@ -79,4 +83,82 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
     }
 }
 
+export type TOrder = {
+    id: number;
+    external_id: string;
+    store: number;
+    status: string;
+    shipping: string;
+    shipping_service_name: string;
+    created: number;
+    updated: number;
+    recipient: TOrderAddress;
+    items: TOrderItem[];
+    incomplete_items: {
+        name: string;
+        quantity: number;
+        sync_variant_id: number;
+        external_variant_id: string;
+        external_line_item_id: string;
+    }[];
+    costs: Costs;
+    retail_costs: RetailCosts;
+    pricing_breakdown: number[];
+    shipments: {
+        item_id: number;
+        quantity: number;
+    }[];
+    gift: {
+        subject: string;
+        message: string;
+    };
+    packing_slip: {
+        email: string;
+        phone: string;
+        message: string;
+        logo_url: string;
+    };
+};
+
+type TOrderAddress = {
+    name: string;
+    company: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state_code: string;
+    state_name: string;
+    country_code: string;
+    country_name: string;
+    zip: string;
+    phone: string;
+    email: string;
+};
+
+export type Primitive = string | number | boolean;
+
+type TOrderItem = {
+    id: number;
+    external_id: string;
+    variant_id: number;
+    sync_variant_id: number;
+    external_variant_id: string;
+    warehouse_product_variant_id: number;
+    quantity: number;
+    price: string;
+    retail_price: string;
+    name: string;
+    product: {
+        variant_id: number;
+        product_id: number;
+        image: string;
+        name: string;
+    };
+    files: File[];
+    options: {
+        id: string;
+        value: Primitive | Record<string, Primitive> | ReadonlyArray<Primitive>;
+    }[];
+    sku: string;
+};
 export default webhookHandler;

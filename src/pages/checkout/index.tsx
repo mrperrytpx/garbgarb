@@ -132,7 +132,7 @@ const CheckoutPage = () => {
           )}
           {checkoutStep === 4 && (
             <div className="flex flex-col gap-2">
-              <OrderSummary suggestion={suggestion} />
+              <OrderSummary setCheckoutStep={setCheckoutStep} suggestion={suggestion} />
               <StepButtons checkoutStep={checkoutStep} prevStep={prevStep} nextStep={nextStep} />
             </div>
           )}

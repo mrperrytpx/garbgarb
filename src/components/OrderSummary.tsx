@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { cartSelector } from "../redux/slices/cartSlice";
 import { useSelector } from "react-redux";
@@ -8,13 +8,14 @@ import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { useGetExtraCostsQuery } from "../hooks/useGetExtraCostsQuery";
 import { useCompleteOrderMutation } from "../hooks/useCompleteOrderMutation";
 import { useFormContext } from "react-hook-form";
-import { ValidatedForm } from "../pages/checkout";
+import { ValidatedForm, validationSchema } from "../pages/checkout";
 
 interface IOrderSummaryProps {
   suggestion: AutocompletePrediction | null;
+  setCheckoutStep: Dispatch<SetStateAction<number>>;
 }
 
-export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
+export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps) => {
   const productsInCart = useSelector(cartSelector);
 
   const { data: addressData } = useGetSuggestionsQuery(suggestion);
@@ -24,6 +25,8 @@ export const OrderSummary = ({ suggestion }: IOrderSummaryProps) => {
   const { getValues } = useFormContext<ValidatedForm>();
 
   const formData = getValues();
+  if (!validationSchema.parse(formData)) setCheckoutStep(3);
+
   const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.province}, ${formData.zip}-${formData.country}`;
 
   return (
