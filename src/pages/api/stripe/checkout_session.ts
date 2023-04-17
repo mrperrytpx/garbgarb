@@ -6,6 +6,8 @@ import { shippingRates } from "../../../lib/shippingRates";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
 import { checkPayloadStock } from "../../../lib/checkPayload";
 import { ValidatedAddress } from "../../checkout";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
@@ -40,8 +42,11 @@ export function formatAmountForStripe(amount: number, currency: string): number 
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const { cartItems, address }: { cartItems: TCheckoutPayload; address: ValidatedAddress } =
-            req.body;
+        const {
+            cartItems,
+            address,
+            email,
+        }: { cartItems: TCheckoutPayload; address: ValidatedAddress; email: string } = req.body;
 
         if (!cartItems) {
             console.log("No items in cart");
@@ -114,8 +119,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             country: address.country,
         });
 
+        // auth sess
+        const session = await getServerSession(req, res, authOptions);
+
         // Stripe customer
         const customer = await stripe.customers.create({
+            email: email,
             address: {
                 line1: `${address.streetNumber} ${address.streetName}`,
                 line2: address.subpremise,
@@ -187,6 +196,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             cancel_url: process.env.NEXT_PUBLIC_SERVER_URL,
             invoice_creation: {
                 enabled: true,
+            },
+            metadata: {
+                user: session?.user?.id ? session.user.id : "",
             },
         };
 

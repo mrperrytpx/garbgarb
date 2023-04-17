@@ -1,13 +1,10 @@
-// 91989461
-
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { TOrder } from "../stripe/webhooks";
+import { TOrder, TOrderResponse } from "../stripe/webhooks";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
-``;
-async function getOrder(orderId: string | string[] | undefined): Promise<TOrder> {
-    const storeResponse = await printfulApiKeyInstance.get<TOrder>(`/orders/${orderId}`);
+
+async function getOrder(orderId: string | string[] | undefined): Promise<TOrderResponse> {
+    const storeResponse = await printfulApiKeyInstance.get<TOrderResponse>(`/orders/${orderId}`);
 
     if (storeResponse.status >= 400)
         throw new Error("Something is wrong with Printful's store, try again later");

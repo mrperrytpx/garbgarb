@@ -9,12 +9,13 @@ import { ValidatedAddress } from "../pages/checkout";
 
 interface IPostCompleteOrder {
     address: ValidatedAddress | undefined;
+    email: string;
 }
 
 export const useCompleteOrderMutation = () => {
     const productsInCart = useSelector(cartSelector);
 
-    const postCompleteOrder = async ({ address }: IPostCompleteOrder) => {
+    const postCompleteOrder = async ({ address, email }: IPostCompleteOrder) => {
         const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
             store_product_id: item.store_product_id,
             store_product_variant_id: item.store_product_variant_id,
@@ -24,6 +25,7 @@ export const useCompleteOrderMutation = () => {
         const checkoutResponse = await apiInstance.post("/api/stripe/checkout_session", {
             cartItems: checkoutPayload,
             address,
+            email,
         });
 
         const checkoutSession: Stripe.Checkout.Session = checkoutResponse.data;

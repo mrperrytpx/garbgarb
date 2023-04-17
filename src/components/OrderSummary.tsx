@@ -107,7 +107,9 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
         </div>
         <button
           disabled={!extraCosts.data || extraCosts.isFetching || completeOrderMutation.isLoading}
-          onClick={() => completeOrderMutation.mutateAsync({ address: addressData })}
+          onClick={() =>
+            completeOrderMutation.mutateAsync({ address: addressData, email: formData.email })
+          }
           className="flex w-full items-center justify-center gap-2 self-center rounded-lg bg-white  p-2 shadow-md disabled:opacity-50 sm:w-52"
           type="button"
         >
