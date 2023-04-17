@@ -6,6 +6,8 @@ import Stripe from "stripe";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { Costs } from "../../../lib/estimateShippingCost";
 import { RetailCosts } from "../../../lib/estimateShippingCost";
+import { getSession } from "next-auth/react";
+import { prisma } from "../../../../prisma/prisma";
 
 export const config = {
     api: {
@@ -54,7 +56,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
 
-            const order = await printfulApiKeyInstance.post<TOrder>("/orders", {
+            await printfulApiKeyInstance.post<TOrderResponse>("/orders", {
                 recipient: {
                     name: session.customer_details?.name,
                     address1: session.customer_details?.address?.line1,
@@ -69,9 +71,16 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 })),
             });
 
-            console.log(order.data);
+            // const orderId = order.data.result.id;
 
-            const orderId = order.data.id;
+            // await prisma.order.create({
+            //     data: {
+            //         id: orderId,
+            //         totalAmount: order.data.costs.total,
+            //         // userId
+            //     }
+            // })
+            // console.log(order);
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
@@ -82,6 +91,12 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
         res.status(405).end("Method Not Allowed");
     }
 }
+
+type TOrderResponse = {
+    code: number;
+    result: TOrder;
+    extra: [];
+};
 
 export type TOrder = {
     id: number;

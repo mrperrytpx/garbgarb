@@ -60,8 +60,7 @@ model User {
 }
 
 model Order {
-  id          String   @id @default(cuid())
-  items       Item[]
+  id          Int   @id @default(autoincrement())
   totalAmount Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -69,15 +68,4 @@ model Order {
   userId      String
 
   @@index([userId])
-}
-
-model Item {
-  id          String   @id @default(cuid())
-  name        String
-  price       Float
-  quantity    Int
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     String
-
-  @@index([orderId])
 }
