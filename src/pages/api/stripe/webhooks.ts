@@ -101,12 +101,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
             });
 
             await printfulApiKeyInstance.delete<TOrderResponse>(`/orders/${order?.id}`);
-            // const data = result.data.result;
-            // await prisma.order.delete({
-            //     where: {
-            //         id: data.id,
-            //     },
-            // });
+        } else if (event.type === "invoice.sent") {
+            console.log("invoice sent", event.data.object.id);
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
