@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { apiInstance } from "../../utils/axiosClients";
-import { TOrder, TOrderResponse } from "../api/stripe/webhooks";
+import { TOrderResponse } from "../api/stripe/webhooks";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 const OrderPage = () => {

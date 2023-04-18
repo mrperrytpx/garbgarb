@@ -90,36 +90,45 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         <p className="text-sm font-bold">{extraCosts.isError ? "💀" : "TBD"}</p>
                     )}
                 </div>
-                <div className="flex w-full items-center justify-between border-t-2">
-                    <p className="text-lg uppercase">
-                        <strong>Estimated Total:</strong>
-                    </p>
-                    {extraCosts.data ? (
-                        <p className="text-lg">
-                            <strong>
-                                {currency(
-                                    productsInCart.reduce(
-                                        (prev, curr) => +curr.price * curr.quantity + prev,
-                                        0
-                                    ) *
-                                        extraCosts.data?.vat +
-                                        +extraCosts.data.shipping
-                                )}
-                            </strong>
+                <div className="w-full border-t-2">
+                    <div className="flex w-full items-center justify-between">
+                        <p className="text-lg uppercase">
+                            <strong>Estimated Total:</strong>
                         </p>
-                    ) : (
-                        <p className="text-lg">
-                            <strong>
-                                {currency(
-                                    productsInCart.reduce(
-                                        (prev, curr) => +curr.price * curr.quantity + prev,
-                                        0
-                                    )
-                                )}
-                            </strong>
+                        {extraCosts.data ? (
+                            <p className="text-lg">
+                                <strong>
+                                    {currency(
+                                        productsInCart.reduce(
+                                            (prev, curr) => +curr.price * curr.quantity + prev,
+                                            0
+                                        ) *
+                                            extraCosts.data?.vat +
+                                            +extraCosts.data.shipping
+                                    )}
+                                    *
+                                </strong>
+                            </p>
+                        ) : (
+                            <p className="text-lg">
+                                <strong>
+                                    {currency(
+                                        productsInCart.reduce(
+                                            (prev, curr) => +curr.price * curr.quantity + prev,
+                                            0
+                                        )
+                                    )}
+                                </strong>
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-xs underline">
+                            *Customers may be subject to additional customs fees
                         </p>
-                    )}
+                    </div>
                 </div>
+
                 <button
                     disabled={
                         !extraCosts.data || extraCosts.isFetching || completeOrderMutation.isLoading
