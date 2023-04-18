@@ -5,29 +5,29 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
 }
 
 input,
 button,
 textarea,
 select {
-  font: inherit;
+    font: inherit;
 }
 
 img,
 picture,
 video,
 canvas {
-  display: block;
-  max-width: 100%;
-  width: 100%;
-  min-width: 100%;
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    min-width: 100%;
 }
 
 h6 {
-  font-weight: bold;
+    font-weight: bold;
 }

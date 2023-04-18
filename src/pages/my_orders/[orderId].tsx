@@ -5,33 +5,33 @@ import { TOrder, TOrderResponse } from "../api/stripe/webhooks";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 const OrderPage = () => {
-  const router = useRouter();
-  const { orderId } = router.query;
+    const router = useRouter();
+    const { orderId } = router.query;
 
-  const orderData = useQuery({
-    queryKey: ["order", orderId],
-    queryFn: async () => {
-      const res = await apiInstance.get<TOrderResponse>("/api/printful/get_order", {
-        params: {
-          orderId,
+    const orderData = useQuery({
+        queryKey: ["order", orderId],
+        queryFn: async () => {
+            const res = await apiInstance.get<TOrderResponse>("/api/printful/get_order", {
+                params: {
+                    orderId,
+                },
+            });
+            const data = res.data.result;
+            console.log(data);
+            return data;
         },
-      });
-      const data = res.data.result;
-      console.log(data);
-      return data;
-    },
-    enabled: !!orderId,
-  });
+        enabled: !!orderId,
+    });
 
-  if (!orderId) return null;
+    if (!orderId) return null;
 
-  if (orderData.isLoading) return <LoadingSpinner size={100} />;
+    if (orderData.isLoading) return <LoadingSpinner size={100} />;
 
-  return (
-    <div className="mx-auto my-2 w-full max-w-screen-md p-2">
-      {/* {JSON.stringify(orderData.data, null, 2)} */}
-    </div>
-  );
+    return (
+        <div className="mx-auto my-2 w-full max-w-screen-md p-2">
+            {/* {JSON.stringify(orderData.data, null, 2)} */}
+        </div>
+    );
 };
 
 OrderPage.auth = true;
