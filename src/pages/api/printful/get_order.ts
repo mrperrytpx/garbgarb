@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { TOrder, TOrderResponse } from "../stripe/webhooks";
+import { TOrderResponse } from "../stripe/webhooks";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 
