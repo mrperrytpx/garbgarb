@@ -1,12 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { apiInstance } from "../../utils/axiosClients";
 import { Order } from "@prisma/client";
 import Link from "next/link";
 import { currency } from "../../utils/currency";
 import { LinkButton } from "../../components/LinkButton";
+import { useRouter } from "next/router";
 
 const ProfilePage = () => {
+    const router = useRouter();
+
     const allOrders = useQuery({
         queryKey: ["orders"],
         queryFn: async () => {
@@ -15,6 +18,17 @@ const ProfilePage = () => {
             return data;
         },
     });
+
+    const deleteUserMutation = useMutation(
+        async () => {
+            await apiInstance.delete("/api/auth/delete_user");
+        },
+        {
+            onSuccess: () => {
+                router.reload();
+            },
+        }
+    );
 
     if (allOrders.isLoading)
         return (
@@ -27,7 +41,7 @@ const ProfilePage = () => {
     return (
         <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2">
             <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
-            <div className="mt-2 flex flex-1">
+            <div className="mt-2 flex">
                 {allOrders.data?.length ? (
                     <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
                         {allOrders.data?.map((x, i) => (
@@ -74,6 +88,12 @@ const ProfilePage = () => {
                     </div>
                 )}
             </div>
+            <button
+                className="rounded-lg border p-2 shadow"
+                onClick={() => deleteUserMutation.mutate()}
+            >
+                {deleteUserMutation.isLoading ? <LoadingSpinner size={20} /> : "Delete Account"}
+            </button>
         </div>
     );
 };
