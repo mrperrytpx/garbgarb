@@ -25,13 +25,16 @@ const ProfilePage = () => {
         );
 
     return (
-        <div className="mx-auto my-2 flex w-full max-w-screen-md flex-1 flex-col p-2">
+        <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2">
             <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
-            <div className="mt-2 flex flex-1 flex-col justify-between gap-4 sm:items-start sm:justify-start">
+            <div className="mt-2 flex flex-1">
                 {allOrders.data?.length ? (
-                    allOrders.data?.map((x, i) => (
-                        <>
+                    <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
+                        {allOrders.data?.map((x, i) => (
                             <Link
+                                style={{
+                                    border: x.canceled ? "1px solid #ef4444A3" : "",
+                                }}
                                 key={i}
                                 className="w-full rounded-md p-4 shadow-md "
                                 href={`/my_orders/${x.id}`}
@@ -43,26 +46,29 @@ const ProfilePage = () => {
                                             {currency(x.totalAmount / 100)}
                                         </strong>
                                     </div>
-                                    <span>
-                                        {new Intl.DateTimeFormat("en-GB", {
-                                            weekday: "short",
-                                            year: "2-digit",
-                                            month: "short",
-                                            day: "2-digit",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                        }).format(new Date(x.createdAt))}
-                                    </span>
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <span>
+                                            {new Intl.DateTimeFormat("en-GB", {
+                                                weekday: "short",
+                                                year: "2-digit",
+                                                month: "short",
+                                                day: "2-digit",
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                second: "2-digit",
+                                            }).format(new Date(x.createdAt))}
+                                        </span>
+                                        {x.canceled && (
+                                            <strong className="uppercase">Canceled</strong>
+                                        )}
+                                    </div>
                                 </div>
                             </Link>
-                            <LinkButton className="mt-auto sm:m-0" href="/checkout">
-                                Place an order
-                            </LinkButton>
-                        </>
-                    ))
+                        ))}
+                        <LinkButton href="/checkout">Place an order</LinkButton>
+                    </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center gap-4">
+                    <div className="flex w-full flex-col items-center justify-start gap-4">
                         <h2 className="mt-8 p-4 text-center">You haven't placed any orders</h2>
                         <LinkButton href="/checkout">Place one now</LinkButton>
                     </div>

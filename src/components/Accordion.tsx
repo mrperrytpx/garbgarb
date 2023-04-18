@@ -23,7 +23,7 @@ const TriangleIcon = ({ isExpanded }: { isExpanded: boolean }) => {
 export const Accordion = ({ children, title }: IAccordionProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const childrenRef = useRef<HTMLUListElement>(null);
+    const childrenRef = useRef<HTMLDivElement>(null);
     const childrenHeight = useRef(0);
 
     useEffect(() => {
@@ -34,26 +34,26 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
                 childrenHeight.current += child.offsetHeight;
             }
         }
-    }, []);
+    }, [isExpanded, childrenRef, childrenHeight]);
 
     return (
-        <div className="flex w-full select-none flex-col items-center justify-start border-b-2">
+        <div className="flex w-full select-none flex-col items-center justify-start">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex w-full cursor-pointer items-center justify-between py-2"
+                className="flex w-full cursor-pointer items-center justify-between p-2 shadow"
             >
                 <p className="text-sm font-bold uppercase">{title}</p>
                 <TriangleIcon isExpanded={isExpanded} />
             </div>
-            <ul
+            <div
                 ref={childrenRef}
-                className="flex max-h-0 w-full flex-col gap-2 overflow-hidden transition-all duration-300"
+                className="mt-2 flex max-h-0 w-full flex-col gap-2 overflow-hidden transition-all duration-300"
                 style={{
-                    maxHeight: isExpanded ? `${childrenHeight.current * (3 / 4)}px` : 0,
+                    maxHeight: isExpanded ? `${(childrenHeight.current * 3) / 2}px` : 0,
                 }}
             >
                 {children}
-            </ul>
+            </div>
         </div>
     );
 };

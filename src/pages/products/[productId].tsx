@@ -51,7 +51,7 @@ const ArticlePage = () => {
 
     const productDescription = availabilityData?.product.description
         .split("\n")
-        .map((x) => `<li className="text-sm block w-full last-of-type:mb-4 font-normal">${x}</li>`)
+        .map((x) => `<p className="text-sm block w-full last-of-type:mb-2 font-normal">${x}</p>`)
         .slice(2)
         .join("")!;
 
@@ -211,25 +211,33 @@ const ArticlePage = () => {
                     </div>
                     {/*  */}
                     <div className="flex flex-col">
-                        <Accordion title="More Details">{parse(productDescription)}</Accordion>
+                        <Accordion title="More Details">
+                            <div className="flex flex-col gap-2 px-2">
+                                {parse(productDescription)}
+                            </div>
+                        </Accordion>
                         <Accordion title="Size Guide">
-                            <p
-                                tabIndex={0}
-                                onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
-                                className="mb-4 cursor-pointer p-2 text-center text-sm font-bold hover:underline focus:underline"
-                            >
-                                Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
-                            </p>
+                            <div className="flex flex-col gap-2 px-2">
+                                <p
+                                    tabIndex={0}
+                                    onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                                    className="mb-4 cursor-pointer p-2 text-center text-sm font-bold hover:underline focus:underline"
+                                >
+                                    Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
+                                </p>
+                            </div>
                         </Accordion>
                         <Accordion title="Quality Guarantee & Returns">
-                            <li className="list-item text-sm font-normal">
-                                Quality is guaranteed. If there is a print error or visible quality
-                                issue, we'll replace or refund it.
-                            </li>
-                            <li className="list-item text-sm font-normal last-of-type:mb-4">
-                                Because the products are made to order, we do not accept general
-                                returns or sizing-related returns.
-                            </li>
+                            <div className="flex flex-col gap-2 px-2">
+                                <p className="list-item text-sm font-normal">
+                                    Quality is guaranteed. If there is a print error or visible
+                                    quality issue, we'll replace or refund it.
+                                </p>
+                                <p className="list-item text-sm font-normal last-of-type:mb-4">
+                                    Because the products are made to order, we do not accept general
+                                    returns or sizing-related returns.
+                                </p>
+                            </div>
                         </Accordion>
                     </div>
                 </article>

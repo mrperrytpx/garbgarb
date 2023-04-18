@@ -42,8 +42,6 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 return res.status(500).end("How did you place an order without items???");
             }
 
-            console.log("Sess", session);
-
             const orderedItems = (
                 await Promise.allSettled(
                     session?.line_items?.data.map(async (item) => {
@@ -59,6 +57,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
 
             const orderRes = await printfulApiKeyInstance.post<TOrderResponse>("/orders", {
                 recipient: {
+                    email: session.customer_details?.email,
                     name: session.customer_details?.name,
                     address1: session.customer_details?.address?.line1,
                     city: session.customer_details?.address?.city,
@@ -93,6 +92,21 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 });
             }
         } else if (event.type === "charge.refunded") {
+            const refund = event.data.object;
+
+            const order = await prisma.order.findFirst({
+                where: {
+                    payment: refund.payment_intent as string,
+                },
+            });
+
+            await printfulApiKeyInstance.delete<TOrderResponse>(`/orders/${order?.id}`);
+            // const data = result.data.result;
+            // await prisma.order.delete({
+            //     where: {
+            //         id: data.id,
+            //     },
+            // });
         } else {
             console.log(`Unhandled event type ${event.type}`);
         }
@@ -187,5 +201,24 @@ type TOrderItem = {
         value: Primitive | Record<string, Primitive> | ReadonlyArray<Primitive>;
     }[];
     sku: string;
+};
+
+export type File = {
+    id: number;
+    type: string;
+    hash: string;
+    url: string;
+    filename: string;
+    mime_type: string;
+    size: number;
+    width: number;
+    height: number;
+    dpi: number;
+    status: "ok" | "waiting" | "failed";
+    created: number;
+    thumbnail_url: string;
+    preview_url: string;
+    visible: boolean;
+    options: { tempt: string }[];
 };
 export default webhookHandler;

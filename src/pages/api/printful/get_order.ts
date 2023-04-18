@@ -2,8 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { TOrderResponse } from "../stripe/webhooks";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
+import { prisma } from "../../../../prisma/prisma";
 
-async function getOrder(orderId: string | string[] | undefined): Promise<TOrderResponse> {
+async function getOrder(orderId: number): Promise<TOrderResponse> {
     const storeResponse = await printfulApiKeyInstance.get<TOrderResponse>(`/orders/${orderId}`);
 
     if (storeResponse.status >= 400)
@@ -20,7 +23,29 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         const { orderId } = req.query;
 
-        const [orderError, orderData] = await tryCatchAsync(getOrder)(orderId);
+        if (!orderId) return res.status(404).end();
+
+        const session = await getServerSession(req, res, authOptions);
+
+        if (!session) return res.status(401).end();
+
+        const userOrder = (
+            await prisma.user
+                .findUnique({
+                    where: {
+                        id: session.user.id,
+                    },
+                })
+                .orders({
+                    where: {
+                        id: +orderId,
+                    },
+                })
+        )?.find((x) => x.id === +orderId);
+
+        if (!userOrder) return res.status(404).end();
+
+        const [orderError, orderData] = await tryCatchAsync(getOrder)(userOrder?.id);
 
         if (orderError || !orderData) {
             console.log(orderError);

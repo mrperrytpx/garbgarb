@@ -93,7 +93,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                 <div className="w-full border-t-2">
                     <div className="flex w-full items-center justify-between">
                         <p className="text-lg uppercase">
-                            <strong>Estimated Total:</strong>
+                            <strong>Est. Total:</strong>
                         </p>
                         {extraCosts.data ? (
                             <p className="text-lg">

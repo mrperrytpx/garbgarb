@@ -5,15 +5,14 @@ import { getServerSession } from "next-auth";
 import { prisma } from "../../../../prisma/prisma";
 
 async function getAllOrders(userId: string) {
-    const orders =
-        (await prisma.order.findMany({
-            where: {
-                userId,
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        })) ?? [];
+    const orders = await prisma.order.findMany({
+        where: {
+            userId,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
 
     return orders;
 }
