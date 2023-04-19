@@ -4,16 +4,17 @@ import { z } from "zod";
 import { estimateShippingCost, TShippingOption } from "../../../lib/estimateShippingCost";
 import { shippingRates } from "../../../lib/shippingRates";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
-import { checkPayloadStock } from "../../../lib/checkPayload";
 import { ValidatedAddress } from "../../checkout";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { printfulApiKeyInstance } from "../../../utils/axiosClients";
+import { TProductDetails, TProductVariant } from "../product";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2022-11-15",
 });
 
-const cartItemsSchema = z
+export const cartItemsSchema = z
     .array(
         z.object({
             store_product_id: z.number(),
@@ -65,14 +66,45 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             }
         }
 
-        const [stockError, stockData] = await tryCatchAsync(checkPayloadStock)(cartItems);
-        if (stockError || !stockData) {
-            console.log(stockError);
-            return res.status(stockError?.statusCode || 500).end(stockError?.message);
+        // ID VALIDATIONS SO ITEMS EXIST
+        const uniqueProductIDsInCart = [
+            ...new Set(parsedCartItems.map((item) => item.store_product_id)),
+        ];
+
+        const printfulStoreItems = (
+            await Promise.allSettled(
+                uniqueProductIDsInCart.map(async (id) => {
+                    const res = await printfulApiKeyInstance.get<TProductDetails>(
+                        `store/products/${id}`
+                    );
+                    const data = res.data.result.sync_variants;
+                    return data;
+                })
+            )
+        )
+            .filter((x) => x.status === "fulfilled")
+            .map((x) => (x as PromiseFulfilledResult<TProductVariant[]>).value)
+            .flat();
+
+        if (!printfulStoreItems) return res.status(500).end("The store is empty. Try again later");
+
+        //-------------------//
+        const cartItemsExistInStore = parsedCartItems
+            .map((item) => {
+                const storeItem = printfulStoreItems.filter(
+                    (x) => x.id === item.store_product_variant_id
+                )[0];
+                if (!storeItem) return null;
+                return { ...storeItem, quantity: item.quantity };
+            })
+            .filter(Boolean) as (TProductVariant & { quantity: number })[];
+
+        if (!cartItemsExistInStore) {
+            return res.status(404).end("Items in your cart don't exist in the Store");
         }
 
         // estimated shipping endpoint to get Printful VAT for valid address
-        const estimateItems = stockData.map((item) => ({
+        const estimateItems = cartItemsExistInStore.map((item) => ({
             quantity: item.quantity,
             sync_variant_id: item.id,
             retail_price: item.retail_price,
@@ -96,7 +128,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             ) / 100;
 
         // Shipping Options to get delivery estimates
-        const shippinOptsItems = stockData.map((item) => ({
+        const shippinOptsItems = cartItemsExistInStore.map((item) => ({
             quantity: item.quantity,
             external_variant_id: item.external_id,
         }));
@@ -145,7 +177,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             billing_address_collection: "auto",
             payment_method_types: ["card"],
             line_items: [
-                ...stockData.map(
+                ...cartItemsExistInStore.map(
                     (item): Stripe.Checkout.SessionCreateParams.LineItem => ({
                         price_data: {
                             currency: "eur",

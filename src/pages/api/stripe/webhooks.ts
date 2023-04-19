@@ -174,7 +174,7 @@ type TOrderAddress = {
 
 export type Primitive = string | number | boolean;
 
-type TOrderItem = {
+export type TOrderItem = {
     id: number;
     external_id: string;
     variant_id: number;

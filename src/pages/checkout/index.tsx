@@ -114,7 +114,7 @@ const CheckoutPage = () => {
                     )}
                     {checkoutStep === 2 && (
                         <div className="flex flex-col gap-4">
-                            <div className="flex w-full flex-col items-center gap-1 shadow">
+                            <div className="flex w-full flex-col items-center gap-2">
                                 {productsInCart.map((item) => (
                                     <MinimalCartProduct key={item.sku} item={item} />
                                 ))}
@@ -164,6 +164,7 @@ interface IStepButtonsProps {
 
 const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) => {
     const session = useSession();
+    const productsInCart = useSelector(cartSelector);
 
     return (
         <div className="mt-auto mb-2 flex w-full items-center justify-between">
@@ -178,9 +179,9 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
             )}
             {checkoutStep < 4 && (
                 <button
-                    className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
+                    className="enabled:hoverhover:bg-slate-700 enabled:hoverhover:text-white w-28 rounded-lg border p-2 shadow-md disabled:opacity-30"
                     onClick={nextStep}
-                    disabled={checkoutStep === 4}
+                    disabled={checkoutStep === 4 || !!productsInCart.some((x) => x.outOfStock)}
                 >
                     Next
                 </button>

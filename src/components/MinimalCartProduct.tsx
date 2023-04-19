@@ -1,38 +1,86 @@
 import Image from "next/image";
-import { TCartProduct } from "../redux/slices/cartSlice";
+import { TCartProduct, removeFromCart } from "../redux/slices/cartSlice";
 import { currency } from "../utils/currency";
+import { TOrderItem } from "../pages/api/stripe/webhooks";
+import { RxCross1 } from "react-icons/rx";
+import { useDispatch } from "react-redux";
 
 interface IMinimalCartProduct {
-    item: TCartProduct;
+    item: TCartProduct | TOrderItem;
+}
+
+function isCartProduct(item: TCartProduct | TOrderItem): item is TCartProduct {
+    return (item as TCartProduct).store_product_variant_id !== undefined;
 }
 
 export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
+    const dispatch = useDispatch();
+
+    if (isCartProduct(item)) {
+        return (
+            <article
+                key={item.store_product_variant_id}
+                className={`flex w-full items-center gap-2 border-b-2 px-2 py-2 text-sm shadow last-of-type:border-b-0 sm:flex-row ${
+                    item.outOfStock && "shadow shadow-red-400"
+                }`}
+            >
+                <div className="max-w-[50px] sm:block">
+                    <Image src={item.variant_image} width={100} height={100} alt="Item" />
+                </div>
+                <div className="flex w-full flex-col gap-1">
+                    <div className="flex items-center justify-between gap-2">
+                        <p>
+                            <span className={`${item.outOfStock && "line-through"}`}>
+                                {item.name}
+                            </span>
+                            {item.outOfStock ? (
+                                <strong className="text-sm"> - OOS</strong>
+                            ) : (
+                                <strong>{" - x" + item.quantity}</strong>
+                            )}
+                        </p>
+                        {item.outOfStock ? (
+                            <button
+                                onClick={() => dispatch(removeFromCart({ sku: item.sku }))}
+                                className="mb-2 rounded-lg p-1 shadow"
+                            >
+                                <RxCross1 size="14" />
+                            </button>
+                        ) : (
+                            <p className="hidden xs:inline">{currency(item.price)}</p>
+                        )}
+                    </div>
+                    <div className="mb-1 flex items-center justify-between gap-2">
+                        <p className={`text-xs ${item.outOfStock && "line-through"}`}>
+                            ({item.color_name} - {item.size})
+                        </p>
+                        <p className={`${item.outOfStock && "line-through"}`}>
+                            <strong>{currency(+item.price * item.quantity)}</strong>
+                        </p>
+                    </div>
+                </div>
+            </article>
+        );
+    }
     return (
-        <article className="flex w-full flex-col items-center justify-center gap-4 border-b-2 p-2 sm:flex-row">
-            <div className="hidden max-h-[36px] max-w-[36px] sm:block">
-                <Image
-                    className="h-full w-full"
-                    src={item.variant_image}
-                    width={100}
-                    height={100}
-                    alt={item.name}
-                />
+        <div
+            key={item.id}
+            className="flex items-center gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0 sm:flex-row"
+        >
+            <div className="max-w-[50px] sm:block">
+                <Image src={item.files[1].thumbnail_url} width={100} height={100} alt="Item" />
             </div>
-            <div className="flex w-full items-center justify-between gap-2 sm:flex-[2] sm:justify-start">
-                <div>
-                    <p>{item.name}</p>
-                    <p className="text-xs">
-                        ({item.color_name} - {item.size})
+            <div className="flex w-full flex-col gap-0.5">
+                <p key={item.id}>{item.name}</p>
+                <div className="mb-1 flex justify-between gap-4">
+                    <p>
+                        <strong>x{item.quantity}</strong>
+                    </p>
+                    <p className="min-w-[50px]">
+                        <strong>{currency(+item.retail_price * item.quantity)}</strong>
                     </p>
                 </div>
-                <strong className="self-start">x{item.quantity}</strong>
             </div>
-            <div className="flex w-full items-center justify-between gap-2 sm:flex-1 sm:justify-end sm:gap-16 sm:self-start">
-                <div className="min-w-[80px] text-left sm:text-right">{currency(item.price)}</div>
-                <strong className="min-w-[80px] text-right">
-                    {currency(+item.price * item.quantity)}
-                </strong>
-            </div>
-        </article>
+        </div>
     );
 };

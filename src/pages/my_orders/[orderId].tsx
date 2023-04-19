@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCancelOrderMutation } from "../../hooks/useCancelOrderMutation";
 import Stripe from "stripe";
+import { MinimalCartProduct } from "../../components/MinimalCartProduct";
 
 const OrderPage = () => {
     const router = useRouter();
@@ -76,18 +77,37 @@ const OrderPage = () => {
                     <strong className="text-sm uppercase">{orderData.data?.status}</strong>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <strong className="text-sm uppercase">Order Placed:</strong>
-                    <p className="text-sm">
-                        {new Intl.DateTimeFormat("en-GB", {
-                            weekday: "short",
-                            year: "2-digit",
-                            month: "short",
-                            day: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                        }).format(orderData.data?.created * 1000)}
-                    </p>
+                    {orderData.data.status !== "canceled" ? (
+                        <>
+                            <strong className="text-sm uppercase">Order Placed:</strong>
+                            <p className="text-sm">
+                                {new Intl.DateTimeFormat("en-GB", {
+                                    weekday: "short",
+                                    year: "2-digit",
+                                    month: "short",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                }).format(orderData.data?.created * 1000)}
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <strong className="text-sm uppercase">Order Canceled:</strong>
+                            <p className="text-sm">
+                                {new Intl.DateTimeFormat("en-GB", {
+                                    weekday: "short",
+                                    year: "2-digit",
+                                    month: "short",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                }).format(orderData.data?.updated * 1000)}
+                            </p>
+                        </>
+                    )}
                 </div>
                 <div
                     style={{
@@ -117,32 +137,7 @@ const OrderPage = () => {
                     </Accordion>
                     <Accordion title="Ordered items:">
                         {orderData.data?.items.map((item) => (
-                            <div
-                                key={item.id}
-                                className="flex items-center gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0 sm:flex-row"
-                            >
-                                <div className="max-w-[50px] sm:block">
-                                    <Image
-                                        src={item.files[1].thumbnail_url!}
-                                        width={100}
-                                        height={100}
-                                        alt="Item"
-                                    />
-                                </div>
-                                <div className="flex w-full flex-col gap-0.5">
-                                    <p key={item.id}>{item.name}</p>
-                                    <div className="mb-1 flex justify-between gap-4">
-                                        <p>
-                                            <strong>x{item.quantity}</strong>
-                                        </p>
-                                        <p className="min-w-[50px]">
-                                            <strong>
-                                                {currency(+item.retail_price * item.quantity)}
-                                            </strong>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <MinimalCartProduct item={item} key={item.id} />
                         ))}
                     </Accordion>
                     <Accordion title="Shipping:">

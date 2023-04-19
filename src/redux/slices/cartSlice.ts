@@ -21,6 +21,7 @@ export type TCartProduct = {
     color_name: string;
     color_code: string;
     external_id: string;
+    outOfStock?: true | false;
 };
 
 const initialState: CartState = {
@@ -97,12 +98,39 @@ export const cartSlice = createSlice({
         emptyCart: (state) => {
             state.value = [];
         },
+        updateStock: (state, action: PayloadAction<number[] | undefined>) => {
+            if (!action.payload) {
+                throw new Error("Payload missing in 'increaseQuantity' action");
+            }
+
+            const payload = action.payload;
+
+            if (!payload.length) return;
+
+            const updatedProducts = state.value.map((product) => {
+                if (payload.includes(product.store_product_variant_id)) {
+                    return product;
+                } else {
+                    return { ...product, outOfStock: true };
+                }
+            });
+
+            if (!updatedProducts.length) return;
+
+            state.value = updatedProducts;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity, emptyCart } =
-    cartSlice.actions;
+export const {
+    addToCart,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    emptyCart,
+    updateStock,
+} = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;
 

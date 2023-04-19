@@ -40,7 +40,7 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
         <div className="flex w-full select-none flex-col items-center justify-start">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex w-full cursor-pointer items-center justify-between p-2 shadow"
+                className="flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow"
             >
                 <p className="text-sm font-bold uppercase">{title}</p>
                 <TriangleIcon isExpanded={isExpanded} />

@@ -9,10 +9,12 @@ export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => 
     const productsInCart = useSelector(cartSelector);
 
     const postExtraCosts = async () => {
+        const items = productsInCart.filter((x) => !x.outOfStock);
+
         const response = await apiInstance.post<TShippingRatesResp>(
             "/api/printful/shipping_rates",
             {
-                cartItems: productsInCart,
+                cartItems: items,
                 address,
             }
         );

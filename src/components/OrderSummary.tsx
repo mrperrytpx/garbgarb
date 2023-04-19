@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { cartSelector } from "../redux/slices/cartSlice";
-import { useSelector } from "react-redux";
+import { cartSelector, removeFromCart, updateStock } from "../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { currency } from "../utils/currency";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
@@ -9,6 +9,10 @@ import { useGetExtraCostsQuery } from "../hooks/useGetExtraCostsQuery";
 import { useCompleteOrderMutation } from "../hooks/useCompleteOrderMutation";
 import { useFormContext } from "react-hook-form";
 import { ValidatedForm, validationSchema } from "../pages/checkout";
+import { useMutation } from "@tanstack/react-query";
+import { apiInstance } from "../utils/axiosClients";
+import { TCheckoutPayload } from "../lib/checkPayload";
+import { TProductVariant } from "../pages/api/product";
 
 interface IOrderSummaryProps {
     suggestion: AutocompletePrediction | null;
@@ -17,10 +21,48 @@ interface IOrderSummaryProps {
 
 export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps) => {
     const productsInCart = useSelector(cartSelector);
+    const dispatch = useDispatch();
 
     const { data: addressData } = useGetSuggestionsQuery(suggestion);
     const extraCosts = useGetExtraCostsQuery(addressData);
     const completeOrderMutation = useCompleteOrderMutation();
+
+    const checkStockMutation = useMutation(
+        async () => {
+            const checkoutPayload: TCheckoutPayload = productsInCart.map((item) => ({
+                store_product_id: item.store_product_id,
+                store_product_variant_id: item.store_product_variant_id,
+                quantity: item.quantity,
+            }));
+
+            const res = await apiInstance.post<
+                | (TProductVariant & {
+                      quantity: number;
+                      in_stock: boolean;
+                  })[]
+                | null
+            >("/api/printful/check_stock", {
+                cartItems: checkoutPayload,
+            });
+
+            const data = res.data;
+            return data;
+        },
+        {
+            onSuccess: (data) => {
+                if (data?.length === productsInCart.length) {
+                    completeOrderMutation.mutate({
+                        address: addressData,
+                        email: formData.email,
+                    });
+                } else {
+                    const itemsInStock = data?.filter((x) => x.in_stock).map((x) => x.id);
+                    dispatch(updateStock(itemsInStock));
+                    setCheckoutStep(2);
+                }
+            },
+        }
+    );
 
     const { getValues } = useFormContext<ValidatedForm>();
 
@@ -48,7 +90,19 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                     <p className="text-sm uppercase">Items:</p>
                     <div className="flex flex-col gap-0.5 rounded-md">
                         {productsInCart.map((product) => (
-                            <p className="text-xs sm:text-right" key={product.sku}>
+                            <p
+                                onClick={() => {
+                                    if (product.outOfStock) {
+                                        dispatch(removeFromCart({ sku: product.sku }));
+                                    }
+                                }}
+                                className={`text-xs sm:text-right ${
+                                    product.outOfStock ? "line-through" : ""
+                                } ${product.outOfStock ? "cursor-pointer" : "cursor-default"} ${
+                                    product.outOfStock ? "shadow" : "shadow-none"
+                                } ${product.outOfStock ? "bg-white" : "bg-none"}`}
+                                key={product.sku}
+                            >
                                 {product.name}, ({product.size} - {product.color_name}),{" "}
                                 <strong>x{product.quantity}</strong>
                             </p>
@@ -59,10 +113,10 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                     <p className="text-sm uppercase">Subtotal:</p>
                     <p className="text-sm font-bold">
                         {currency(
-                            productsInCart.reduce(
-                                (prev, curr) => +curr.price * curr.quantity + prev,
-                                0
-                            )
+                            productsInCart.reduce((prev, curr) => {
+                                if (curr.outOfStock) return prev + 0;
+                                return +curr.price * curr.quantity + prev;
+                            }, 0)
                         )}
                     </p>
                 </div>
@@ -99,10 +153,10 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                             <p className="text-lg">
                                 <strong>
                                     {currency(
-                                        productsInCart.reduce(
-                                            (prev, curr) => +curr.price * curr.quantity + prev,
-                                            0
-                                        ) *
+                                        productsInCart.reduce((prev, curr) => {
+                                            if (curr.outOfStock) return prev + 0;
+                                            return +curr.price * curr.quantity + prev;
+                                        }, 0) *
                                             extraCosts.data?.vat +
                                             +extraCosts.data.shipping
                                     )}
@@ -113,10 +167,10 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                             <p className="text-lg">
                                 <strong>
                                     {currency(
-                                        productsInCart.reduce(
-                                            (prev, curr) => +curr.price * curr.quantity + prev,
-                                            0
-                                        )
+                                        productsInCart.reduce((prev, curr) => {
+                                            if (curr.outOfStock) return prev + 0;
+                                            return +curr.price * curr.quantity + prev;
+                                        }, 0)
                                     )}
                                 </strong>
                             </p>
@@ -131,19 +185,23 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
 
                 <button
                     disabled={
-                        !extraCosts.data || extraCosts.isFetching || completeOrderMutation.isLoading
+                        !extraCosts.data ||
+                        extraCosts.isFetching ||
+                        completeOrderMutation.isLoading ||
+                        checkStockMutation.isLoading ||
+                        !!productsInCart.filter((x) => x.outOfStock).length
                     }
-                    onClick={() =>
-                        completeOrderMutation.mutateAsync({
-                            address: addressData,
-                            email: formData.email,
-                        })
-                    }
-                    className="flex w-full items-center justify-center gap-2 self-center rounded-lg bg-white  p-2 shadow-md disabled:opacity-50 sm:w-52"
+                    onClick={() => checkStockMutation.mutate()}
+                    className="flex w-full items-center justify-center gap-2 self-center rounded-lg bg-white  p-2 shadow-md disabled:opacity-50"
                     type="button"
                 >
                     {completeOrderMutation.isLoading && <LoadingSpinner size={24} />}
-                    <p>Go to Payment</p>
+                    {checkStockMutation.isLoading && <LoadingSpinner size={24} />}
+                    <p>
+                        {!!productsInCart.filter((x) => x.outOfStock).length
+                            ? "Remove out of stock items"
+                            : "Go to Payment"}
+                    </p>
                 </button>
             </div>
         </aside>

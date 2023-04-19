@@ -19,7 +19,7 @@ export const useCancelOrderMutation = () => {
                 await queryClient.refetchQueries({
                     queryKey: ["order", orderId],
                 }),
-            1000
+            500
         );
     };
 

@@ -14,7 +14,12 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
     const dispatch = useDispatch();
 
     return (
-        <article className="relative flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-slate-200 p-2 shadow sm:flex-row">
+        <article
+            style={{
+                borderTop: product.outOfStock ? "2px solid red" : "",
+            }}
+            className="relative flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-slate-200 p-2 shadow sm:flex-row"
+        >
             <Link
                 className="select-nonerounded-md min-w-[100px] max-w-[150px]"
                 href={`/products/${product.store_product_id}`}

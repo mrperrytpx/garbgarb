@@ -30,6 +30,8 @@ export async function checkPayloadStock(
         }
     }
 
+    console.log("items", items);
+
     // ID VALIDATIONS SO ITEMS EXIST
     const uniqueProductIDsInCart = [
         ...new Set(parsedCartItems.map((item) => item.store_product_id)),
@@ -66,6 +68,8 @@ export async function checkPayloadStock(
         throw new ApiError(404, "Items in your cart don't exist in the Store");
     }
 
+    console.log("cartItemsExistInStore", cartItemsExistInStore);
+
     const uniqueVariantIDsInCart = [
         ...new Set(cartItemsExistInStore.map((item) => item?.variant_id)),
     ];
@@ -89,7 +93,7 @@ export async function checkPayloadStock(
             const warehouseItem = warehouseStock.find((x) => x.id === item?.variant_id);
             return {
                 ...item,
-                in_stock: !!warehouseItem?.availability_status.filter(
+                in_stock: !!warehouseItem?.availability_status.find(
                     (reg) => reg.region.includes("EU") && reg.status === "in_stock"
                 ),
             };
