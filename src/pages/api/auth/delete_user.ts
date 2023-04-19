@@ -5,8 +5,6 @@ import { authOptions } from "./[...nextauth]";
 import { prisma } from "../../../../prisma/prisma";
 
 async function deleteUser(userId: string) {
-    console.log("trying");
-
     await prisma.order.deleteMany({
         where: {
             userId,

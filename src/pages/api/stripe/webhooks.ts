@@ -7,6 +7,11 @@ import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { Costs } from "../../../lib/estimateShippingCost";
 import { RetailCosts } from "../../../lib/estimateShippingCost";
 import { prisma } from "../../../../prisma/prisma";
+import Cors from "micro-cors";
+
+const cors = Cors({
+    allowMethods: ["POST", "HEAD"],
+});
 
 export const config = {
     api: {
@@ -100,6 +105,16 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 },
             });
 
+            if (order) {
+                await prisma.order.update({
+                    where: {
+                        id: order.id,
+                    },
+                    data: {
+                        canceled: true,
+                    },
+                });
+            }
             await printfulApiKeyInstance.delete<TOrderResponse>(`/orders/${order?.id}`);
         } else if (event.type === "invoice.sent") {
             console.log("invoice sent", event.data.object.id);
@@ -113,6 +128,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
         res.status(405).end("Method Not Allowed");
     }
 }
+
+export default cors(webhookHandler as any);
 
 export type TOrderResponse = {
     code: number;
@@ -217,4 +234,3 @@ export type File = {
     visible: boolean;
     options: { tempt: string }[];
 };
-export default webhookHandler;

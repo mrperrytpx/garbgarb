@@ -30,8 +30,6 @@ export async function checkPayloadStock(
         }
     }
 
-    console.log("items", items);
-
     // ID VALIDATIONS SO ITEMS EXIST
     const uniqueProductIDsInCart = [
         ...new Set(parsedCartItems.map((item) => item.store_product_id)),
@@ -67,8 +65,6 @@ export async function checkPayloadStock(
     if (!cartItemsExistInStore) {
         throw new ApiError(404, "Items in your cart don't exist in the Store");
     }
-
-    console.log("cartItemsExistInStore", cartItemsExistInStore);
 
     const uniqueVariantIDsInCart = [
         ...new Set(cartItemsExistInStore.map((item) => item?.variant_id)),
