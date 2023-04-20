@@ -160,19 +160,19 @@ const Layout = ({ children }: ILayoutProps) => {
                                 <div className="flex flex-col items-center justify-center gap-4 p-2 md:flex-row md:gap-6">
                                     <Link
                                         className="border-black  font-medium hover:underline focus:underline"
-                                        href="/returns-faq"
+                                        href="/static/returns-faq"
                                     >
                                         Returns & FAQ
                                     </Link>
                                     <Link
                                         className=" font-medium hover:underline focus:underline"
-                                        href="/contact"
+                                        href="/static/contact"
                                     >
                                         Contact
                                     </Link>
                                     <Link
                                         className=" font-medium hover:underline focus:underline"
-                                        href="/privacy"
+                                        href="/static/privacy"
                                     >
                                         Privacy Policy
                                     </Link>
