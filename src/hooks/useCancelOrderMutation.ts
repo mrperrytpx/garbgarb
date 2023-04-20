@@ -21,6 +21,7 @@ export const useCancelOrderMutation = () => {
     return useMutation(deleteOrder, {
         onMutate: async ({ orderId }) => {
             await queryClient.cancelQueries(["order", orderId]);
+            await queryClient.cancelQueries(["orders"]);
             const previousOrder = queryClient.getQueryData(["order", orderId]);
             queryClient.setQueryData(["order", orderId], (old) => {
                 return { ...old!, status: "canceled" };

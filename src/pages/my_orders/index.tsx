@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { apiInstance } from "../../utils/axiosClients";
 import { Order } from "@prisma/client";
@@ -11,6 +11,7 @@ import { Portal } from "../../components/Portal";
 
 const ProfilePage = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const allOrders = useQuery({
         queryKey: ["orders"],
@@ -34,6 +35,35 @@ const ProfilePage = () => {
         }
     );
 
+    const deleteCanceledOrder = useMutation(
+        async ({ orderId }: { orderId: string | number }) => {
+            await apiInstance.delete("/api/delete_canceled_order", {
+                params: {
+                    orderId,
+                },
+            });
+        },
+        {
+            onSettled: () => {
+                queryClient.invalidateQueries(["orders"]);
+            },
+            onMutate: async ({ orderId }) => {
+                await queryClient.cancelQueries(["order", orderId]);
+                await queryClient.cancelQueries(["orders"]);
+                const previousOrders = queryClient.getQueryData(["orders"]);
+
+                queryClient.setQueryData<Order[]>(["orders"], (old) => {
+                    return old?.filter((x) => x.id !== orderId);
+                });
+
+                return { previousOrders };
+            },
+            onError: (_err, _data, context) => {
+                queryClient.setQueryData(["orders"], context?.previousOrders);
+            },
+        }
+    );
+
     if (allOrders.isLoading)
         return (
             <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
@@ -50,45 +80,60 @@ const ProfilePage = () => {
                     {allOrders.data?.length ? (
                         <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
                             {allOrders.data?.map((x, i) => (
-                                <Link
+                                <div
+                                    className="flex w-full flex-col items-start gap-2 p-4 shadow-md "
                                     key={i}
-                                    className="w-full rounded-md p-4 shadow-md "
-                                    href={`/my_orders/${x.id}`}
                                 >
-                                    <div className="flex flex-col justify-between gap-2">
-                                        <div className="flex items-center justify-between gap-4">
-                                            <span className="underline">#{x.id}</span>
-                                            <strong
-                                                style={{
-                                                    textDecoration: x.canceled
-                                                        ? "line-through"
-                                                        : "",
-                                                }}
-                                                className="min-w-[70px] text-right"
-                                            >
-                                                {currency(x.totalAmount / 100)}
-                                            </strong>
-                                        </div>
-                                        <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <span className="text-sm">
-                                                {new Intl.DateTimeFormat("en-GB", {
-                                                    weekday: "short",
-                                                    year: "2-digit",
-                                                    month: "short",
-                                                    day: "2-digit",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    second: "2-digit",
-                                                }).format(new Date(x.createdAt))}
-                                            </span>
-                                            {x.canceled && (
-                                                <strong className="uppercase text-red-600">
-                                                    Canceled
+                                    <Link
+                                        key={i}
+                                        className="w-full rounded-md"
+                                        href={`/my_orders/${x.id}`}
+                                    >
+                                        <div className="flex flex-col justify-between gap-2">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <span className="underline">#{x.id}</span>
+                                                <strong
+                                                    style={{
+                                                        textDecoration: x.canceled
+                                                            ? "line-through"
+                                                            : "",
+                                                    }}
+                                                    className="min-w-[70px] text-right"
+                                                >
+                                                    {currency(x.totalAmount / 100)}
                                                 </strong>
-                                            )}
+                                            </div>
+                                            <div className="flex flex-wrap items-center justify-between gap-2">
+                                                <span className="text-sm">
+                                                    {new Intl.DateTimeFormat("en-GB", {
+                                                        weekday: "short",
+                                                        year: "2-digit",
+                                                        month: "short",
+                                                        day: "2-digit",
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        second: "2-digit",
+                                                    }).format(new Date(x.createdAt))}
+                                                </span>
+                                                {x.canceled && (
+                                                    <strong className="uppercase text-red-600">
+                                                        Canceled
+                                                    </strong>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
+                                    </Link>
+                                    {x.canceled && (
+                                        <button
+                                            onClick={() =>
+                                                deleteCanceledOrder.mutate({ orderId: x.id })
+                                            }
+                                            className="w-full max-w-[100px] rounded-md border p-2 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                        >
+                                            DELETE
+                                        </button>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     ) : (
@@ -123,8 +168,11 @@ const ProfilePage = () => {
                         </div>
                         <div className="flex w-full items-center justify-between">
                             <button
-                                onClick={() => deleteUserMutation.mutate()}
-                                className="min-w-[100px] rounded-lg border p-2 shadow-md     hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                onClick={() => {
+                                    deleteUserMutation.mutate();
+                                    setIsModalOpen(false);
+                                }}
+                                className="min-w-[100px] rounded-lg border p-2 shadow-md hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                             >
                                 I'M SURE
                             </button>
