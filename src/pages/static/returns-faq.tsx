@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const ReturnsAndFAQPage = () => {
     return (
-        <div className="mx-auto mb-20 mt-10 flex w-full max-w-screen-md flex-1 flex-col gap-6">
+        <div className="mx-auto mb-20 mt-10 flex w-full max-w-screen-md flex-1 flex-col gap-6 p-4">
             <h1 className="text-2xl font-semibold">Returns & FAQ</h1>
             <article className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">
