@@ -13,6 +13,8 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
     const response = await getGeocode({ placeId: suggestion?.place_id });
     const data = response[0].address_components;
 
+    console.log("GEOCODE DATA", data);
+
     const address: ValidatedAddress = {
         streetName:
             data.find((x: TGoogleAddressDetails) => x.types.includes("route"))?.long_name || "",
@@ -20,13 +22,13 @@ const getAddressSuggestion = async (suggestion: AutocompletePrediction | null) =
             data.find((x: TGoogleAddressDetails) => x.types.includes("street_number"))?.long_name ||
             "",
         city:
-            data.find((x: TGoogleAddressDetails) => x.types.includes("locality"))?.long_name || "",
+            data.find(
+                (x: TGoogleAddressDetails) =>
+                    x.types.includes("locality") || x.types.includes("postal_town")
+            )?.long_name || "",
         country:
             (data.find((x: TGoogleAddressDetails) => x.types.includes("country"))
                 ?.short_name as TAllowed[number]) || "",
-        province:
-            data.find((x: TGoogleAddressDetails) => x.types.includes("administrative_area_level_1"))
-                ?.long_name || "",
         zip:
             data.find((x: TGoogleAddressDetails) => x.types.includes("postal_code"))?.long_name ||
             "",

@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { cartSelector } from "../../redux/slices/cartSlice";
 import { CartProduct } from "../../components/CartProduct";
 import { currency } from "../../utils/currency";
-import Link from "next/link";
 import { LinkButton } from "../../components/LinkButton";
 
 const CartPage = () => {
@@ -10,12 +9,10 @@ const CartPage = () => {
 
     if (!productsInCart.length)
         return (
-            <div className="my-auto flex flex-col items-center justify-center gap-8 md:m-auto md:flex-1">
+            <div className="m-auto flex flex-col items-center justify-center gap-8 md:m-auto">
                 <p className="self-center">Your cart is empty!</p>
                 <p className="self-center text-2xl">(⌣̩̩́_⌣̩̩̀)</p>
-                <Link className="max-w-[200px] border p-4 text-center uppercase" href="/products">
-                    Start shopping!
-                </Link>
+                <LinkButton href="/products">Start shopping!</LinkButton>
             </div>
         );
 

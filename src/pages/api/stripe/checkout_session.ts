@@ -235,9 +235,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             },
         };
 
-        stripe.checkout.sessions.create(params);
+        const checkoutSession = await stripe.checkout.sessions.create(params);
 
-        res.status(200).end();
+        res.status(200).json(checkoutSession);
     } else {
         res.setHeader("Allow", "POST");
         res.status(405).end("Method Not Allowed");

@@ -32,7 +32,6 @@ export const validationSchema = z.object({
             return { message: ctx.defaultError };
         },
     }),
-    province: z.string().min(1, { message: "Required" }),
     zip: z.string().min(1, { message: "Required" }),
     streetName: z.string().min(1, { message: "Required" }),
     streetNumber: z.string().min(1, { message: "Required" }),
