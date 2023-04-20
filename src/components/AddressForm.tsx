@@ -103,7 +103,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
             <fieldset className="flex w-full flex-col items-center">
                 <div className="flex w-full flex-col gap-2">
                     <div>
-                        <label className="block p-1 text-sm" htmlFor="name">
+                        <label className="block p-1 text-xs" htmlFor="name">
                             <strong className="uppercase">Full Name</strong>
                         </label>
                         <input
@@ -116,13 +116,13 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             disabled={!ready}
                         />
                         {errors.name && (
-                            <span className="mb-1 pl-1 text-sm font-semibold">
+                            <span className="mb-1 pl-1 text-xs font-semibold">
                                 {errors.name.message}
                             </span>
                         )}
                     </div>
                     <div>
-                        <label className="block p-1 text-sm" htmlFor="email">
+                        <label className="block p-1 text-xs" htmlFor="email">
                             <strong className="uppercase">Email</strong>
                         </label>
                         <input
@@ -136,14 +136,14 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             disabled={!ready}
                         />
                         {errors.email && (
-                            <span className="mb-1 pl-1 text-sm font-semibold">
+                            <span className="mb-1 pl-1 text-xs font-semibold">
                                 {errors.email.message}
                             </span>
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
                         <div className="relative flex w-full flex-1 flex-col self-start sm:w-auto">
-                            <label className="block p-1 text-sm" htmlFor="streetName">
+                            <label className="block p-1 text-xs" htmlFor="streetName">
                                 <strong className="uppercase">Street name</strong>
                             </label>
                             <input
@@ -158,7 +158,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 disabled={!ready}
                             />
                             {errors.streetName && (
-                                <span className="mb-1 pl-1 text-sm font-semibold">
+                                <span className="mb-1 pl-1 text-xs font-semibold">
                                     {errors.streetName.message}
                                 </span>
                             )}
@@ -193,7 +193,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                         </div>
                         <div className="flex w-full flex-1 gap-2">
                             <div className="flex w-full flex-col self-start sm:w-auto">
-                                <label className="block p-1 text-sm" htmlFor="streetNumber">
+                                <label className="block p-1 text-xs" htmlFor="streetNumber">
                                     <strong className="uppercase">St. Number</strong>
                                 </label>
                                 <input
@@ -207,13 +207,13 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     disabled={!ready}
                                 />
                                 {errors.streetNumber && (
-                                    <span className="mb-1 pl-1 text-sm font-semibold">
+                                    <span className="mb-1 pl-1 text-xs font-semibold">
                                         {errors.streetNumber.message}
                                     </span>
                                 )}
                             </div>
                             <div className="flex w-full flex-col self-start sm:w-auto">
-                                <label className="block p-1 text-sm" htmlFor="subpremise">
+                                <label className="block p-1 text-xs" htmlFor="subpremise">
                                     <strong className="uppercase">Subpremise</strong>
                                 </label>
                                 <input
@@ -228,7 +228,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     disabled={!ready}
                                 />
                                 {errors.subpremise && (
-                                    <span className="mb-1 pl-1 text-sm font-semibold">
+                                    <span className="mb-1 pl-1 text-xs font-semibold">
                                         {errors.subpremise.message}
                                     </span>
                                 )}
@@ -239,7 +239,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                     <div className="flex w-full flex-col gap-4">
                         <div className="flex gap-2">
                             <div className="w-full">
-                                <label className="block p-1 text-sm" htmlFor="city">
+                                <label className="block p-1 text-xs" htmlFor="city">
                                     <strong className="uppercase">City</strong>
                                 </label>
                                 <input
@@ -253,7 +253,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     disabled={!ready}
                                 />
                                 {errors.city && (
-                                    <span className="mb-1 pl-1 text-sm font-semibold" role="error">
+                                    <span className="mb-1 pl-1 text-xs font-semibold" role="error">
                                         {errors.city.message}
                                     </span>
                                 )}
@@ -262,7 +262,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                         <div className="flex flex-col gap-2">
                             <div className="flex gap-2">
                                 <div className="w-full">
-                                    <label className="block p-1 text-sm" htmlFor="country">
+                                    <label className="block p-1 text-xs" htmlFor="country">
                                         <strong className="uppercase">Country code</strong>
                                     </label>
                                     <input
@@ -278,7 +278,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 </div>
 
                                 <div className="w-full">
-                                    <label className="block p-1 text-sm" htmlFor="zip">
+                                    <label className="block p-1 text-xs" htmlFor="zip">
                                         <strong className="uppercase">Zip</strong>
                                     </label>
                                     <input
@@ -292,7 +292,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         disabled={!ready}
                                     />
                                     {errors.zip && (
-                                        <span className="mb-1 pl-1 text-sm font-semibold">
+                                        <span className="mb-1 pl-1 text-xs font-semibold">
                                             {errors.zip.message}
                                         </span>
                                     )}

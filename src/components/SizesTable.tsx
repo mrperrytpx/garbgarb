@@ -23,16 +23,16 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
         () => [
             columnHelper.accessor((row) => row.size, {
                 id: "size",
-                cell: (info) => <i>{info.getValue()}</i>,
+                cell: (info) => <p>{info.getValue()}</p>,
                 header: () => <span>Sizes</span>,
             }),
             columnHelper.accessor("length", {
                 cell: (info) => (
-                    <i>
+                    <p>
                         {isCentimeters
                             ? Math.round(+info.getValue() * 2.54 * 10) / 10
                             : info.getValue()}
-                    </i>
+                    </p>
                 ),
                 header: () => <span>Length</span>,
             }),
@@ -40,23 +40,23 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
                 id: "chest",
                 header: "Chest",
                 cell: (info) => (
-                    <i>
+                    <p>
                         {isCentimeters
                             ? `${Math.round(+info.getValue()[0]! * 2.54 * 10) / 10} - ${
                                   Math.round(+info.getValue()[1]! * 2.54 * 10) / 10
                               }`
                             : `${info.getValue()[0]} - ${info.getValue()[1]}`}
-                    </i>
+                    </p>
                 ),
             }),
             columnHelper.accessor((row) => row["sleeve length"], {
                 id: "sleeve",
                 cell: (info) => (
-                    <i>
+                    <p>
                         {isCentimeters
                             ? Math.round(+info.getValue()! * 2.54 * 10) / 10
                             : info.getValue()}
-                    </i>
+                    </p>
                 ),
                 header: () => <span>Sleeve</span>,
                 enableHiding: true,

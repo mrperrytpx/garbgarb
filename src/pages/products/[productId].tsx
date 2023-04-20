@@ -21,6 +21,7 @@ import {
 } from "../../hooks/useGetProductAvailability";
 import { useGetProductSizes } from "../../hooks/useGetProductSizes";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
+import { RxCross1 } from "react-icons/rx";
 
 const CheckedIcon = () => {
     return (
@@ -237,13 +238,12 @@ const ArticlePage = () => {
                             <LoadingSpinner />
                         ) : (
                             <>
-                                <span
-                                    tabIndex={1}
+                                <button
                                     onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
+                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow hover:bg-red-400"
                                 >
-                                    X
-                                </span>
+                                    <RxCross1 size="20" />
+                                </button>
                                 <div
                                     role="heading"
                                     aria-level={1}

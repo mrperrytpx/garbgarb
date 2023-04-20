@@ -7,7 +7,6 @@ import { currency } from "../../utils/currency";
 import { Accordion } from "../../components/Accordion";
 import { IoArrowBackSharp } from "react-icons/io5";
 import Link from "next/link";
-import Image from "next/image";
 import { useCancelOrderMutation } from "../../hooks/useCancelOrderMutation";
 import Stripe from "stripe";
 import { MinimalCartProduct } from "../../components/MinimalCartProduct";
