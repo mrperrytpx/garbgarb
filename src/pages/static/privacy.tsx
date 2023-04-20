@@ -4,6 +4,7 @@ const PrivacyPage = () => {
     return (
         <div className="mx-auto mb-20 mt-10 flex w-full max-w-screen-md flex-1 flex-col gap-6 p-4">
             <h1 className="text-2xl font-semibold">Privacy Policy</h1>
+            <p className="text-xs">Effective Date: 20th of April, 2023</p>
             <p className="text-sm">
                 At GarbGarb, we take your privacy seriously. This policy explains how we collect,
                 process, and share your personal information when you use our services or visit our

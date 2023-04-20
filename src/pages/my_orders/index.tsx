@@ -17,6 +17,7 @@ const ProfilePage = () => {
         queryFn: async () => {
             const res = await apiInstance.get<Order[]>("/api/printful/get_all_orders");
             const data = res.data;
+            console.log(data);
             return data;
         },
     });
@@ -58,7 +59,14 @@ const ProfilePage = () => {
                                     <div className="flex flex-col justify-between gap-2">
                                         <div className="flex items-center justify-between gap-4">
                                             <span className="underline">#{x.id}</span>
-                                            <strong className="min-w-[70px] text-right">
+                                            <strong
+                                                style={{
+                                                    textDecoration: x.canceled
+                                                        ? "line-through"
+                                                        : "",
+                                                }}
+                                                className="min-w-[70px] text-right"
+                                            >
                                                 {currency(x.totalAmount / 100)}
                                             </strong>
                                         </div>
