@@ -83,7 +83,6 @@ const ProfilePage = () => {
                                     </div>
                                 </Link>
                             ))}
-                            {/* <LinkButton href="/checkout">Place an order</LinkButton> */}
                         </div>
                     ) : (
                         <div className="flex w-full flex-col items-center justify-start gap-4">
@@ -107,7 +106,7 @@ const ProfilePage = () => {
                 <Portal>
                     <div className="relative flex max-h-full w-full max-w-screen-xs flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-white p-4 text-center">
                         <div>
-                            <h1 className="mb-2 text-xl">
+                            <h1 className="mb-2 text-xl uppercase">
                                 Are you sure you want to delete Your account?
                             </h1>
                             <p className="mb-2">All of your data will be removed.</p>
@@ -115,7 +114,7 @@ const ProfilePage = () => {
                                 This will <u>NOT</u> cancel any of your outgoing orders!
                             </p>
                         </div>
-                        <div className="flex w-full items-center justify-between sm:justify-center sm:gap-20">
+                        <div className="flex w-full items-center justify-between">
                             <button
                                 onClick={() => deleteUserMutation.mutate()}
                                 className="min-w-[100px] rounded-lg border p-2 shadow-md     hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"

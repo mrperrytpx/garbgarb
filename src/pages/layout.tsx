@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { CartIconWithNumber } from "../components/CartIconWithNumber";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { ErrorBoundary } from "../utils/ErrorBoundary";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
 interface ILayoutProps {
     children: JSX.Element | JSX.Element[];

@@ -10,6 +10,20 @@ export const Portal = ({ children }: PortalProps) => {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        if (typeof window != "undefined" && window.document) {
+            if (mounted) {
+                document.body.style.overflow = "hidden";
+            } else {
+                document.body.style.overflow = "unset";
+            }
+        }
+
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [mounted]);
+
+    useEffect(() => {
         ref.current = document.querySelector<HTMLElement>("#portal");
         setMounted(true);
     }, []);

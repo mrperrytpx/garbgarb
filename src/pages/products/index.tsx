@@ -1,7 +1,7 @@
 import { ProductCard } from "../../components/ProductCard";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { PageError } from "../../utils/PageError";
+import { PageError } from "../../components/PageError";
 import { ChangeEvent, useState } from "react";
 import { stripe } from "../../lib/stripe";
 import { Breadcrumbs } from "../../components/Breadcrumbs";

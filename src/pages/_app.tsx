@@ -8,7 +8,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider, useSession } from "next-auth/react";
 import React, { ReactNode, useState } from "react";
-import { ErrorBoundary } from "../utils/ErrorBoundary";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import { NextComponentType } from "next";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 

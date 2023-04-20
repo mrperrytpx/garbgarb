@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
 import Image from "next/image";
 import { SizeDropdown } from "../../components/SizeDropdown";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import parse from "html-react-parser";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
@@ -46,7 +46,7 @@ const ArticlePage = () => {
     const [color, setColor] = useState(productColors[0]);
     const [option, setOption] = useState(product[color].filter((x) => x.inStock)[0]);
     const [quantity, setQuantity] = useState(1);
-    const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCentimeters, setIsCentimeters] = useState(true);
 
     const productDescription = availabilityData?.product.description
@@ -97,21 +97,7 @@ const ArticlePage = () => {
         setQuantity(1);
     }
 
-    useEffect(() => {
-        if (typeof window != "undefined" && window.document) {
-            if (isSizeGuideOpen) {
-                document.body.style.overflow = "hidden";
-            } else {
-                document.body.style.overflow = "unset";
-            }
-        }
-
-        return () => {
-            document.body.style.overflow = "unset";
-        };
-    }, [isSizeGuideOpen]);
-
-    const { data: sizesData } = useGetProductSizes(storeProductId, isSizeGuideOpen);
+    const { data: sizesData } = useGetProductSizes(storeProductId, isModalOpen);
 
     if (!productData || !availabilityData) return <div>Yikes bro...</div>;
 
@@ -221,10 +207,10 @@ const ArticlePage = () => {
                             <div className="flex flex-col gap-2 px-2">
                                 <p
                                     tabIndex={0}
-                                    onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                                    onClick={() => setIsModalOpen(!isModalOpen)}
                                     className="mb-4 cursor-pointer p-2 text-center text-sm font-bold hover:underline focus:underline"
                                 >
-                                    Click to {isSizeGuideOpen ? "close" : "open"} the sizes guide
+                                    Click to {isModalOpen ? "close" : "open"} the sizes guide
                                 </p>
                             </div>
                         </Accordion>
@@ -244,7 +230,7 @@ const ArticlePage = () => {
                 </article>
             </div>
             {/*  */}
-            {isSizeGuideOpen && (
+            {isModalOpen && (
                 <Portal>
                     <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
                         {!sizesData ? (
@@ -253,7 +239,7 @@ const ArticlePage = () => {
                             <>
                                 <span
                                     tabIndex={1}
-                                    onClick={() => setIsSizeGuideOpen(!isSizeGuideOpen)}
+                                    onClick={() => setIsModalOpen(!isModalOpen)}
                                     className="absolute right-0 top-0 cursor-pointer p-1 pr-4 text-xl font-bold"
                                 >
                                     X

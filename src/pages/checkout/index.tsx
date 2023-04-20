@@ -6,7 +6,7 @@ import { cartSelector } from "../../redux/slices/cartSlice";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { PageError } from "../../utils/PageError";
+import { PageError } from "../../components/PageError";
 import { useRouter } from "next/dist/client/router";
 import { FormProvider, useForm } from "react-hook-form";
 import { SectionSeparator } from "../../components/SectionSeparator";
