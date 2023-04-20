@@ -77,7 +77,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         if (session.data?.user?.email) {
             setFormValue("email", session.data?.user?.email, { shouldValidate: true });
         }
-    }, [session]);
+    }, [session, setFormValue]);
 
     useEffect(() => {
         if (addressData.data) {
@@ -88,7 +88,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
             setFormValue("zip", addressData.data.zip || "");
             setFormValue("subpremise", addressData.data?.subpremise);
         }
-    }, [addressData.data]);
+    }, [addressData.data, setFormValue]);
 
     const onSubmit = handleSubmit(() => {
         setCheckoutStep((prev) => prev + 1);

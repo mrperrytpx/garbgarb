@@ -131,7 +131,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         <a
                             className="my-8"
                             target="_blank"
-                            referrerPolicy="no-referrer"
+                            rel="noreferrer"
                             href="https://github.com/mrperrytpx/garbgarb"
                         >
                             <FiGithub size={40} />
@@ -139,7 +139,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         <a
                             className="my-8"
                             target="_blank"
-                            referrerPolicy="no-referrer"
+                            rel="noreferrer"
                             href="https://www.linkedin.com/"
                         >
                             <FiLinkedin size={40} />
@@ -181,7 +181,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                     <a
                                         className="p-2"
                                         target="_blank"
-                                        referrerPolicy="no-referrer"
+                                        rel="noreferrer"
                                         href="https://github.com/mrperrytpx/garbgarb"
                                     >
                                         <FiGithub stroke="black" size={24} />
@@ -189,7 +189,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                     <a
                                         className="p-2"
                                         target="_blank"
-                                        referrerPolicy="no-referrer"
+                                        rel="noreferrer"
                                         href="https://www.linkedin.com/"
                                     >
                                         <FiLinkedin stroke="black" size={24} />

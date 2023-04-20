@@ -244,7 +244,11 @@ const ArticlePage = () => {
                                 >
                                     X
                                 </span>
-                                <div role="heading" className="w-full border-b-2 font-bold">
+                                <div
+                                    role="heading"
+                                    aria-level={1}
+                                    className="w-full border-b-2 font-bold"
+                                >
                                     Measure yourself
                                 </div>
                                 <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">

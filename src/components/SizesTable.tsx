@@ -62,7 +62,7 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
                 enableHiding: true,
             }),
         ],
-        [sizes, isCentimeters]
+        [isCentimeters, columnHelper]
     );
 
     const table = useReactTable({

@@ -13,7 +13,7 @@ const SuccessPage = () => {
         if (session_id) {
             dispatch(emptyCart());
         }
-    }, [session_id]);
+    }, [session_id, dispatch]);
 
     return (
         <div className="m-auto flex-1">
