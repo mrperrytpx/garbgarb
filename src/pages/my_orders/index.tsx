@@ -6,6 +6,8 @@ import Link from "next/link";
 import { currency } from "../../utils/currency";
 import { LinkButton } from "../../components/LinkButton";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { Portal } from "../../components/Portal";
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -18,6 +20,8 @@ const ProfilePage = () => {
             return data;
         },
     });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const deleteUserMutation = useMutation(
         async () => {
@@ -47,9 +51,6 @@ const ProfilePage = () => {
                         <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
                             {allOrders.data?.map((x, i) => (
                                 <Link
-                                    style={{
-                                        border: x.canceled ? "1px solid #ef4444A3" : "",
-                                    }}
                                     key={i}
                                     className="w-full rounded-md p-4 shadow-md "
                                     href={`/my_orders/${x.id}`}
@@ -62,7 +63,7 @@ const ProfilePage = () => {
                                             </strong>
                                         </div>
                                         <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <span>
+                                            <span className="text-sm">
                                                 {new Intl.DateTimeFormat("en-GB", {
                                                     weekday: "short",
                                                     year: "2-digit",
@@ -74,7 +75,9 @@ const ProfilePage = () => {
                                                 }).format(new Date(x.createdAt))}
                                             </span>
                                             {x.canceled && (
-                                                <strong className="uppercase">Canceled</strong>
+                                                <strong className="uppercase text-red-600">
+                                                    Canceled
+                                                </strong>
                                             )}
                                         </div>
                                     </div>
@@ -95,11 +98,40 @@ const ProfilePage = () => {
 
                 <button
                     className="rounded-lg border p-2 shadow transition-colors hover:bg-slate-500 hover:text-white"
-                    onClick={() => deleteUserMutation.mutate()}
+                    onClick={() => setIsModalOpen(!isModalOpen)}
                 >
                     {deleteUserMutation.isLoading ? <LoadingSpinner size={20} /> : "Delete Account"}
                 </button>
             </div>
+            {isModalOpen && (
+                <Portal>
+                    <div className="relative flex max-h-full w-full max-w-screen-xs flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-white p-4 text-center">
+                        <div>
+                            <h1 className="mb-2 text-xl">
+                                Are you sure you want to delete Your account?
+                            </h1>
+                            <p className="mb-2">All of your data will be removed.</p>
+                            <p className="text-sm font-bold">
+                                This will <u>NOT</u> cancel any of your outgoing orders!
+                            </p>
+                        </div>
+                        <div className="flex w-full items-center justify-between sm:justify-center sm:gap-20">
+                            <button
+                                onClick={() => deleteUserMutation.mutate()}
+                                className="min-w-[100px] rounded-lg border p-2 shadow-md     hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                            >
+                                I'M SURE
+                            </button>
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="min-w-[100px] rounded-lg border p-2 shadow-md hover:bg-slate-500 hover:text-white focus:bg-slate-500 focus:text-white"
+                            >
+                                NO
+                            </button>
+                        </div>
+                    </div>
+                </Portal>
+            )}
         </div>
     );
 };

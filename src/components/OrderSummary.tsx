@@ -69,7 +69,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const formData = getValues();
     if (!validationSchema.parse(formData)) setCheckoutStep(3);
 
-    const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.province}, ${formData.zip}-${formData.country}`;
+    const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.zip}-${formData.country}`;
 
     return (
         <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4 font-medium">

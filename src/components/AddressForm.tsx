@@ -157,7 +157,6 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                                 className="cursor-pointer border-b-2 p-2 last-of-type:border-0 hover:bg-slate-700 hover:text-white"
                                                 key={i}
                                                 onClick={() => {
-                                                    console.log(suggestion);
                                                     clearSuggestions();
                                                     clearErrors();
                                                     setSuggestion(suggestion);
