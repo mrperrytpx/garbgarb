@@ -76,6 +76,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     useEffect(() => {
         if (session.data?.user?.email) {
             setFormValue("email", session.data?.user?.email, { shouldValidate: true });
+            setFormValue("name", session.data?.user?.name, { shouldValidate: true });
         }
     }, [session, setFormValue]);
 
@@ -101,6 +102,25 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         >
             <fieldset className="flex w-full flex-col items-center">
                 <div className="flex w-full flex-col gap-2">
+                    <div>
+                        <label className="block p-1 text-sm" htmlFor="name">
+                            <strong className="uppercase">Full Name</strong>
+                        </label>
+                        <input
+                            {...register("name")}
+                            name="name"
+                            id="name"
+                            className="h-10 w-full border p-2 text-sm"
+                            placeholder="Full Name"
+                            autoComplete="off"
+                            disabled={!ready}
+                        />
+                        {errors.name && (
+                            <span className="mb-1 pl-1 text-sm font-semibold">
+                                {errors.name.message}
+                            </span>
+                        )}
+                    </div>
                     <div>
                         <label className="block p-1 text-sm" htmlFor="email">
                             <strong className="uppercase">Email</strong>

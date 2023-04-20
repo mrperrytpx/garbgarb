@@ -54,6 +54,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                     completeOrderMutation.mutate({
                         address: addressData,
                         email: formData.email,
+                        name: formData.name,
                     });
                 } else {
                     const itemsInStock = data?.filter((x) => x.in_stock).map((x) => x.id);

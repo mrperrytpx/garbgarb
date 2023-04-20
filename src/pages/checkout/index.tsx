@@ -20,9 +20,10 @@ const libraries: Libraries = ["places"];
 
 export type ValidatedForm = z.infer<typeof validationSchema>;
 
-export type ValidatedAddress = Omit<ValidatedForm, "email">;
+export type ValidatedAddress = Omit<ValidatedForm, "email" | "name">;
 
 export const validationSchema = z.object({
+    name: z.string().min(1, "Required"),
     email: z.string().min(1, "Required").email(),
     city: z.string().min(1, { message: "Required" }),
     country: z.enum([...allowedCountries], {

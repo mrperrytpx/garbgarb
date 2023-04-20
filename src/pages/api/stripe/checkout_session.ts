@@ -41,13 +41,16 @@ export function formatAmountForStripe(amount: number, currency: string): number 
     return zeroDecimalCurrency ? amount : Math.round(amount * 100);
 }
 
+interface ICheckoutBody {
+    cartItems: TCheckoutPayload;
+    address: ValidatedAddress;
+    email: string;
+    name: string;
+}
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
-        const {
-            cartItems,
-            address,
-            email,
-        }: { cartItems: TCheckoutPayload; address: ValidatedAddress; email: string } = req.body;
+        const { cartItems, address, email, name }: ICheckoutBody = req.body;
 
         if (!cartItems) {
             console.log("No items in cart");
@@ -156,6 +159,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // Stripe customer
         const customer = await stripe.customers.create({
+            name,
             email: email,
             address: {
                 line1: `${address.streetNumber} ${address.streetName}`,
