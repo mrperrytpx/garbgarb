@@ -24,7 +24,6 @@ const OrderPage = () => {
                 },
             });
             const data = res.data.result;
-            console.log(data);
             return data;
         },
         enabled: !!orderId,

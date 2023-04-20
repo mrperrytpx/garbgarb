@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiInstance } from "../utils/axiosClients";
 import Stripe from "stripe";
-import { TOrder } from "../pages/api/stripe/webhooks";
+import { Order } from "@prisma/client";
 
 interface IDeleteOrder {
     orderId: string | string[] | undefined;
@@ -15,9 +15,7 @@ export const useCancelOrderMutation = () => {
             params: { orderId },
         });
 
-        await queryClient.refetchQueries({
-            queryKey: ["order", orderId],
-        });
+        return orderId;
     };
 
     return useMutation(deleteOrder, {
@@ -28,14 +26,20 @@ export const useCancelOrderMutation = () => {
                 return { ...old!, status: "canceled" };
             });
 
-            // queryClient.setQueryData(["orders"], (old) => {
+            const previousOrders = queryClient.getQueryData(["orders"]);
 
-            // })
+            queryClient.setQueryData<Order[]>(["orders"], (old) => {
+                return old?.map((x) => ({ ...x, canceled: true }));
+            });
 
-            return { previousOrder };
+            return { previousOrder, previousOrders };
         },
         onError: (_err, data, context) => {
             queryClient.setQueryData(["order", data.orderId], context?.previousOrder);
+            queryClient.setQueryData(["orders"], context?.previousOrders);
+        },
+        onSettled: (data) => {
+            setTimeout(() => queryClient.invalidateQueries({ queryKey: ["order", data] }), 500);
         },
     });
 };

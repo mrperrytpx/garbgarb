@@ -17,7 +17,6 @@ const ProfilePage = () => {
         queryFn: async () => {
             const res = await apiInstance.get<Order[]>("/api/printful/get_all_orders");
             const data = res.data;
-            console.log(data);
             return data;
         },
     });
