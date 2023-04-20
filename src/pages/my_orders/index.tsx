@@ -8,6 +8,7 @@ import { LinkButton } from "../../components/LinkButton";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Portal } from "../../components/Portal";
+import { AllOrdersSkeleton } from "../../components/skeletons/AllOrdersSkeleton";
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -66,9 +67,26 @@ const ProfilePage = () => {
 
     if (allOrders.isLoading)
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
-                <p>Getting all orders...</p>
-                <LoadingSpinner size={50} />
+            <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2">
+                <div className="w-full">
+                    <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
+                    <div className="flex w-full flex-col gap-2">
+                        <AllOrdersSkeleton />
+                    </div>
+                </div>
+                <div className="flex w-full flex-col gap-4">
+                    <h1 className="w-full border-b-2 font-bold uppercase">Account:</h1>
+                    <button
+                        className="rounded-lg border p-2 shadow transition-colors hover:bg-slate-500 hover:text-white"
+                        onClick={() => setIsModalOpen(!isModalOpen)}
+                    >
+                        {deleteUserMutation.isLoading ? (
+                            <LoadingSpinner size={20} />
+                        ) : (
+                            "Delete Account"
+                        )}
+                    </button>
+                </div>
             </div>
         );
 

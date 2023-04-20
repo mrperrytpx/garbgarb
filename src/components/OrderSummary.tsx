@@ -11,7 +11,7 @@ import { useFormContext } from "react-hook-form";
 import { ValidatedForm, validationSchema } from "../pages/checkout";
 import { useMutation } from "@tanstack/react-query";
 import { apiInstance } from "../utils/axiosClients";
-import { TCheckoutPayload } from "../lib/checkPayload";
+import { TCheckoutPayload } from "../lib/checkPayloadStock";
 import { TProductVariant } from "../pages/api/product";
 
 interface IOrderSummaryProps {

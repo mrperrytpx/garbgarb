@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { TCheckoutPayload, cartItemsSchema } from "../stripe/checkout_session";
 import { tryCatchAsync, tryCatchSync } from "../../../utils/tryCatchWrappers";
 import { z } from "zod";
-import { checkPayloadStock } from "../../../lib/checkPayload";
+import { checkPayloadStock } from "../../../lib/checkPayloadStock";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {

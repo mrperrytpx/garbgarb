@@ -34,6 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         });
 
         if (!canceledOrder) return res.status(404).end();
+        if (!canceledOrder.canceled) return res.status(404).end();
 
         await prisma.order.delete({
             where: {

@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useCancelOrderMutation } from "../../hooks/useCancelOrderMutation";
 import Stripe from "stripe";
 import { MinimalCartProduct } from "../../components/MinimalCartProduct";
+import { OrderDataSkeleton } from "../../components/skeletons/OrderDataSkeleton";
 
 const OrderPage = () => {
     const router = useRouter();
@@ -45,13 +46,7 @@ const OrderPage = () => {
     const cancelOrderMutation = useCancelOrderMutation();
     if (!orderId) return null;
 
-    if (orderData.isLoading)
-        return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
-                <p className="text-sm">Loading order {orderId}..</p>
-                <LoadingSpinner size={50} />
-            </div>
-        );
+    if (orderData.isLoading) return <OrderDataSkeleton />;
 
     const shippingAddress = `${orderData.data?.recipient.address1}${
         orderData.data?.recipient.address2 ? " " + orderData.data?.recipient.address2 : ""

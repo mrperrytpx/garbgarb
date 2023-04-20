@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { cartSelector } from "../redux/slices/cartSlice";
-import { TCheckoutPayload } from "../lib/checkPayload";
+import { TCheckoutPayload } from "../lib/checkPayloadStock";
 import { apiInstance } from "../utils/axiosClients";
 import Stripe from "stripe";
 import { getStripe } from "../utils/getStripe";
