@@ -104,6 +104,8 @@ const ArticlePage = () => {
 
     const { data: sizesData } = useGetProductSizes(storeProductId, isModalOpen);
 
+    const spanProp = isModalOpen ? { tabIndex: 0 } : {};
+
     if (!productData || !availabilityData) return <div>Yikes bro...</div>;
 
     return (
@@ -123,19 +125,14 @@ const ArticlePage = () => {
                     />
                 </div>
                 {/*  */}
-                <article
-                    style={{
-                        borderColor: (chosenColor as string) || color,
-                    }}
-                    className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md border-2 border-white bg-black p-4 text-white md:flex-1 lg:max-w-[450px]"
-                >
+                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-white md:flex-1 lg:max-w-[450px]">
                     <div className="flex w-full flex-col items-start justify-center gap-4">
                         <div className="flex w-full flex-col gap-0.5">
                             <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
                             <p className="text-left">{baseShirtName}</p>
                             <p
                                 style={{ backgroundColor: option.color_code }}
-                                className="block w-full rounded-lg border border-slate-200 pl-2"
+                                className="block w-full rounded-lg border border-gray-500    pl-2"
                             >
                                 <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                     {option.color_name}
@@ -156,7 +153,7 @@ const ArticlePage = () => {
                                 style={{
                                     backgroundColor: prodColor,
                                 }}
-                                className="relative  flex items-center justify-center gap-2 rounded-lg"
+                                className="group relative flex items-center justify-center gap-2 rounded-lg hover:animate-hop"
                                 key={prodColor}
                             >
                                 <button
@@ -164,7 +161,7 @@ const ArticlePage = () => {
                                     style={{
                                         backgroundColor: prodColor,
                                     }}
-                                    className="h-10 w-10 rounded-lg border border-white"
+                                    className="h-10 w-10 rounded-lg border-2 border-gray-500 hover:border-white"
                                 />
                                 {prodColor === color && (
                                     <div className="absolute">
@@ -192,7 +189,7 @@ const ArticlePage = () => {
                             <input
                                 value={quantity}
                                 onChange={(e) => setQuantity(+e.target.value)}
-                                className="w-[100px] rounded-lg border bg-black p-3"
+                                className="w-[100px] rounded-lg border border-gray-500 bg-black p-3 hover:border-white"
                                 onBlur={handleQuantity}
                                 min="1"
                                 max="999"
@@ -200,7 +197,7 @@ const ArticlePage = () => {
                             />
                             <button
                                 onClick={handleAddToCart}
-                                className="w-full self-end rounded-lg border p-3"
+                                className="w-full self-end rounded-lg border border-gray-500 p-3 shadow-sm shadow-slate-100 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                             >
                                 Add to cart!
                             </button>
@@ -209,19 +206,21 @@ const ArticlePage = () => {
                     {/*  */}
                     <div className="flex flex-col">
                         <Accordion title="More Details">
-                            <div className="flex flex-col gap-2 px-2">
+                            <div className="flex w-full flex-col gap-2 px-2">
                                 {parse(productDescription)}
                             </div>
                         </Accordion>
                         <Accordion title="Size Guide">
-                            <div className="flex flex-col gap-2 px-2">
-                                <p
-                                    tabIndex={0}
-                                    onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className="mb-4 cursor-pointer p-2 text-center text-sm font-bold hover:underline focus:underline"
-                                >
-                                    Click to {isModalOpen ? "close" : "open"} the sizes guide
-                                </p>
+                            <div className="mb-4 mt-2 flex flex-col gap-2 px-2">
+                                <div className="w-max self-center border border-slate-400 p-2 hover:border-white hover:bg-slate-200 hover:text-black  focus:bg-slate-200 focus:text-black">
+                                    <span
+                                        onClick={() => setIsModalOpen(!isModalOpen)}
+                                        className="h-full cursor-pointer text-sm font-bold"
+                                        {...spanProp}
+                                    >
+                                        Click to {isModalOpen ? "close" : "open"} the sizes guide
+                                    </span>
+                                </div>
                             </div>
                         </Accordion>
                         <Accordion title="Quality Guarantee & Returns">

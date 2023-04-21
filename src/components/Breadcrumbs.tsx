@@ -24,7 +24,7 @@ export const Breadcrumbs = () => {
 
     return (
         <nav className="flex items-center gap-1 overflow-x-auto border-b border-slate-100 p-1 text-sm capitalize text-white">
-            <Link className="hover:underline focus:underline" href="/">
+            <Link className="hover:animate-hop hover:underline focus:underline" href="/">
                 Home
             </Link>
             {hasPath && <p>&gt;</p>}
@@ -36,7 +36,10 @@ export const Breadcrumbs = () => {
                     segment
                 ) : (
                     <React.Fragment key={href}>
-                        <Link className="capitalize hover:underline focus:underline" href={href}>
+                        <Link
+                            className="capitalize hover:animate-hop hover:underline focus:underline"
+                            href={href}
+                        >
                             {segment}
                         </Link>
                         {!isLast ? <p>&gt;</p> : null}

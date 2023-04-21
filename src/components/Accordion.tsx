@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { KeyboardEventHandler, useEffect, useRef, useState } from "react";
 
 interface IAccordionProps {
     children: React.ReactNode;
@@ -13,7 +13,7 @@ const TriangleIcon = ({ isExpanded }: { isExpanded: boolean }) => {
             height="12"
             viewBox="0 0 24 24"
             fill="white"
-            className={`transform transition-transform duration-300 ${
+            className={`transform transition-transform duration-300 group-hover:fill-black ${
                 isExpanded ? "rotate-180" : "rotate-0"
             }`}
         >
@@ -48,7 +48,14 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
         <div className="flex w-full select-none flex-col items-center justify-start">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow shadow-slate-100"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.code === "Space" || e.code === "Enter") {
+                        e.preventDefault();
+                        setIsExpanded(!isExpanded);
+                    }
+                }}
+                className="hover:text-bla group flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black"
             >
                 <p className="text-sm font-bold uppercase">{title}</p>
                 <TriangleIcon isExpanded={isExpanded} />

@@ -18,15 +18,17 @@ export const ProductCard = ({ product }: IProductCard) => {
     const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
 
     return (
-        <div className="max-w-[300px] rounded-md bg-slate-100 shadow-xl hover:outline hover:outline-1 md:self-start">
-            <Link href={`/products/${product.metadata.id}`}>
-                <Image
-                    className="rounded-md border border-b-2"
-                    src={product.metadata.thumbnail_url}
-                    alt=""
-                    width={400}
-                    height={400}
-                />
+        <div className="max-w-[300px] rounded-md bg-slate-100 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
+            <div>
+                <Link href={`/products/${product.metadata.id}`}>
+                    <Image
+                        className="rounded-md border border-b-2"
+                        src={product.metadata.thumbnail_url}
+                        alt=""
+                        width={400}
+                        height={400}
+                    />
+                </Link>
                 <div className="flex flex-col items-start justify-center gap-2 rounded-md bg-white py-2 px-4">
                     <div>
                         <p className="text-lg font-bold md:text-xl">{shirtName}</p>
@@ -38,7 +40,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                                 href={`/products/${product.metadata.id}?color=${
                                     "%23" + hex.split("").splice(1).join("")
                                 }`}
-                                className="group relative z-10 flex items-center justify-center rounded-md"
+                                className="group relative z-10 flex items-center justify-center rounded-md hover:animate-hop"
                                 key={hex}
                             >
                                 <div
@@ -67,7 +69,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                         </span>
                     </p>
                 </div>
-            </Link>
+            </div>
         </div>
     );
 };
