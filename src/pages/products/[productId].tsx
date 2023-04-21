@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, PreviewData } from "next";
 import Image from "next/image";
 import { SizeDropdown } from "../../components/SizeDropdown";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import parse from "html-react-parser";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
@@ -35,7 +35,7 @@ const ArticlePage = () => {
     const router = useRouter();
     const dispatch = useDispatch();
 
-    const { productId } = router.query;
+    const { productId, color: chosenColor } = router.query;
 
     const { data: productData } = useGetProduct(productId);
     const storeProductId = productData?.sync_variants[0].product.product_id;
@@ -44,7 +44,10 @@ const ArticlePage = () => {
 
     const { product, productColors } = sortStuffByProductColor(productData, availabilityData);
 
-    const [color, setColor] = useState(productColors[0]);
+    const [color, setColor] = useState(() => {
+        if (chosenColor) return chosenColor as string;
+        return productColors[0];
+    });
     const [option, setOption] = useState(product[color].filter((x) => x.inStock)[0]);
     const [quantity, setQuantity] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);

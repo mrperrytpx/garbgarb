@@ -143,7 +143,7 @@ const ProfilePage = () => {
                                             onClick={() =>
                                                 deleteCanceledOrder.mutate({ orderId: x.id })
                                             }
-                                            className="w-full max-w-[100px] rounded-md border p-2 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                            className="z-10 w-full max-w-[100px] rounded-md border p-2 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                                         >
                                             DELETE
                                         </button>

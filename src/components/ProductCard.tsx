@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Stripe from "stripe";
 import { currency } from "../utils/currency";
+import { GetColorName } from "hex-color-to-color-name";
 
 interface IProductCard {
     product: Stripe.Product;
@@ -33,8 +34,11 @@ export const ProductCard = ({ product }: IProductCard) => {
                     </div>
                     <div className="flex flex-wrap items-center justify-start gap-2 ">
                         {parsedColorHexs.map((hex) => (
-                            <div
-                                className="relative flex items-center justify-center rounded-md"
+                            <Link
+                                href={`/products/${product.metadata.id}?color=${
+                                    "%23" + hex.split("").splice(1).join("")
+                                }`}
+                                className="group relative z-10 flex items-center justify-center rounded-md"
                                 key={hex}
                             >
                                 <div
@@ -43,7 +47,18 @@ export const ProductCard = ({ product }: IProductCard) => {
                                     }}
                                     className="h-5 w-5  rounded-md border border-black"
                                 />
-                            </div>
+                                <div
+                                    style={{
+                                        backgroundColor: hex,
+                                        borderColor: hex,
+                                    }}
+                                    className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] border px-2 py-1 font-bold text-white group-hover:block "
+                                >
+                                    <span className="drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
+                                        {GetColorName(hex)}
+                                    </span>
+                                </div>
+                            </Link>
                         ))}
                     </div>
                     <p>

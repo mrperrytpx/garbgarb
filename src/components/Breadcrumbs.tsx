@@ -18,7 +18,8 @@ export const Breadcrumbs = () => {
         };
     }, [router]);
 
-    const [_, ...segments] = path.split("/");
+    const pathWithoutQuery = router.asPath.split("?")[0];
+    const [_, ...segments] = pathWithoutQuery.split("/");
     const hasPath = segments.length > 0; // check if not root
 
     return (
