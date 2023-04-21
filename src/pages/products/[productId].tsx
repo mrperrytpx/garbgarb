@@ -108,7 +108,7 @@ const ArticlePage = () => {
                 <Breadcrumbs />
             </div>
             <div className="flex flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
-                <div className="max-w-[350px] rounded-md border-2 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
+                <div className="max-w-[350px] rounded-md border-2 bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
                     <Image
                         priority={true}
                         width={500}
@@ -119,14 +119,14 @@ const ArticlePage = () => {
                     />
                 </div>
                 {/*  */}
-                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-slate-100 p-4 md:flex-1 lg:max-w-[450px]">
+                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-white md:flex-1 lg:max-w-[450px]">
                     <div className="flex w-full flex-col items-start justify-center gap-4">
                         <div className="flex w-full flex-col gap-0.5">
                             <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
                             <p className="text-left">{baseShirtName}</p>
                             <p
                                 style={{ backgroundColor: option.color_code }}
-                                className="block w-full rounded-lg pl-2 text-white"
+                                className="block w-full rounded-lg border border-slate-200 pl-2"
                             >
                                 <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                     {option.color_name}
@@ -155,7 +155,7 @@ const ArticlePage = () => {
                                     style={{
                                         backgroundColor: prodColor,
                                     }}
-                                    className="h-10 w-10 rounded-lg border border-slate-500"
+                                    className="h-10 w-10 rounded-lg border border-white"
                                 />
                                 {prodColor === color && (
                                     <div className="absolute">
@@ -183,7 +183,7 @@ const ArticlePage = () => {
                             <input
                                 value={quantity}
                                 onChange={(e) => setQuantity(+e.target.value)}
-                                className="w-[100px] rounded-lg border p-3"
+                                className="w-[100px] rounded-lg border bg-black p-3"
                                 onBlur={handleQuantity}
                                 min="1"
                                 max="999"
@@ -191,7 +191,7 @@ const ArticlePage = () => {
                             />
                             <button
                                 onClick={handleAddToCart}
-                                className="w-full self-end rounded-lg border bg-white p-3 hover:bg-slate-700 hover:text-white"
+                                className="w-full self-end rounded-lg border p-3"
                             >
                                 Add to cart!
                             </button>
@@ -233,14 +233,14 @@ const ArticlePage = () => {
             {/*  */}
             {isModalOpen && (
                 <Portal>
-                    <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 bg-white p-4">
+                    <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-300 bg-black p-4 text-slate-100">
                         {!sizesData ? (
                             <LoadingSpinner />
                         ) : (
                             <>
                                 <button
                                     onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow hover:bg-red-400"
+                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow shadow-slate-100 hover:bg-red-400"
                                 >
                                     <RxCross1 size="20" />
                                 </button>

@@ -28,7 +28,7 @@ export const SizeDropdown = <T extends { id: number; inStock: boolean }>({
         <select
             value={getValue(state)}
             onChange={handleChange}
-            className="w-full cursor-pointer select-none rounded-lg border p-3 text-lg"
+            className="w-full cursor-pointer select-none rounded-lg border bg-black p-2 text-lg text-white"
         >
             {options.map((option) => (
                 <option

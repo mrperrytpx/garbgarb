@@ -94,18 +94,18 @@ const CheckoutPage = () => {
                     </div>
                     {checkoutStep === 1 && (
                         <>
-                            <div className="mt-8 flex flex-col items-center justify-between gap-6">
+                            <div className="mt-8 flex flex-col items-center justify-between gap-6 text-white">
                                 <div
                                     onClick={() => signIn()}
                                     className="w-full flex-1 cursor-pointer
-                   rounded-lg bg-slate-200 p-4 text-center font-semibold"
+                   rounded-lg border bg-black p-4 text-center font-semibold"
                                 >
                                     Use an existing account
                                 </div>
                                 <p>Or</p>
                                 <div
                                     onClick={nextStep}
-                                    className="w-full flex-1 cursor-pointer rounded-lg bg-slate-200 p-4 text-center font-semibold"
+                                    className="w-full flex-1 cursor-pointer rounded-lg border bg-black p-4 text-center font-semibold"
                                 >
                                     Proceed as guest
                                 </div>
@@ -167,7 +167,7 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="mt-auto mb-2 flex w-full items-center justify-between">
+        <div className="mt-auto mb-2 flex w-full items-center justify-between text-white">
             {checkoutStep > 1 && (
                 <button
                     disabled={checkoutStep === 2 && !!session.data?.user}
@@ -179,7 +179,7 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
             )}
             {checkoutStep < 4 && (
                 <button
-                    className="enabled:hoverhover:bg-slate-700 enabled:hoverhover:text-white w-28 rounded-lg border p-2 shadow-md disabled:opacity-30"
+                    className="enabled:hover enabled:hoverhover:text-white w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 disabled:opacity-30"
                     onClick={nextStep}
                     disabled={checkoutStep === 4 || !!productsInCart.some((x) => x.outOfStock)}
                 >

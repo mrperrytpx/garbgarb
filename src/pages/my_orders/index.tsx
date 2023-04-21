@@ -91,22 +91,19 @@ const ProfilePage = () => {
         );
 
     return (
-        <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2">
+        <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 text-white">
             <div className="w-full">
                 <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
                 <div className="mt-2 flex">
                     {allOrders.data?.length ? (
                         <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
                             {allOrders.data?.map((x, i) => (
-                                <div
-                                    className="flex w-full flex-col items-start gap-2 p-4 shadow-md "
+                                <Link
+                                    className="flex w-full flex-col items-start gap-2 p-4 shadow-sm shadow-slate-100"
                                     key={i}
+                                    href={`/my_orders/${x.id}`}
                                 >
-                                    <Link
-                                        key={i}
-                                        className="w-full rounded-md"
-                                        href={`/my_orders/${x.id}`}
-                                    >
+                                    <div key={i} className="w-full rounded-md">
                                         <div className="flex flex-col justify-between gap-2">
                                             <div className="flex items-center justify-between gap-4">
                                                 <span className="underline">#{x.id}</span>
@@ -140,7 +137,7 @@ const ProfilePage = () => {
                                                 )}
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                     {x.canceled && (
                                         <button
                                             onClick={() =>
@@ -151,7 +148,7 @@ const ProfilePage = () => {
                                             DELETE
                                         </button>
                                     )}
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     ) : (
@@ -174,7 +171,7 @@ const ProfilePage = () => {
             </div>
             {isModalOpen && (
                 <Portal>
-                    <div className="relative flex max-h-full w-full max-w-screen-xs flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-white p-4 text-center">
+                    <div className="relative flex max-h-full w-full max-w-screen-xs flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-black p-4 text-center text-white">
                         <div>
                             <h1 className="mb-2 text-xl uppercase">
                                 Are you sure you want to delete Your account?

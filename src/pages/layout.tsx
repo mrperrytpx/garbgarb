@@ -23,20 +23,23 @@ const Layout = ({ children }: ILayoutProps) => {
     return (
         <div className="flex min-h-screen flex-col">
             {/* Header */}
-            <header className="sticky top-0 z-30 grid h-14 items-center border-b-2 border-slate-300 bg-slate-200 px-4 shadow  shadow-slate-100">
+            <header className="sticky top-0 z-30 grid h-14 items-center bg-black px-4 text-white shadow shadow-slate-100">
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
                     <div className="flex items-center justify-center gap-4">
                         <Link className="p-1 text-3xl" href="/">
                             L
                         </Link>
                         <Link
-                            className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline"
+                            className="hidden rounded-md p-2 shadow shadow-slate-100 sm:inline"
                             href="/products"
                         >
                             <BsShop size="24" />
                         </Link>
                         {session?.user && (
-                            <Link className="sm:hidden" href="/my_orders">
+                            <Link
+                                className="rounded-full bg-slate-300 p-0.5 sm:hidden"
+                                href="/my_orders"
+                            >
                                 <Image
                                     className="w-7 rounded-full"
                                     width={100}
@@ -49,9 +52,12 @@ const Layout = ({ children }: ILayoutProps) => {
                     </div>
                     <div className="flex items-center justify-center gap-4">
                         {session?.user && (
-                            <Link className="hidden sm:inline" href="/my_orders">
+                            <Link
+                                className="hidden rounded-lg bg-black p-1 shadow shadow-slate-100  sm:inline"
+                                href="/my_orders"
+                            >
                                 <Image
-                                    className="w-7 rounded-full"
+                                    className="w-8 rounded-lg"
                                     width={100}
                                     height={100}
                                     src={session?.user?.image!}
@@ -63,7 +69,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signOut()}
                                 title="Sign out"
-                                className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline-block"
+                                className="hidden rounded-md p-2 shadow shadow-slate-100 sm:inline-block"
                             >
                                 <FiLogOut size="24" />
                             </button>
@@ -72,7 +78,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signIn()}
                                 title="Sign in"
-                                className="hidden rounded-md p-2 shadow transition-all hover:bg-white sm:inline-block"
+                                className="hidden rounded-md p-2 shadow shadow-slate-100 transition-all sm:inline-block"
                             >
                                 <FiLogIn size="24" />
                             </button>
@@ -92,7 +98,7 @@ const Layout = ({ children }: ILayoutProps) => {
             </header>
             {/* Mobile Menu */}
             {isExpanded ? (
-                <div className="overflow-hidde flex h-[calc(max(600px,100vh)-56px)] flex-col items-center justify-center bg-slate-100">
+                <div className="flex h-[calc(max(600px,100vh)-56px)] flex-col items-center justify-center bg-black text-white">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
                             className="text-xl font-medium hover:underline  focus:underline"
@@ -129,20 +135,20 @@ const Layout = ({ children }: ILayoutProps) => {
                     </div>
                     <div className="mt-auto flex gap-4">
                         <a
-                            className="my-8"
+                            className="my-8 rounded-lg p-2  shadow shadow-slate-100"
                             target="_blank"
                             rel="noreferrer"
                             href="https://github.com/mrperrytpx/garbgarb"
                         >
-                            <FiGithub size={40} />
+                            <FiGithub size={32} />
                         </a>
                         <a
-                            className="my-8"
+                            className="my-8 rounded-lg p-2  shadow shadow-slate-100"
                             target="_blank"
                             rel="noreferrer"
                             href="https://www.linkedin.com/"
                         >
-                            <FiLinkedin size={40} />
+                            <FiLinkedin size={32} />
                         </a>
                     </div>
                 </div>
@@ -154,7 +160,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         </main>
                     </ErrorBoundary>
                     {/* Footer */}
-                    <footer className="bg-slate-200 px-4 shadow-2xl shadow-slate-100 ">
+                    <footer className="bg-black px-2 text-white shadow-2xl shadow-slate-100 ">
                         <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4 py-8">
                             <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
                                 <div className="flex flex-col items-center justify-center gap-4 p-2 md:flex-row md:gap-6">
@@ -165,7 +171,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                         Returns & FAQ
                                     </Link>
                                     <Link
-                                        className=" font-medium hover:underline focus:underline"
+                                        className="font-medium hover:underline focus:underline"
                                         href="/static/contact"
                                     >
                                         Contact
@@ -179,24 +185,24 @@ const Layout = ({ children }: ILayoutProps) => {
                                 </div>
                                 <div className="flex justify-center gap-2 p-2 md:gap-4">
                                     <a
-                                        className="p-2"
+                                        className="rounded-md p-2 shadow shadow-slate-100"
                                         target="_blank"
                                         rel="noreferrer"
                                         href="https://github.com/mrperrytpx/garbgarb"
                                     >
-                                        <FiGithub stroke="black" size={24} />
+                                        <FiGithub stroke="white" size={24} />
                                     </a>
                                     <a
-                                        className="p-2"
+                                        className="rounded-md p-2 shadow  shadow-slate-100"
                                         target="_blank"
                                         rel="noreferrer"
                                         href="https://www.linkedin.com/"
                                     >
-                                        <FiLinkedin stroke="black" size={24} />
+                                        <FiLinkedin stroke="white" size={24} />
                                     </a>
                                 </div>
                             </div>
-                            <div className="w-full pl-2 text-center text-sm text-slate-500 md:text-left">
+                            <div className="w-full pl-2 text-center text-sm text-slate-200 md:text-left">
                                 <strong>©</strong> {new Date().getFullYear()} GarbGarb
                             </div>
                         </div>

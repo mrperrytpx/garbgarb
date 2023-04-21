@@ -10,8 +10,8 @@ const CartIcon = () => {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="black"
-            className="h-6 w-6"
+            stroke="white"
+            className="mr-1 h-6 w-6"
         >
             <path
                 strokeLinecap="round"
@@ -26,12 +26,12 @@ export const CartIconWithNumber = () => {
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="relative p-2">
+        <div className="relative rounded-lg p-2 shadow shadow-slate-100">
             <div className="">
                 <CartIcon />
             </div>
             {productsInCart.length > 0 && (
-                <p className="absolute -bottom-1 right-0 rounded-full text-xs font-bold">
+                <p className="absolute top-0 right-1 text-xs font-bold text-white">
                     {productsInCart.length}
                 </p>
             )}

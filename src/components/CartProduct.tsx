@@ -18,13 +18,13 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
             style={{
                 borderTop: product.outOfStock ? "2px solid red" : "",
             }}
-            className="relative flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-slate-200 p-2 shadow sm:flex-row"
+            className="relative flex w-full flex-col items-center justify-center gap-4 rounded-lg p-2 shadow shadow-slate-100 sm:flex-row"
         >
             <Link
                 className="select-nonerounded-md min-w-[100px] max-w-[150px]"
                 href={`/products/${product.store_product_id}`}
             >
-                <div className="max-w-[150px]">
+                <div className="max-w-[150px] rounded-lg bg-slate-200">
                     <Image width={200} height={200} src={product.variant_image} alt="Product" />
                 </div>
             </Link>
@@ -66,12 +66,12 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                     </div>
                     <strong>{currency(+product.price * product.quantity)}</strong>
                     {/*  */}
-                    <div className="absolute top-1 right-1 cursor-pointer select-none rounded-full bg-white shadow outline outline-1 outline-slate-400 transition-all hover:bg-black ">
+                    <div className="absolute top-1 right-1 cursor-pointer select-none rounded-full shadow shadow-slate-100 outline-slate-400 hover:bg-white ">
                         <FiX
                             onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
                             size="28"
-                            stroke="black"
-                            className="p-1 hover:stroke-white"
+                            stroke="white"
+                            className="p-1 hover:stroke-black"
                         />
                     </div>
                 </div>

@@ -73,7 +73,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.zip}-${formData.country}`;
 
     return (
-        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-slate-100 p-4 font-medium">
+        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-black p-4 font-medium text-white">
             <div className="flex flex-col items-start justify-center gap-4">
                 <h1 className="w-full border-b border-slate-300 text-xl font-bold">
                     ORDER SUMMARY
@@ -193,7 +193,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         !!productsInCart.filter((x) => x.outOfStock).length
                     }
                     onClick={() => checkStockMutation.mutate()}
-                    className="flex w-full items-center justify-center gap-2 self-center rounded-lg bg-white  p-2 shadow-md disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 self-center rounded-lg border border-slate-300 p-2 shadow-md disabled:opacity-50"
                     type="button"
                 >
                     {completeOrderMutation.isLoading && <LoadingSpinner size={24} />}

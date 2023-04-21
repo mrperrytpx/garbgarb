@@ -22,7 +22,7 @@ export const Breadcrumbs = () => {
     const hasPath = segments.length > 0; // check if not root
 
     return (
-        <nav className="flex items-center gap-1 overflow-x-auto rounded-md border-b p-1 text-sm capitalize">
+        <nav className="flex items-center gap-1 overflow-x-auto border-b border-slate-100 p-1 text-sm capitalize text-white">
             <Link className="hover:underline focus:underline" href="/">
                 Home
             </Link>

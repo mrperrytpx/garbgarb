@@ -17,7 +17,7 @@ const CartPage = () => {
         );
 
     return (
-        <div className="mx-auto mt-4 flex w-full max-w-screen-lg flex-col gap-4 p-2 md:flex-row md:items-start ">
+        <div className="mx-auto my-4 flex w-full max-w-screen-lg flex-col gap-4 p-2 text-white md:flex-row md:items-start ">
             <div className="flex w-full flex-col items-center gap-2 md:flex-[2] ">
                 {productsInCart.map((product) => (
                     <CartProduct key={product.sku} product={product} />
@@ -37,7 +37,7 @@ const CartPage = () => {
                             )}
                         </p>
                     </div>
-                    <p className="text-xs md:self-start">Fees not applied</p>
+                    <p className="text-xs">Fees not applied</p>
                 </div>
                 <LinkButton href={productsInCart.some((x) => x.outOfStock) ? "/cart" : "/checkout"}>
                     CHECKOUT

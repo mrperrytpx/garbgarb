@@ -98,7 +98,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     return (
         <form
             onSubmit={onSubmit}
-            className="relative flex min-h-[300px] flex-col items-start justify-start gap-4 p-2"
+            className="relative flex min-h-[300px] flex-col items-start justify-start gap-4 p-2 text-white"
         >
             <fieldset className="flex w-full flex-col items-center">
                 <div className="flex w-full flex-col gap-2">
@@ -110,13 +110,13 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             {...register("name")}
                             name="name"
                             id="name"
-                            className="h-10 w-full border p-2 text-sm"
+                            className="h-10 w-full border bg-black p-2 text-sm"
                             placeholder="Full Name"
                             autoComplete="off"
                             disabled={!ready}
                         />
                         {errors.name && (
-                            <span className="mb-1 pl-1 text-xs font-semibold">
+                            <span className="pl-1 text-xs font-semibold">
                                 {errors.name.message}
                             </span>
                         )}
@@ -130,19 +130,19 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             name="email"
                             id="email"
                             type="email"
-                            className="h-10 w-full border p-2 text-sm"
+                            className="h-10 w-full border bg-black p-2 text-sm"
                             placeholder="Email address"
                             autoComplete="off"
                             disabled={!ready}
                         />
                         {errors.email && (
-                            <span className="mb-1 pl-1 text-xs font-semibold">
+                            <span className="pl-1 text-xs font-semibold">
                                 {errors.email.message}
                             </span>
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-                        <div className="relative flex w-full flex-1 flex-col self-start sm:w-auto">
+                        <div className="relative flex w-full flex-1 flex-col  gap-1 self-start sm:w-auto">
                             <label className="block p-1 text-xs" htmlFor="streetName">
                                 <strong className="uppercase">Street name</strong>
                             </label>
@@ -151,14 +151,14 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 name="streetName"
                                 id="streetName"
                                 onChange={handleInput}
-                                className="h-10 w-full border p-2 text-sm"
+                                className="h-10 w-full border bg-black p-2 text-sm"
                                 type="text"
                                 placeholder="Street Name"
                                 autoComplete="off"
                                 disabled={!ready}
                             />
                             {errors.streetName && (
-                                <span className="mb-1 pl-1 text-xs font-semibold">
+                                <span className="pl-1 text-xs font-semibold">
                                     {errors.streetName.message}
                                 </span>
                             )}
@@ -170,7 +170,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 status === "OK" && (
                                     <ul
                                         ref={ref}
-                                        className="absolute top-[68px] left-0 flex w-full flex-col rounded-md bg-white shadow-lg outline outline-1"
+                                        className="absolute top-[68px] left-0 flex w-full flex-col rounded-md bg-black shadow-lg outline outline-1"
                                     >
                                         {data.map((suggestion, i) => (
                                             <li
@@ -192,7 +192,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             )}
                         </div>
                         <div className="flex w-full flex-1 gap-2">
-                            <div className="flex w-full flex-col self-start sm:w-auto">
+                            <div className="flex w-full flex-col gap-1 self-start sm:w-auto">
                                 <label className="block p-1 text-xs" htmlFor="streetNumber">
                                     <strong className="uppercase">St. Number</strong>
                                 </label>
@@ -200,19 +200,19 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     {...register("streetNumber")}
                                     name="streetNumber"
                                     id="streetNumber"
-                                    className="h-10 w-full border p-2 text-sm"
+                                    className="h-10 w-full border bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Street Number"
                                     autoComplete="off"
                                     disabled={!ready}
                                 />
                                 {errors.streetNumber && (
-                                    <span className="mb-1 pl-1 text-xs font-semibold">
+                                    <span className="pl-1 text-xs font-semibold">
                                         {errors.streetNumber.message}
                                     </span>
                                 )}
                             </div>
-                            <div className="flex w-full flex-col self-start sm:w-auto">
+                            <div className="flex w-full flex-col gap-1  self-start sm:w-auto">
                                 <label className="block p-1 text-xs" htmlFor="subpremise">
                                     <strong className="uppercase">Subpremise</strong>
                                 </label>
@@ -220,7 +220,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     {...register("subpremise")}
                                     name="subpremise"
                                     id="subpremise"
-                                    className="h-110 w-full border p-2 text-sm"
+                                    className="h-10 w-full border bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Apartment, Suite, etc."
                                     autoComplete="off"
@@ -228,7 +228,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     disabled={!ready}
                                 />
                                 {errors.subpremise && (
-                                    <span className="mb-1 pl-1 text-xs font-semibold">
+                                    <span className="pl-1 text-xs font-semibold">
                                         {errors.subpremise.message}
                                     </span>
                                 )}
@@ -236,28 +236,26 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                         </div>
                     </div>
 
-                    <div className="flex w-full flex-col gap-4">
-                        <div className="flex gap-2">
-                            <div className="w-full">
-                                <label className="block p-1 text-xs" htmlFor="city">
-                                    <strong className="uppercase">City</strong>
-                                </label>
-                                <input
-                                    {...register("city")}
-                                    name="city"
-                                    id="city"
-                                    className="h-10 w-full border  p-2 text-sm"
-                                    type="text"
-                                    placeholder="City"
-                                    autoComplete="off"
-                                    disabled={!ready}
-                                />
-                                {errors.city && (
-                                    <span className="mb-1 pl-1 text-xs font-semibold" role="error">
-                                        {errors.city.message}
-                                    </span>
-                                )}
-                            </div>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex w-full flex-col gap-1">
+                            <label className="block p-1 text-xs" htmlFor="city">
+                                <strong className="uppercase">City</strong>
+                            </label>
+                            <input
+                                {...register("city")}
+                                name="city"
+                                id="city"
+                                className="h-10 w-full border bg-black  p-2 text-sm"
+                                type="text"
+                                placeholder="City"
+                                autoComplete="off"
+                                disabled={!ready}
+                            />
+                            {errors.city && (
+                                <span className="pl-1 text-xs font-semibold" role="error">
+                                    {errors.city.message}
+                                </span>
+                            )}
                         </div>
                         <div className="flex flex-col gap-2">
                             <div className="flex gap-2">
@@ -269,7 +267,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         {...register("country")}
                                         name="country"
                                         id="country"
-                                        className="h-10 w-full border  p-2 text-sm"
+                                        className="h-10 w-full border bg-black  p-2 text-sm"
                                         type="text"
                                         placeholder="Country"
                                         autoComplete="off"
@@ -285,32 +283,32 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         {...register("zip")}
                                         name="zip"
                                         id="zip"
-                                        className="h-10 w-full border p-2 text-sm"
+                                        className="h-10 w-full border bg-black p-2 text-sm"
                                         type="text"
                                         placeholder="Zip"
                                         autoComplete="off"
                                         disabled={!ready}
                                     />
-                                    {errors.zip && (
-                                        <span className="mb-1 pl-1 text-xs font-semibold">
-                                            {errors.zip.message}
-                                        </span>
-                                    )}
                                 </div>
                             </div>
-                            <div>
+                            <div className="flex items-center justify-between gap-2">
                                 {errors.country && (
-                                    <>
-                                        <p className="mb-1 pl-1 text-sm font-semibold">
+                                    <div className="w-full">
+                                        <p className="pl-1 text-sm font-semibold">
                                             {errors.country.message}
                                         </p>
                                         <Link
                                             className="pl-1 text-sm uppercase underline"
-                                            href="/returns-faq"
+                                            href="/static/returns-faq"
                                         >
                                             Check available countries
                                         </Link>
-                                    </>
+                                    </div>
+                                )}
+                                {errors.zip && (
+                                    <span className="w-full self-start pl-1 text-xs font-semibold">
+                                        {errors.zip.message}
+                                    </span>
                                 )}
                             </div>
                         </div>

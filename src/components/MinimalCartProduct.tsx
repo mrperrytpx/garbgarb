@@ -20,11 +20,11 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
         return (
             <article
                 key={item.store_product_variant_id}
-                className={`flex w-full items-center gap-2 border-b-2 px-2 py-2 text-sm shadow last-of-type:border-b-0 sm:flex-row ${
+                className={`flex w-full items-center gap-2 border-b-2 px-2 py-2 text-sm text-white shadow last-of-type:border-b-0 sm:flex-row ${
                     item.outOfStock && "shadow shadow-red-400"
                 }`}
             >
-                <div className="max-w-[50px] sm:block">
+                <div className="max-w-[50px] rounded-lg bg-slate-200 sm:block">
                     <Image src={item.variant_image} width={100} height={100} alt="Item" />
                 </div>
                 <div className="flex w-full flex-col gap-1">
@@ -65,10 +65,16 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
     return (
         <div
             key={item.id}
-            className="flex items-center gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0 sm:flex-row"
+            className="flex items-center gap-2 border-b-2 px-2 text-sm text-white last-of-type:border-b-0 sm:flex-row"
         >
             <div className="max-w-[50px] sm:block">
-                <Image src={item.files[1].thumbnail_url} width={100} height={100} alt="Item" />
+                <Image
+                    className="rounded-lg bg-slate-200"
+                    src={item.files[1].thumbnail_url}
+                    width={100}
+                    height={100}
+                    alt="Item"
+                />
             </div>
             <div className="flex w-full flex-col gap-0.5">
                 <p key={item.id}>{item.name}</p>

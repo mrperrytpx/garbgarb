@@ -57,14 +57,14 @@ const OrderPage = () => {
     if (!orderData.data) return <div>yikes lmao</div>;
 
     return (
-        <div className="mx-auto mt-4 mb-2 flex w-full max-w-screen-sm flex-1 flex-col gap-2">
+        <div className="mx-auto my-4 mb-10 flex w-full max-w-screen-sm flex-1 flex-col gap-2 text-white">
             <div className="flex items-center justify-between px-2 ">
-                <Link className="rounded-lg p-2 shadow" href="/my_orders">
+                <Link className="rounded-lg p-2 shadow shadow-slate-100" href="/my_orders">
                     <IoArrowBackSharp size="28" />
                 </Link>
                 <h1 className="text-xl font-bold underline">#{orderId}</h1>
             </div>
-            <div className="mb-10 mt-4 flex flex-col gap-4 px-2">
+            <div className="my-4 mb-10 flex flex-col gap-4 px-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <strong className="text-sm uppercase">Order Status:</strong>
                     <strong className="text-sm uppercase">{orderData.data?.status}</strong>
@@ -186,13 +186,13 @@ const OrderPage = () => {
                             orderData.data.status !== "draft" && orderData.data.status !== "pending"
                         }
                         onClick={() => cancelOrderMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
                     >
                         {cancelOrderMutation.isLoading ? <LoadingSpinner size={24} /> : "CANCEL"}
                     </button>
                     <button
                         onClick={() => invoiceMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
                     >
                         {invoiceMutation.isLoading ? (
                             <LoadingSpinner size={24} />

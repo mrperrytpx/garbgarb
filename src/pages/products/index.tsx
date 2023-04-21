@@ -72,7 +72,7 @@ const ProductsPage = () => {
     };
 
     return (
-        <div className="mb-8 flex flex-1 flex-col items-center justify-start gap-6 p-4 md:gap-8">
+        <div className="mb-8 flex w-full flex-1 flex-col items-center justify-start gap-6 p-4 md:gap-8">
             <Breadcrumbs />
             <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 px-1 sm:flex-row lg:justify-start ">
                 <input
@@ -82,7 +82,7 @@ const ProductsPage = () => {
                     value={productFilter}
                     onChange={handleChange}
                 />
-                <div className="flex h-full items-center justify-center gap-2">
+                <div className="flex h-full flex-wrap items-center justify-center gap-2">
                     {SIZES.map((size) => (
                         <div
                             key={size}
@@ -94,10 +94,10 @@ const ProductsPage = () => {
                                     handleSizeSelect(size);
                                 }
                             }}
-                            className="z-10 cursor-pointer select-none rounded-md border-2 border-slate-200 py-1 px-2 text-center font-bold transition-all"
+                            className="z-10 flex h-full max-h-9 w-12 cursor-pointer select-none items-center justify-center rounded-md border-2 border-slate-200 py-1 px-2 font-bold text-white transition-all"
                             style={{
-                                backgroundColor: selectedSizes.includes(size) ? "black" : "",
-                                color: selectedSizes.includes(size) ? "white" : "",
+                                backgroundColor: selectedSizes.includes(size) ? "white" : "",
+                                color: selectedSizes.includes(size) ? "black" : "",
                             }}
                         >
                             {size}
