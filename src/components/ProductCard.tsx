@@ -50,9 +50,8 @@ export const ProductCard = ({ product }: IProductCard) => {
                                 <div
                                     style={{
                                         backgroundColor: hex,
-                                        borderColor: hex,
                                     }}
-                                    className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] border px-2 py-1 font-bold text-white group-hover:block "
+                                    className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] rounded-md border border-black px-2 py-1 font-bold text-white group-hover:block "
                                 >
                                     <span className="drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                         {GetColorName(hex)}

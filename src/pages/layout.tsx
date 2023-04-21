@@ -23,21 +23,21 @@ const Layout = ({ children }: ILayoutProps) => {
     return (
         <div className="flex min-h-screen flex-col">
             {/* Header */}
-            <header className="sticky top-0 z-30 grid h-14 items-center bg-black px-4 text-white shadow shadow-slate-100">
+            <header className="sticky top-0 z-30 grid h-16 items-center border-b border-gray-700 bg-black px-4 text-gray-300">
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
                     <div className="flex items-center justify-center gap-4">
                         <Link className="p-1 text-3xl" href="/">
                             L
                         </Link>
                         <Link
-                            className="hidden rounded-md p-2 shadow shadow-slate-100 sm:inline"
+                            className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline"
                             href="/products"
                         >
-                            <BsShop size="24" />
+                            <BsShop className="group-hover:fill-black" size="24" />
                         </Link>
                         {session?.user && (
                             <Link
-                                className="rounded-full bg-slate-300 p-0.5 sm:hidden"
+                                className="rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:hidden"
                                 href="/my_orders"
                             >
                                 <Image
@@ -53,11 +53,11 @@ const Layout = ({ children }: ILayoutProps) => {
                     <div className="flex items-center justify-center gap-4">
                         {session?.user && (
                             <Link
-                                className="hidden rounded-lg bg-black p-1 shadow shadow-slate-100  sm:inline"
+                                className="hidden rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:inline"
                                 href="/my_orders"
                             >
                                 <Image
-                                    className="w-8 rounded-lg"
+                                    className="w-8 rounded-full"
                                     width={100}
                                     height={100}
                                     src={session?.user?.image!}
@@ -69,18 +69,18 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signOut()}
                                 title="Sign out"
-                                className="hidden rounded-md p-2 shadow shadow-slate-100 sm:inline-block"
+                                className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline-block"
                             >
-                                <FiLogOut size="24" />
+                                <FiLogOut className="group-hover:stroke-black" size="24" />
                             </button>
                         )}
                         {!session?.user && (
                             <button
                                 onClick={() => signIn()}
                                 title="Sign in"
-                                className="hidden rounded-md p-2 shadow shadow-slate-100 transition-all sm:inline-block"
+                                className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline-block"
                             >
-                                <FiLogIn size="24" />
+                                <FiLogIn className="group-hover:stroke-black" size="24" />
                             </button>
                         )}
                         <Link className="text-3xl" href="/cart">
@@ -98,17 +98,17 @@ const Layout = ({ children }: ILayoutProps) => {
             </header>
             {/* Mobile Menu */}
             {isExpanded ? (
-                <div className="flex h-[calc(max(600px,100vh)-56px)] flex-col items-center justify-center bg-black text-white">
+                <div className="flex h-[calc(max(600px,100vh)-64px)] flex-col items-center justify-center bg-black text-gray-300">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
-                            className="text-xl font-medium hover:underline  focus:underline"
+                            className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                             href="/products"
                         >
                             Shop
                         </Link>
                         {session?.user && (
                             <Link
-                                className="text-xl font-medium hover:underline  focus:underline"
+                                className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                                 href="/my_orders"
                             >
                                 Profile
@@ -118,7 +118,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signOut()}
                                 title="Sign out"
-                                className="text-xl font-medium hover:underline  focus:underline"
+                                className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                             >
                                 Sign Out
                             </button>
@@ -127,7 +127,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signIn()}
                                 title="Sign in"
-                                className="text-xl font-medium hover:underline  focus:underline"
+                                className="text-xl font-medium hover:animate-hop hover:underline focus:underline"
                             >
                                 Sign In
                             </button>
@@ -135,20 +135,28 @@ const Layout = ({ children }: ILayoutProps) => {
                     </div>
                     <div className="mt-auto flex gap-4">
                         <a
-                            className="my-8 rounded-lg p-2  shadow shadow-slate-100"
+                            className="group my-10 rounded-lg p-2 hover:animate-hop hover:bg-slate-200 "
                             target="_blank"
                             rel="noreferrer"
                             href="https://github.com/mrperrytpx/garbgarb"
                         >
-                            <FiGithub size={32} />
+                            <FiGithub
+                                className="group-hover:stroke-black"
+                                size={32}
+                                stroke="white"
+                            />
                         </a>
                         <a
-                            className="my-8 rounded-lg p-2  shadow shadow-slate-100"
+                            className="group my-10 rounded-lg p-2 hover:animate-hop hover:bg-slate-200 "
                             target="_blank"
                             rel="noreferrer"
                             href="https://www.linkedin.com/"
                         >
-                            <FiLinkedin size={32} />
+                            <FiLinkedin
+                                className="group-hover:stroke-black"
+                                size={32}
+                                stroke="white"
+                            />
                         </a>
                     </div>
                 </div>
@@ -160,24 +168,24 @@ const Layout = ({ children }: ILayoutProps) => {
                         </main>
                     </ErrorBoundary>
                     {/* Footer */}
-                    <footer className="bg-black px-2 text-white shadow-2xl shadow-slate-100 ">
+                    <footer className="border-t border-gray-700 bg-black px-2 text-gray-300 ">
                         <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4 py-8">
                             <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
                                 <div className="flex flex-col items-center justify-center gap-4 p-2 md:flex-row md:gap-6">
                                     <Link
-                                        className="border-black  font-medium hover:underline focus:underline"
+                                        className="border-black font-medium hover:animate-hop hover:underline focus:underline"
                                         href="/static/returns-faq"
                                     >
                                         Returns & FAQ
                                     </Link>
                                     <Link
-                                        className="font-medium hover:underline focus:underline"
+                                        className="font-medium hover:animate-hop hover:underline focus:underline"
                                         href="/static/contact"
                                     >
                                         Contact
                                     </Link>
                                     <Link
-                                        className=" font-medium hover:underline focus:underline"
+                                        className="font-medium hover:animate-hop hover:underline focus:underline"
                                         href="/static/privacy"
                                     >
                                         Privacy Policy
@@ -185,20 +193,28 @@ const Layout = ({ children }: ILayoutProps) => {
                                 </div>
                                 <div className="flex justify-center gap-2 p-2 md:gap-4">
                                     <a
-                                        className="rounded-md p-2 shadow shadow-slate-100"
+                                        className="group rounded-md p-2 hover:animate-hop hover:bg-slate-200"
                                         target="_blank"
                                         rel="noreferrer"
                                         href="https://github.com/mrperrytpx/garbgarb"
                                     >
-                                        <FiGithub stroke="white" size={24} />
+                                        <FiGithub
+                                            className="group-hover:stroke-black"
+                                            stroke="white"
+                                            size={24}
+                                        />
                                     </a>
                                     <a
-                                        className="rounded-md p-2 shadow  shadow-slate-100"
+                                        className="group rounded-md p-2 hover:animate-hop hover:bg-slate-200"
                                         target="_blank"
                                         rel="noreferrer"
                                         href="https://www.linkedin.com/"
                                     >
-                                        <FiLinkedin stroke="white" size={24} />
+                                        <FiLinkedin
+                                            className="group-hover:stroke-black"
+                                            stroke="white"
+                                            size={24}
+                                        />
                                     </a>
                                 </div>
                             </div>

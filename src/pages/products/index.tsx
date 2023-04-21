@@ -94,7 +94,7 @@ const ProductsPage = () => {
                                     handleSizeSelect(size);
                                 }
                             }}
-                            className="z-10 flex h-full max-h-9 w-12 cursor-pointer select-none items-center justify-center rounded-md border-2 border-slate-200 py-1 px-2 font-bold text-white transition-all"
+                            className="max-h- z-10 flex h-full w-12 cursor-pointer select-none items-center justify-center rounded-md border-2 border-slate-200 py-1 px-2 font-bold text-white transition-all"
                             style={{
                                 backgroundColor: selectedSizes.includes(size) ? "white" : "",
                                 color: selectedSizes.includes(size) ? "black" : "",

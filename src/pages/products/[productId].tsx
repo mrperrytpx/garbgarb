@@ -96,6 +96,7 @@ const ArticlePage = () => {
     }
 
     function handleColorChange(color: string): void {
+        router.push({ query: { ...router.query, color } }, undefined, { shallow: true });
         setColor(color);
         setOption(product[color].filter((x) => x.inStock)[0]);
         setQuantity(1);
@@ -110,8 +111,8 @@ const ArticlePage = () => {
             <div className="p-4">
                 <Breadcrumbs />
             </div>
-            <div className="flex flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
-                <div className="max-w-[350px] rounded-md border-2 bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
+            <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
+                <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
                     <Image
                         priority={true}
                         width={500}
@@ -122,7 +123,12 @@ const ArticlePage = () => {
                     />
                 </div>
                 {/*  */}
-                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-white md:flex-1 lg:max-w-[450px]">
+                <article
+                    style={{
+                        borderColor: (chosenColor as string) || color,
+                    }}
+                    className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md border-2 border-white bg-black p-4 text-white md:flex-1 lg:max-w-[450px]"
+                >
                     <div className="flex w-full flex-col items-start justify-center gap-4">
                         <div className="flex w-full flex-col gap-0.5">
                             <h1 className="text-left text-xl font-bold">{myShirtName}</h1>

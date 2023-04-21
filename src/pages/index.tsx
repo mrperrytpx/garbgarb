@@ -9,7 +9,7 @@ function HomePage() {
                 </h1>
                 <LinkButton
                     minWidth={120}
-                    className="text-xl shadow-md shadow-slate-500 sm:text-2xl"
+                    className="text-xl shadow-md shadow-slate-500 transition-none hover:animate-hop hover:bg-slate-200 hover:text-black sm:text-2xl"
                     href="/products"
                 >
                     Shop

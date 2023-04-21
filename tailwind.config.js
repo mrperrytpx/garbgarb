@@ -27,6 +27,18 @@ module.exports = {
             "2xl": "1536px",
             // => @media (min-width: 1536px) { ... }
         },
+        extend: {
+            keyframes: {
+                hop: {
+                    "0%": { transform: "translateY(0%)" },
+                    "50%": { transform: "translateY(-2px)" },
+                    "100%": { transform: "translateY(0%)" },
+                },
+            },
+            animation: {
+                hop: "hop 0.1s linear",
+            },
+        },
     },
     plugins: [],
 };
