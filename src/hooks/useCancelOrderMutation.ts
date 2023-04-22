@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiInstance } from "../utils/axiosClients";
 import Stripe from "stripe";
 import { Order } from "@prisma/client";
+import { toast } from "react-toastify";
 
 interface IDeleteOrder {
     orderId: string | string[] | undefined;
@@ -41,6 +42,9 @@ export const useCancelOrderMutation = () => {
         },
         onSettled: (data) => {
             setTimeout(() => queryClient.invalidateQueries({ queryKey: ["order", data] }), 500);
+        },
+        onSuccess: () => {
+            toast("Order canceled.");
         },
     });
 };

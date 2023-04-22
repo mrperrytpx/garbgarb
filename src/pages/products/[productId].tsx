@@ -22,6 +22,7 @@ import {
 import { useGetProductSizes } from "../../hooks/useGetProductSizes";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { RxCross1 } from "react-icons/rx";
+import { toast } from "react-toastify";
 
 const CheckedIcon = () => {
     return (
@@ -93,6 +94,7 @@ const ArticlePage = () => {
         if (!payload) return;
 
         dispatch(addToCart(payload));
+        toast("Added to cart!");
     }
 
     function handleColorChange(color: string): void {

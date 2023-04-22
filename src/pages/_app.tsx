@@ -11,9 +11,17 @@ import React, { ReactNode, useState } from "react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { NextComponentType } from "next";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { ToastContainer } from "react-toastify";
+import { ToastContainerProps } from "react-toastify/dist/types";
+import "react-toastify/dist/ReactToastify.css";
 
 type CustomAppProps = AppProps & {
     Component: NextComponentType & { auth?: boolean };
+};
+
+const toastProps: ToastContainerProps = {
+    autoClose: 2500,
+    theme: "dark",
 };
 
 export default function App({ Component, pageProps }: CustomAppProps) {
@@ -39,9 +47,13 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                                     {Component.auth ? (
                                         <Auth>
                                             <Component {...pageProps} />
+                                            <ToastContainer {...toastProps} />
                                         </Auth>
                                     ) : (
-                                        <Component {...pageProps} />
+                                        <>
+                                            <Component {...pageProps} />
+                                            <ToastContainer {...toastProps} />
+                                        </>
                                     )}
                                 </Layout>
                             </ErrorBoundary>

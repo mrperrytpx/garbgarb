@@ -30,6 +30,7 @@
     "react-hook-form": "^7.43.8",
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.2",
     "redux-persist": "^6.0.0",
     "stripe": "^11.16.0",
     "use-google-maps-script": "^0.1.2",

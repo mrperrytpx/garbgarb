@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiInstance } from "../utils/axiosClients";
 import { TCheckoutPayload } from "../lib/checkPayloadStock";
 import { TProductVariant } from "../pages/api/product";
+import { toast } from "react-toastify";
 
 interface IOrderSummaryProps {
     suggestion: AutocompletePrediction | null;
@@ -95,6 +96,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                                 onClick={() => {
                                     if (product.outOfStock) {
                                         dispatch(removeFromCart({ sku: product.sku }));
+                                        toast("Removed from cart.");
                                     }
                                 }}
                                 className={`text-xs sm:text-right ${

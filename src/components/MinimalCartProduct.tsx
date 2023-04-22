@@ -4,6 +4,7 @@ import { currency } from "../utils/currency";
 import { TOrderItem } from "../pages/api/stripe/webhooks";
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 interface IMinimalCartProduct {
     item: TCartProduct | TOrderItem;
@@ -41,7 +42,10 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
                         </p>
                         {item.outOfStock ? (
                             <button
-                                onClick={() => dispatch(removeFromCart({ sku: item.sku }))}
+                                onClick={() => {
+                                    dispatch(removeFromCart({ sku: item.sku }));
+                                    toast("Removed from cart.");
+                                }}
                                 className="mb-2 rounded-lg p-1 shadow"
                             >
                                 <RxCross1 size="14" />

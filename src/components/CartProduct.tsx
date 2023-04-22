@@ -66,9 +66,11 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                     </div>
                     <strong>{currency(+product.price * product.quantity)}</strong>
                     {/*  */}
-                    <div className="absolute top-1 right-1 cursor-pointer select-none rounded-full shadow shadow-slate-100 outline-slate-400 hover:bg-white ">
+                    <div className="absolute right-1 top-1 cursor-pointer select-none rounded-full shadow shadow-slate-100 outline-slate-400 hover:bg-white ">
                         <FiX
-                            onClick={() => dispatch(removeFromCart({ sku: product.sku }))}
+                            onClick={() => {
+                                dispatch(removeFromCart({ sku: product.sku }));
+                            }}
                             size="28"
                             stroke="white"
                             className="p-1 hover:stroke-black"
