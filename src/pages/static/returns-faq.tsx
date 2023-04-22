@@ -1,9 +1,23 @@
 import Link from "next/link";
+import { allowedCountries } from "../../utils/allowedCountries";
+import { getCountryName } from "../../utils/isoCountryCodeToName";
 
 const ReturnsAndFAQPage = () => {
     return (
         <div className="mx-auto mb-20 mt-10 flex w-full max-w-screen-md flex-1 flex-col gap-6 p-4 text-white">
             <h1 className="text-2xl font-semibold">Returns & FAQ</h1>
+            <article className="flex flex-col items-start gap-2">
+                <h2 className="font-semibold underline">What countries do you ship to?</h2>
+                <p className="text-sm">We ship to the following countries:</p>
+                <div>
+                    {allowedCountries.map((country, i) => (
+                        <span className="text-sm" key={country}>
+                            {getCountryName(country)}
+                            {i !== allowedCountries.length - 1 && ", "}
+                        </span>
+                    ))}
+                </div>
+            </article>
             <article className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">
                     Will I have to pay any additional fees on my order?

@@ -94,7 +94,7 @@ const ProductsPage = () => {
                                     handleSizeSelect(size);
                                 }
                             }}
-                            className="z-10 flex h-full max-h-11 w-12 cursor-pointer  select-none items-center justify-center rounded-md border-2 border-slate-200 py-1 px-2 font-bold text-white hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                            className="z-10 flex h-full max-h-11 w-12 cursor-pointer select-none items-center justify-center rounded-md border-2 border-slate-200 px-2 py-1 font-bold text-white hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-4 focus:border-slate-500"
                             style={{
                                 backgroundColor: selectedSizes.includes(size) ? "white" : "",
                                 color: selectedSizes.includes(size) ? "black" : "",

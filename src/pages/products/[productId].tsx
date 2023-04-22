@@ -96,7 +96,7 @@ const ArticlePage = () => {
     }
 
     function handleColorChange(color: string): void {
-        router.push({ query: { ...router.query, color } }, undefined, { shallow: true });
+        router.replace({ query: { ...router.query, color } }, undefined, { shallow: true });
         setColor(color);
         setOption(product[color].filter((x) => x.inStock)[0]);
         setQuantity(1);
@@ -109,7 +109,7 @@ const ArticlePage = () => {
     if (!productData || !availabilityData) return <div>Yikes bro...</div>;
 
     return (
-        <div className="mx-auto max-w-screen-lg">
+        <div className="mx-auto mb-8 max-w-screen-lg">
             <div className="p-4">
                 <Breadcrumbs />
             </div>

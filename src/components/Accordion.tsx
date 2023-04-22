@@ -55,7 +55,7 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
                         setIsExpanded(!isExpanded);
                     }
                 }}
-                className="hover:text-bla group flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black"
+                className="group flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black"
             >
                 <p className="text-sm font-bold uppercase">{title}</p>
                 <TriangleIcon isExpanded={isExpanded} />
