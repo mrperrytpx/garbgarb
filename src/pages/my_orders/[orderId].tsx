@@ -46,15 +46,11 @@ const OrderPage = () => {
     const cancelOrderMutation = useCancelOrderMutation();
     if (!orderId) return null;
 
-    if (orderData.isLoading) return <OrderDataSkeleton />;
-
     const shippingAddress = `${orderData.data?.recipient.address1}${
         orderData.data?.recipient.address2 ? " " + orderData.data?.recipient.address2 : ""
     }, ${orderData.data?.recipient.city}, ${orderData.data?.recipient.zip}-${
         orderData.data?.recipient.country_code
     }`;
-
-    if (!orderData.data) return <div>yikes lmao</div>;
 
     return (
         <div className="mx-auto my-4 mb-10 flex w-full max-w-screen-sm flex-1 flex-col gap-2 text-white">
@@ -62,147 +58,259 @@ const OrderPage = () => {
                 <Link className="rounded-lg p-2 shadow shadow-slate-100" href="/my_orders">
                     <IoArrowBackSharp size="28" />
                 </Link>
-                <h1 className="text-xl font-bold underline">#{orderId}</h1>
+                {orderData.isLoading ? (
+                    <div className="h-[28px] w-36 animate-pulse bg-gray-800"></div>
+                ) : (
+                    <h1 className="text-xl font-bold underline">#{orderId}</h1>
+                )}
             </div>
             <div className="my-4 mb-10 flex flex-col gap-4 px-2">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <strong className="text-sm uppercase">Order Status:</strong>
-                    <strong className="text-sm uppercase">{orderData.data?.status}</strong>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    {orderData.data.status !== "canceled" ? (
-                        <>
-                            <strong className="text-sm uppercase">Order Placed:</strong>
-                            <p className="text-sm">
-                                {new Intl.DateTimeFormat("en-GB", {
-                                    weekday: "short",
-                                    year: "2-digit",
-                                    month: "short",
-                                    day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    second: "2-digit",
-                                }).format(orderData.data?.created * 1000)}
-                            </p>
-                        </>
-                    ) : (
-                        <>
-                            <strong className="text-sm uppercase">Order Canceled:</strong>
-                            <p className="text-sm">
-                                {new Intl.DateTimeFormat("en-GB", {
-                                    weekday: "short",
-                                    year: "2-digit",
-                                    month: "short",
-                                    day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    second: "2-digit",
-                                }).format(orderData.data?.updated * 1000)}
-                            </p>
-                        </>
-                    )}
-                </div>
+                {orderData.isLoading ? (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="h-5 w-32 animate-pulse bg-gray-800"></div>
+                        <div className="h-5 w-24 animate-pulse bg-gray-800"></div>
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <strong className="text-sm uppercase">Order Status:</strong>
+                        <strong className="text-sm uppercase">{orderData.data?.status}</strong>
+                    </div>
+                )}
+                {orderData.isLoading ? (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="h-5 w-32 animate-pulse bg-gray-800"></div>
+                        <div className="h-5 w-36 animate-pulse bg-gray-800"></div>
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        {orderData.data?.status !== "canceled" ? (
+                            <>
+                                <strong className="text-sm uppercase">Order Placed:</strong>
+                                <p className="text-sm">
+                                    {new Intl.DateTimeFormat("en-GB", {
+                                        weekday: "short",
+                                        year: "2-digit",
+                                        month: "short",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        second: "2-digit",
+                                    }).format(orderData.data?.created || 1 * 1000)}
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <strong className="text-sm uppercase">Order Canceled:</strong>
+                                <p className="text-sm">
+                                    {new Intl.DateTimeFormat("en-GB", {
+                                        weekday: "short",
+                                        year: "2-digit",
+                                        month: "short",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        second: "2-digit",
+                                    }).format(orderData.data?.updated * 1000)}
+                                </p>
+                            </>
+                        )}
+                    </div>
+                )}
                 <div
                     style={{
-                        opacity: orderData.data.status === "canceled" ? "0.6" : "1",
+                        opacity: orderData.data?.status === "canceled" ? "0.6" : "1",
                     }}
                     className="flex flex-col gap-2"
                 >
                     <Accordion title="Customer Info:">
-                        <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Name:</strong>
-                                <p className="">{orderData.data?.recipient.name}</p>
+                        {orderData.isLoading ? (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
                             </div>
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Email:</strong>
-                                <p className="">{orderData.data?.recipient.email}</p>
+                        ) : (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Name:</strong>
+                                    <p className="">{orderData.data?.recipient.name}</p>
+                                </div>
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Email:</strong>
+                                    <p className="">{orderData.data?.recipient.email}</p>
+                                </div>
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Phone:</strong>
+                                    <p className="">{orderData.data?.recipient.phone}</p>
+                                </div>
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Address:</strong>
+                                    <p className="">{shippingAddress}</p>
+                                </div>
                             </div>
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Phone:</strong>
-                                <p className="">{orderData.data?.recipient.phone}</p>
-                            </div>
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Address:</strong>
-                                <p className="">{shippingAddress}</p>
-                            </div>
-                        </div>
+                        )}
                     </Accordion>
                     <Accordion title="Ordered items:">
-                        {orderData.data?.items.map((item) => (
-                            <MinimalCartProduct item={item} key={item.id} />
-                        ))}
+                        {orderData.isLoading ? (
+                            <div className="flex items-center gap-2 border-b-2 px-2 text-sm text-white last-of-type:border-b-0 sm:flex-row">
+                                <div className="h-[50px] w-[50px] sm:block">
+                                    <div className="h-[50px] w-[50px] animate-pulse rounded-lg bg-gray-800" />
+                                </div>
+                                <div className="mb-1 flex w-full animate-pulse flex-col gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="mb-1 flex justify-between gap-4">
+                                        <div className="h-4 w-10 animate-pulse bg-gray-800" />
+                                        <div className="h-4 w-20 animate-pulse bg-gray-800" />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                {orderData.data?.items.map((item) => (
+                                    <MinimalCartProduct item={item} key={item.id} />
+                                ))}
+                            </>
+                        )}
                     </Accordion>
                     <Accordion title="Shipping:">
-                        <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Shipping Type:</strong>
-                                <p className="">{orderData.data?.shipping}</p>
+                        {orderData.isLoading ? (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-col flex-wrap gap-1">
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-full animate-pulse bg-gray-800" />
+                                </div>
                             </div>
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Shipping Address:</strong>
-                                <p className="">{shippingAddress}</p>
+                        ) : (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Shipping Type:</strong>
+                                    <p className="">{orderData.data?.shipping}</p>
+                                </div>
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Shipping Address:</strong>
+                                    <p className="">{shippingAddress}</p>
+                                </div>
+                                <div className="flex flex-col flex-wrap">
+                                    <strong>Shipping Name:</strong>
+                                    <p className="">{orderData.data?.shipping_service_name}</p>
+                                </div>
                             </div>
-                            <div className="flex flex-col flex-wrap">
-                                <strong>Shipping Name:</strong>
-                                <p className="">{orderData.data.shipping_service_name}</p>
-                            </div>
-                        </div>
+                        )}
                     </Accordion>
                     <Accordion title="Pricing breakdown:">
-                        <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
-                            <div className="flex flex-wrap items-center justify-between">
-                                <p>Subtotal:</p>
-                                <strong className="">
-                                    {currency(orderData.data?.retail_costs.subtotal!)}
-                                </strong>
+                        {orderData.isLoading ? (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-wrap items-center justify-between gap-1">
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between gap-1">
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between gap-1">
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between gap-1">
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                    <div className="h-4 w-28 animate-pulse bg-gray-800" />
+                                </div>
                             </div>
-                            <div className="flex flex-wrap items-center justify-between">
-                                <p>Shipping:</p>
-                                <strong className="">
-                                    {currency(orderData.data?.retail_costs.shipping!)}
-                                </strong>
+                        ) : (
+                            <div className="mb-2 flex flex-col gap-2 border-b-2 px-2 text-sm last-of-type:border-b-0">
+                                <div className="flex flex-wrap items-center justify-between">
+                                    <p>Subtotal:</p>
+                                    <strong className="">
+                                        {currency(orderData.data?.retail_costs.subtotal!)}
+                                    </strong>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between">
+                                    <p>Shipping:</p>
+                                    <strong className="">
+                                        {currency(orderData.data?.retail_costs.shipping!)}
+                                    </strong>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between">
+                                    <p>Tax / VAT:</p>
+                                    <strong className="">
+                                        {currency(orderData.data?.retail_costs.tax!)}
+                                    </strong>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-between">
+                                    <p>Total:</p>
+                                    <strong className="">
+                                        {currency(orderData.data?.retail_costs.total!)}
+                                    </strong>
+                                </div>
                             </div>
-                            <div className="flex flex-wrap items-center justify-between">
-                                <p>Tax / VAT:</p>
-                                <strong className="">
-                                    {currency(orderData.data?.retail_costs.tax!)}
-                                </strong>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-between">
-                                <p>Total:</p>
-                                <strong className="">
-                                    {currency(orderData.data?.retail_costs.total!)}
-                                </strong>
-                            </div>
-                        </div>
+                        )}
                     </Accordion>
                 </div>
             </div>
-            {orderData.data.status !== "canceled" && (
-                <div className="flex w-full flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
-                    <button
-                        disabled={
-                            orderData.data.status !== "draft" && orderData.data.status !== "pending"
-                        }
-                        onClick={() => cancelOrderMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
-                    >
-                        {cancelOrderMutation.isLoading ? <LoadingSpinner size={24} /> : "CANCEL"}
-                    </button>
-                    <button
-                        onClick={() => invoiceMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
-                    >
-                        {invoiceMutation.isLoading ? (
-                            <LoadingSpinner size={24} />
-                        ) : invoiceMutation.isSuccess ? (
-                            "Invoice resent :)"
-                        ) : (
-                            "Resend Invoice"
-                        )}
-                    </button>
-                </div>
+            {orderData?.data?.status !== "canceled" && (
+                <>
+                    {orderData.isLoading ? (
+                        <div className="flex w-full  flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="mt-auto  h-10 w-full animate-pulse rounded-lg bg-gray-800 p-2 text-center font-bold uppercase shadow disabled:opacity-30 xs:w-32 sm:m-0 sm:w-auto sm:min-w-[120px]"></div>
+                            <div className="mt-auto  h-10 w-full animate-pulse rounded-lg bg-gray-800 p-2 text-center font-bold uppercase shadow disabled:opacity-30 xs:w-32 sm:m-0 sm:w-auto sm:min-w-[120px]"></div>
+                        </div>
+                    ) : (
+                        <div className="flex w-full flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
+                            <button
+                                disabled={
+                                    orderData?.data?.status !== "draft" &&
+                                    orderData.data?.status !== "pending"
+                                }
+                                onClick={() => cancelOrderMutation.mutate({ orderId })}
+                                className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                            >
+                                {cancelOrderMutation.isLoading ? (
+                                    <LoadingSpinner size={24} />
+                                ) : (
+                                    "CANCEL"
+                                )}
+                            </button>
+                            <button
+                                onClick={() => invoiceMutation.mutate({ orderId })}
+                                className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                            >
+                                {invoiceMutation.isLoading ? (
+                                    <LoadingSpinner size={24} />
+                                ) : invoiceMutation.isSuccess ? (
+                                    "Invoice resent :)"
+                                ) : (
+                                    "Resend Invoice"
+                                )}
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

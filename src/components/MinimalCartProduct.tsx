@@ -71,7 +71,7 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
             key={item.id}
             className="flex items-center gap-2 border-b-2 px-2 text-sm text-white last-of-type:border-b-0 sm:flex-row"
         >
-            <div className="max-w-[50px] sm:block">
+            <div className="w-[50px] max-w-[50px] sm:block">
                 <Image
                     className="rounded-lg bg-slate-200"
                     src={item.files[1].thumbnail_url}

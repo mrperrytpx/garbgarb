@@ -106,7 +106,7 @@ const Layout = ({ children }: ILayoutProps) => {
                 height={2}
                 options={{
                     showSpinner: false,
-                    trickleSpeed: 75,
+                    trickleSpeed: 150,
                     trickle: true,
                 }}
                 color="rgb(209 213 219)"

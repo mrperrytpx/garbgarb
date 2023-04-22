@@ -134,7 +134,7 @@ const ArticlePage = () => {
                             <p className="text-left">{baseShirtName}</p>
                             <p
                                 style={{ backgroundColor: option.color_code }}
-                                className="block w-full rounded-lg border border-gray-500    pl-2"
+                                className="block w-full rounded-lg border border-gray-500  pl-2"
                             >
                                 <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                     {option.color_name}

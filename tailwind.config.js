@@ -8,6 +8,9 @@ module.exports = {
         // Or if using `src` directory:
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    future: {
+        hoverOnlyWhenSupported: true,
+    },
     theme: {
         screens: {
             // eslint-disable no-console, no-control-regex

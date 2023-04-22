@@ -38,12 +38,12 @@ const AnimatedCheckmark = () => {
     return (
         <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-slate-100 p-4">
             <AiOutlineCheck size="52" fill="white" />
-            <div className="absolute top-0 left-0 h-1/2 w-1/2 translate-x-1/2 translate-y-1/2 rotate-180">
+            <div className="absolute left-0 top-0 h-1/2 w-1/2 translate-x-1/2 translate-y-1/2 rotate-180">
                 <div
                     style={{
                         width: mounted ? "0%" : "100%",
                     }}
-                    className="transition-width h-full bg-black duration-500"
+                    className="transition-width h-full bg-zinc-950 duration-500"
                 ></div>
             </div>
         </div>

@@ -32,8 +32,8 @@ const ProductsPage = () => {
         select: (data) => {
             const filteredByName = data.filter(
                 (product) =>
-                    product.name.toLowerCase().includes(productFilter) ||
-                    product.metadata.color_names.includes(productFilter)
+                    product.name.toLowerCase().includes(productFilter.toLowerCase()) ||
+                    product.metadata.color_names.includes(productFilter.toLowerCase())
             );
 
             if (selectedSizes.length === 0) return filteredByName;

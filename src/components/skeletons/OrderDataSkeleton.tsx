@@ -30,7 +30,6 @@ export const OrderDataSkeleton = () => {
                 <div className="mt-auto  h-10 w-full animate-pulse rounded-lg bg-gray-800 p-2 text-center font-bold uppercase shadow disabled:opacity-30 xs:w-32 sm:m-0 sm:w-auto sm:min-w-[120px]"></div>
                 <div className="mt-auto  h-10 w-full animate-pulse rounded-lg bg-gray-800 p-2 text-center font-bold uppercase shadow disabled:opacity-30 xs:w-32 sm:m-0 sm:w-auto sm:min-w-[120px]"></div>
             </div>
-            <div className="flex w-full flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between"></div>
         </div>
     );
 };
