@@ -21,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         const session = await getServerSession(req, res, authOptions);
 
-        if (!session) return res.status(401);
+        if (!session) return res.status(401).end();
 
         const [allOrdersError, allOrdersData] = await tryCatchAsync(getAllOrders)(session.user.id);
 

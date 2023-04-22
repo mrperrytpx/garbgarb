@@ -9,6 +9,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { Logo } from "../components/Logos";
 import DefaultPic from "../public/static/default.png";
+import NextNProgress from "nextjs-progressbar";
 
 interface ILayoutProps {
     children: JSX.Element | JSX.Element[];
@@ -101,6 +102,15 @@ const Layout = ({ children }: ILayoutProps) => {
                     </div>
                 </div>
             </header>
+            <NextNProgress
+                height={2}
+                options={{
+                    showSpinner: false,
+                    trickleSpeed: 75,
+                    trickle: true,
+                }}
+                color="rgb(209 213 219)"
+            />
             {/* Mobile Menu */}
             {isExpanded ? (
                 <div className="flex h-[calc(max(600px,100vh)-64px)] flex-col items-center justify-center bg-black text-gray-300">
