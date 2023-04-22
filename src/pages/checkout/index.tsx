@@ -12,7 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { SectionSeparator } from "../../components/SectionSeparator";
 import { MinimalCartProduct } from "../../components/MinimalCartProduct";
 import { useSession, signIn } from "next-auth/react";
-import { AddressForm } from "../../components/AddressForm";
+import { AddressForm } from "../../components/CustomerForm";
 import { OrderSummary } from "../../components/OrderSummary";
 import { allowedCountries } from "../../utils/allowedCountries";
 
@@ -167,7 +167,7 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="mt-auto mb-2 flex w-full items-center justify-between text-white">
+        <div className="mb-2 mt-auto flex w-full items-center justify-between text-white">
             {checkoutStep > 1 && (
                 <button
                     disabled={checkoutStep === 2 && !!session.data?.user}

@@ -76,6 +76,8 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     useEffect(() => {
         if (session.data?.user?.email) {
             setFormValue("email", session.data?.user?.email, { shouldValidate: true });
+        }
+        if (session.data?.user.name) {
             setFormValue("name", session.data?.user?.name, { shouldValidate: true });
         }
     }, [session, setFormValue]);
@@ -163,14 +165,14 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 </span>
                             )}
                             {addressData.isLoading && addressData.fetchStatus !== "idle" ? (
-                                <div className="absolute top-[68px] left-0 z-20 w-full gap-0.5 bg-white px-2">
+                                <div className="absolute left-0 top-[68px] z-20 w-full gap-0.5 bg-white px-2">
                                     <LoadingSpinner />
                                 </div>
                             ) : (
                                 status === "OK" && (
                                     <ul
                                         ref={ref}
-                                        className="absolute top-[68px] left-0 flex w-full flex-col rounded-md bg-black shadow-lg outline outline-1"
+                                        className="absolute left-0 top-[68px] flex w-full flex-col rounded-md bg-black shadow-lg outline outline-1"
                                     >
                                         {data.map((suggestion, i) => (
                                             <li
@@ -315,7 +317,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                     </div>
                 </div>
             </fieldset>
-            <div className="mt-auto mb-2 flex w-full items-center justify-between">
+            <div className="mb-2 mt-auto flex w-full items-center justify-between">
                 <button
                     type="button"
                     onClick={() => setCheckoutStep((prev) => prev - 1)}

@@ -10,7 +10,7 @@ const CartIcon = () => {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="white"
+            stroke="#D1D5DB"
             className="mr-1 h-6 w-6 group-hover:stroke-black"
         >
             <path
@@ -26,12 +26,12 @@ export const CartIconWithNumber = () => {
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="group relative rounded-lg p-2 hover:animate-hop hover:bg-slate-200">
+        <div className="group relative rounded-lg p-2 text-gray-300 hover:animate-hop hover:bg-slate-200">
             <div className="">
                 <CartIcon />
             </div>
             {productsInCart.length > 0 && (
-                <p className="absolute top-0.5 right-1 text-xs font-bold text-white group-hover:text-black">
+                <p className="absolute right-1 top-0.5 text-xs font-bold text-white group-hover:text-black">
                     {productsInCart.length}
                 </p>
             )}

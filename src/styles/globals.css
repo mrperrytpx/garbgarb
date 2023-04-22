@@ -16,6 +16,10 @@ body {
     @apply bg-zinc-950;
 }
 
+.google {
+    font-family: "Roboto", sans-serif;
+}
+
 input,
 button,
 textarea,

@@ -7,6 +7,8 @@ import { CartIconWithNumber } from "../components/CartIconWithNumber";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { Logo } from "../components/Logos";
+import DefaultPic from "../public/static/default.png";
 
 interface ILayoutProps {
     children: JSX.Element | JSX.Element[];
@@ -26,8 +28,11 @@ const Layout = ({ children }: ILayoutProps) => {
             <header className="sticky top-0 z-30 grid h-16 items-center border-b border-gray-700 bg-black px-4 text-gray-300">
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
                     <div className="flex items-center justify-center gap-4">
-                        <Link className="p-1 text-3xl" href="/">
-                            L
+                        <Link
+                            className="flex items-center justify-center rounded-lg text-3xl hover:animate-hop hover:bg-slate-200"
+                            href="/"
+                        >
+                            <Logo />
                         </Link>
                         <Link
                             className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline"
@@ -41,10 +46,10 @@ const Layout = ({ children }: ILayoutProps) => {
                                 href="/my_orders"
                             >
                                 <Image
-                                    className="w-7 rounded-full"
+                                    className="w-7 rounded-full bg-slate-200"
                                     width={100}
                                     height={100}
-                                    src={session?.user?.image!}
+                                    src={session?.user?.image ?? DefaultPic}
                                     alt="User's profile"
                                 />
                             </Link>
@@ -57,10 +62,10 @@ const Layout = ({ children }: ILayoutProps) => {
                                 href="/my_orders"
                             >
                                 <Image
-                                    className="w-8 rounded-full"
+                                    className="w-8 rounded-full bg-slate-200"
                                     width={100}
                                     height={100}
-                                    src={session?.user?.image!}
+                                    src={session?.user?.image ?? DefaultPic}
                                     alt="User's profile"
                                 />
                             </Link>
@@ -143,7 +148,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <FiGithub
                                 className="group-hover:stroke-black"
                                 size={32}
-                                stroke="white"
+                                stroke="#D1D5DB"
                             />
                         </a>
                         <a
@@ -155,7 +160,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <FiLinkedin
                                 className="group-hover:stroke-black"
                                 size={32}
-                                stroke="white"
+                                stroke="#D1D5DB"
                             />
                         </a>
                     </div>
@@ -200,7 +205,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                     >
                                         <FiGithub
                                             className="group-hover:stroke-black"
-                                            stroke="white"
+                                            stroke="#D1D5DB"
                                             size={24}
                                         />
                                     </a>
@@ -212,7 +217,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                     >
                                         <FiLinkedin
                                             className="group-hover:stroke-black"
-                                            stroke="white"
+                                            stroke="#D1D5DB"
                                             size={24}
                                         />
                                     </a>

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { getGeocode } from "use-places-autocomplete";
-import { TGoogleAddressDetails } from "../components/AddressForm";
+import { TGoogleAddressDetails } from "../components/CustomerForm";
 import { ValidatedAddress } from "../pages/checkout";
 import { allowedCountries } from "../utils/allowedCountries";
 

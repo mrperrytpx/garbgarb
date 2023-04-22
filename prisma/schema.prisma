@@ -25,7 +25,6 @@ model Account {
   session_state      String?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String
-
   @@index([userId])
   @@unique([provider, providerAccountId])
 }
@@ -36,7 +35,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@index([userId])
 }
 
@@ -44,7 +42,6 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
-
   @@unique([identifier, token])
 }
 
@@ -69,6 +66,5 @@ model Order {
   user        User     @relation(fields: [userId], references: [id])
   userId      String
   canceled    Boolean  @default(false)
-
   @@index([userId])
 }
