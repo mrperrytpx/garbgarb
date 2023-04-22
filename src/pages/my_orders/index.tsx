@@ -65,57 +65,37 @@ const ProfilePage = () => {
         }
     );
 
-    if (allOrders.isLoading)
-        return (
-            <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2">
-                <div className="w-full">
-                    <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
-                    <div className="flex w-full flex-col gap-2">
-                        <AllOrdersSkeleton />
-                    </div>
-                </div>
-                <div className="flex w-full flex-col gap-4">
-                    <h1 className="w-full border-b-2 font-bold uppercase">Account:</h1>
-                    <button
-                        className="rounded-lg border p-2 shadow transition-colors hover:bg-slate-500 hover:text-white"
-                        onClick={() => setIsModalOpen(!isModalOpen)}
-                    >
-                        {deleteUserMutation.isLoading ? (
-                            <LoadingSpinner size={20} />
-                        ) : (
-                            "Delete Account"
-                        )}
-                    </button>
-                </div>
-            </div>
-        );
-
     return (
         <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 text-white">
             <div className="w-full">
-                <h1 className="w-full border-b-2 font-bold uppercase">Orders:</h1>
+                <h1 className="font-semibold uppercase">Orders:</h1>
                 <div className="mt-2 flex">
-                    {allOrders.data?.length ? (
-                        <div className="flex w-full flex-1 flex-col gap-2 sm:items-start">
-                            {allOrders.data?.map((x, i) => (
-                                <Link
-                                    className="flex w-full flex-col items-start gap-2 p-4 shadow-sm shadow-slate-100"
-                                    key={i}
-                                    href={`/my_orders/${x.id}`}
-                                >
-                                    <div key={i} className="w-full rounded-md">
+                    {allOrders.isLoading ? (
+                        <div className="flex h-40 w-full flex-col items-center justify-center gap-2 p-2 text-white">
+                            <p className="text-sm font-semibold">Loading orders...</p>
+                            <LoadingSpinner size={50} />
+                        </div>
+                    ) : allOrders.data?.length ? (
+                        <>
+                            {allOrders.data?.map((order, i) => (
+                                <div className="flex w-full flex-col items-start gap-2" key={i}>
+                                    <Link
+                                        href={`/my_orders/${order.id}`}
+                                        key={i}
+                                        className="w-full rounded-md border border-gray-500 p-2"
+                                    >
                                         <div className="flex flex-col justify-between gap-2">
                                             <div className="flex items-center justify-between gap-4">
-                                                <span className="underline">#{x.id}</span>
+                                                <span className="underline">#{order.id}</span>
                                                 <strong
                                                     style={{
-                                                        textDecoration: x.canceled
+                                                        textDecoration: order.canceled
                                                             ? "line-through"
                                                             : "",
                                                     }}
                                                     className="min-w-[70px] text-right"
                                                 >
-                                                    {currency(x.totalAmount / 100)}
+                                                    {currency(order.totalAmount / 100)}
                                                 </strong>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -128,42 +108,43 @@ const ProfilePage = () => {
                                                         hour: "2-digit",
                                                         minute: "2-digit",
                                                         second: "2-digit",
-                                                    }).format(new Date(x.createdAt))}
+                                                    }).format(new Date(order.createdAt))}
                                                 </span>
-                                                {x.canceled && (
+                                                {order.canceled && (
                                                     <strong className="uppercase text-red-600">
                                                         Canceled
                                                     </strong>
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                    {x.canceled && (
+                                    </Link>
+                                    {order.canceled && (
                                         <button
                                             onClick={() =>
-                                                deleteCanceledOrder.mutate({ orderId: x.id })
+                                                deleteCanceledOrder.mutate({ orderId: order.id })
                                             }
-                                            className="z-10 w-full max-w-[100px] rounded-md border p-2 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                            className="group relative z-10 w-24 rounded-md border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:border-slate-200 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                                         >
                                             DELETE
+                                            <div className="pointer-events-none absolute left-full top-[6px] z-0 h-8 w-8 -translate-y-1/2 rounded-br-lg border-b-2 border-r-2 border-gray-500  group-hover:border-red-500"></div>
                                         </button>
                                     )}
-                                </Link>
+                                </div>
                             ))}
-                        </div>
+                        </>
                     ) : (
                         <div className="flex w-full flex-col items-center justify-start gap-4">
                             <h2 className="mt-8 p-4 text-center">You haven't placed any orders</h2>
-                            <LinkButton href="/checkout">Place one now</LinkButton>
                         </div>
                     )}
                 </div>
             </div>
+
             <div className="flex w-full flex-col gap-4">
-                <h1 className="w-full border-b-2 font-bold uppercase">Account:</h1>
+                <h1 className="font-semibold uppercase">Account:</h1>
 
                 <button
-                    className="rounded-lg border p-2 shadow transition-colors hover:bg-slate-500 hover:text-white"
+                    className="rounded-lg border p-2 shadow-sm shadow-slate-200 transition-colors hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                     onClick={() => setIsModalOpen(!isModalOpen)}
                 >
                     {deleteUserMutation.isLoading ? <LoadingSpinner size={20} /> : "Delete Account"}
@@ -171,14 +152,13 @@ const ProfilePage = () => {
             </div>
             {isModalOpen && (
                 <Portal>
-                    <div className="relative flex max-h-full w-full max-w-screen-xs flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-black p-4 text-center text-white">
+                    <div className="relative flex max-h-full w-full max-w-[min(95%,450px)] flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-black p-4 text-center text-sm text-white">
                         <div>
-                            <h1 className="mb-2 text-xl uppercase">
-                                Are you sure you want to delete Your account?
-                            </h1>
-                            <p className="mb-2">All of your data will be removed.</p>
-                            <p className="text-sm font-bold">
-                                This will <u>NOT</u> cancel any of your outgoing orders!
+                            <h1 className="mb-2 text-xl font-bold uppercase">Are you sure?</h1>
+                            <p className="mb-2 text-sm">All of your data will be deleted.</p>
+                            <p className="text-sm">
+                                This will <strong className="text-red-600">NOT</strong> cancel any
+                                of your outgoing orders!
                             </p>
                         </div>
                         <div className="flex w-full items-center justify-between">
@@ -187,13 +167,13 @@ const ProfilePage = () => {
                                     deleteUserMutation.mutate();
                                     setIsModalOpen(false);
                                 }}
-                                className="min-w-[100px] rounded-lg border p-2 shadow-md hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                className="min-w-[100px] rounded-lg border p-2 font-semibold shadow-md hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                             >
                                 I'M SURE
                             </button>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="min-w-[100px] rounded-lg border p-2 shadow-md hover:bg-slate-500 hover:text-white focus:bg-slate-500 focus:text-white"
+                                className="min-w-[100px] rounded-lg border p-2 font-semibold shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                             >
                                 NO
                             </button>

@@ -20,7 +20,7 @@ type CustomAppProps = AppProps & {
 };
 
 const toastProps: ToastContainerProps = {
-    autoClose: 2500,
+    autoClose: 1500,
     theme: "dark",
 };
 
@@ -31,6 +31,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                 defaultOptions: {
                     queries: {
                         refetchOnWindowFocus: false,
+                        retry: 1,
                     },
                 },
             })
@@ -71,7 +72,7 @@ function Auth({ children }: { children: ReactNode }) {
 
     if (status === "loading") {
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2">
+            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
                 <LoadingSpinner size={50} />
             </div>
         );
