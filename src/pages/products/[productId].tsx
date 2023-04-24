@@ -1,7 +1,12 @@
-import { GetServerSidePropsContext, PreviewData } from "next";
+import {
+    GetServerSideProps,
+    GetServerSidePropsContext,
+    InferGetServerSidePropsType,
+    PreviewData,
+} from "next";
 import Image from "next/image";
 import { SizeDropdown } from "../../components/SizeDropdown";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import parse from "html-react-parser";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
@@ -9,7 +14,7 @@ import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
 import { currency } from "../../utils/currency";
 import { Accordion } from "../../components/Accordion";
-import { QueryClient, dehydrate } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { ParsedUrlQuery } from "querystring";
 import { useRouter } from "next/router";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
@@ -23,6 +28,7 @@ import { useGetProductSizes } from "../../hooks/useGetProductSizes";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
+import { PageError } from "../../components/PageError";
 
 const CheckedIcon = () => {
     return (
@@ -32,18 +38,19 @@ const CheckedIcon = () => {
     );
 };
 
-const ArticlePage = () => {
+const ArticlePage = ({
+    product,
+    productColors,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const router = useRouter();
     const dispatch = useDispatch();
 
     const { productId, color: chosenColor } = router.query;
 
-    const { data: productData } = useGetProduct(productId);
-    const storeProductId = productData?.sync_variants[0].product.product_id;
+    const productQuery = useGetProduct(productId);
+    const storeProductId = productQuery.data?.sync_variants[0].product.product_id;
 
-    const { data: availabilityData } = useGetProductAvailability(storeProductId);
-
-    const { product, productColors } = sortStuffByProductColor(productData, availabilityData);
+    const availabilityQuery = useGetProductAvailability(storeProductId);
 
     const [color, setColor] = useState(() => {
         if (chosenColor) return chosenColor as string;
@@ -54,13 +61,13 @@ const ArticlePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCentimeters, setIsCentimeters] = useState(true);
 
-    const productDescription = availabilityData?.product.description
+    const productDescription = availabilityQuery.data?.product.description
         .split("\n")
         .map((x) => `<p className="text-sm block w-full last-of-type:mb-2 font-normal">${x}</p>`)
         .slice(2)
         .join("")!;
 
-    const splitName = productData?.sync_product.name.split(" ");
+    const splitName = productQuery.data?.sync_product.name.split(" ");
     const splitIndex = splitName?.indexOf("Unisex");
     const myShirtName = splitName?.slice(0, splitIndex).join(" ");
     const baseShirtName = splitName?.slice(splitIndex).join(" ");
@@ -71,23 +78,23 @@ const ArticlePage = () => {
     };
 
     function handleAddToCart() {
-        if (!productData) return;
+        if (!productQuery.data) return;
 
         const payload: TCartProduct = {
-            name: productData.sync_product.name,
+            name: productQuery.data.sync_product.name,
             quantity: quantity,
             color_code: option.color_code,
             color_name: option.color_name,
-            sku: productData.sync_variants[option.index].sku,
-            price: productData.sync_variants[option.index].retail_price,
+            sku: productQuery.data.sync_variants[option.index].sku,
+            price: productQuery.data.sync_variants[option.index].retail_price,
             size: option.size,
             size_index: option.index,
-            variant_image: productData.sync_variants[option.index].files[1].thumbnail_url,
-            store_product_variant_id: productData.sync_variants[option.index].id,
-            store_product_id: productData.sync_variants[option.index].sync_product_id,
-            base_product_variant_id: productData.sync_variants[option.index].variant_id,
-            base_product_id: productData.sync_variants[option.index].product.product_id,
-            external_id: productData.sync_variants[option.index].external_id,
+            variant_image: productQuery.data.sync_variants[option.index].files[1].thumbnail_url,
+            store_product_variant_id: productQuery.data.sync_variants[option.index].id,
+            store_product_id: productQuery.data.sync_variants[option.index].sync_product_id,
+            base_product_variant_id: productQuery.data.sync_variants[option.index].variant_id,
+            base_product_id: productQuery.data.sync_variants[option.index].product.product_id,
+            external_id: productQuery.data.sync_variants[option.index].external_id,
             outOfStock: false,
         };
 
@@ -104,11 +111,23 @@ const ArticlePage = () => {
         setQuantity(1);
     }
 
-    const { data: sizesData } = useGetProductSizes(storeProductId, isModalOpen);
+    const sizesQuery = useGetProductSizes(storeProductId, isModalOpen);
 
     const spanProp = isModalOpen ? { tabIndex: 0 } : {};
 
-    if (!productData || !availabilityData) return <div>Yikes bro...</div>;
+    if (productQuery.isLoading || availabilityQuery.isLoading)
+        return (
+            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-white">
+                <p className="text-sm font-semibold">Loading product...</p>
+                <LoadingSpinner size={50} />
+            </div>
+        );
+
+    if (productQuery.isError || availabilityQuery.isError)
+        return <PageError error={productQuery.error || availabilityQuery.error} />;
+
+    if (!productQuery.data || !availabilityQuery.data)
+        return <PageError error={productQuery.error || availabilityQuery.error} />;
 
     return (
         <div className="mx-auto mb-8 max-w-screen-lg">
@@ -119,10 +138,12 @@ const ArticlePage = () => {
                 <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
                     <Image
                         priority={true}
+                        placeholder="blur"
+                        blurDataURL="https://placehold.co/500x500/png"
                         width={500}
                         height={500}
                         alt="Piece of clothing with some words written on it"
-                        src={productData?.sync_variants[option.index].files[1].preview_url!}
+                        src={productQuery.data.sync_variants[option.index].files[1].preview_url}
                         className="rounded-lg"
                     />
                 </div>
@@ -143,7 +164,9 @@ const ArticlePage = () => {
                         </div>
                         <div className="flex w-full items-center justify-between gap-2">
                             <p className="text-xl">
-                                {currency(+productData?.sync_variants[option?.index].retail_price)}
+                                {currency(
+                                    +productQuery.data?.sync_variants[option?.index].retail_price
+                                )}
                             </p>
                             <p className="text-xs">Tax / VAT not included</p>
                         </div>
@@ -214,9 +237,11 @@ const ArticlePage = () => {
                         </Accordion>
                         <Accordion title="Size Guide">
                             <div className="mb-4 mt-2 flex flex-col gap-2 px-2">
-                                <div className="w-max self-center border border-slate-400 p-2 hover:border-white hover:bg-slate-200 hover:text-black  focus:bg-slate-200 focus:text-black">
+                                <div
+                                    onClick={() => setIsModalOpen(!isModalOpen)}
+                                    className="w-max cursor-pointer self-center border border-slate-400 p-2 hover:border-white hover:bg-slate-200 hover:text-black  focus:bg-slate-200 focus:text-black"
+                                >
                                     <span
-                                        onClick={() => setIsModalOpen(!isModalOpen)}
                                         className="h-full cursor-pointer text-sm font-bold"
                                         {...spanProp}
                                     >
@@ -244,8 +269,8 @@ const ArticlePage = () => {
             {isModalOpen && (
                 <Portal>
                     <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-300 bg-black p-4 text-slate-100">
-                        {!sizesData ? (
-                            <LoadingSpinner />
+                        {!sizesQuery.data ? (
+                            <LoadingSpinner size={50} />
                         ) : (
                             <>
                                 <button
@@ -263,7 +288,7 @@ const ArticlePage = () => {
                                 </div>
                                 <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
                                     {parse(
-                                        sizesData.size_tables[0].description.replace(
+                                        sizesQuery.data.size_tables[0].description.replace(
                                             /(\r\n|\n|\r)/gm,
                                             ""
                                         )
@@ -275,12 +300,12 @@ const ArticlePage = () => {
                                             width={150}
                                             height={150}
                                             alt="Visual guide for measuring yourself"
-                                            src={sizesData?.size_tables[0].image_url}
+                                            src={sizesQuery.data?.size_tables[0].image_url}
                                         />
                                     </div>
                                     <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
                                         {parse(
-                                            sizesData.size_tables[0].image_description.replace(
+                                            sizesQuery.data.size_tables[0].image_description.replace(
                                                 /(\r\n|\n|\r)/gm,
                                                 ""
                                             )
@@ -307,7 +332,7 @@ const ArticlePage = () => {
                                         Inches
                                     </span>
                                 </div>
-                                <SizesTable isCentimeters={isCentimeters} sizes={sizesData} />
+                                <SizesTable isCentimeters={isCentimeters} sizes={sizesQuery.data} />
                             </>
                         )}
                     </div>
@@ -328,9 +353,12 @@ export type TWarehouseProduct = {
     color_code: string;
 };
 
-export const getServerSideProps = async (
-    context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
-) => {
+export const getServerSideProps: GetServerSideProps<{
+    product: {
+        [key: string]: TWarehouseProduct[];
+    };
+    productColors: string[];
+}> = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
     const { productId } = context.query;
     const queryClient = new QueryClient();
 
@@ -340,14 +368,17 @@ export const getServerSideProps = async (
     });
     const storeProductId = storeData.sync_variants[0].product.product_id;
 
-    await queryClient.prefetchQuery({
+    const productAvailability = await queryClient.fetchQuery({
         queryKey: ["availability", storeProductId],
         queryFn: () => getProductAvailability(storeProductId),
     });
 
+    const { product, productColors } = sortStuffByProductColor(storeData, productAvailability);
+
     return {
         props: {
-            dehydratedState: dehydrate(queryClient),
+            product,
+            productColors,
         },
     };
 };
