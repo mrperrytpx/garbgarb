@@ -87,17 +87,16 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
 
             const orderId = +orderRes.data.result.id;
 
-            if (session && session.metadata?.user) {
-                await prisma.order.create({
-                    data: {
-                        userId: session.metadata.user,
-                        id: orderId,
-                        totalAmount: session.amount_total ?? 0,
-                        payment: session.payment_intent as string,
-                        invoice: session.invoice as string,
-                    },
-                });
-            }
+            await prisma.order.create({
+                data: {
+                    userId: session.metadata?.user,
+                    id: orderId,
+                    totalAmount: session.amount_total ?? 0,
+                    payment: session.payment_intent as string,
+                    invoice: session.invoice as string,
+                    email: session.customer_details?.email as string,
+                },
+            });
         } else if (event.type === "charge.refunded") {
             const refund = event.data.object;
 
