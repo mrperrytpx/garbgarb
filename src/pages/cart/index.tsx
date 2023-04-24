@@ -40,7 +40,7 @@ const CartPage = () => {
                     <p className="text-xs">Fees not applied</p>
                 </div>
                 <LinkButton
-                    className="shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                    className="border border-gray-500 shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                     href={productsInCart.some((x) => x.outOfStock) ? "/cart" : "/checkout"}
                 >
                     CHECKOUT

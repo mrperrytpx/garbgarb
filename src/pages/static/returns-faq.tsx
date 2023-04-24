@@ -6,7 +6,7 @@ const ReturnsAndFAQPage = () => {
     return (
         <div className="mx-auto mb-20 mt-10 flex w-full max-w-screen-md flex-1 flex-col gap-6 p-4 text-white">
             <h1 className="text-2xl font-semibold">Returns & FAQ</h1>
-            <article className="flex flex-col items-start gap-2">
+            <article id="countries" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">What countries do you ship to?</h2>
                 <p className="text-sm">We ship to the following countries:</p>
                 <div>
@@ -18,7 +18,7 @@ const ReturnsAndFAQPage = () => {
                     ))}
                 </div>
             </article>
-            <article className="flex flex-col items-start gap-2">
+            <article id="fees" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">
                     Will I have to pay any additional fees on my order?
                 </h2>
@@ -37,7 +37,7 @@ const ReturnsAndFAQPage = () => {
                     for paying them. Thank you for your understanding.
                 </p>
             </article>
-            <article className="flex flex-col items-start gap-2">
+            <article id="cancel" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">Cancellations</h2>
                 <p className="text-sm">
                     All of our products are made to order per customer basis. If you wish to cancel
@@ -62,7 +62,7 @@ const ReturnsAndFAQPage = () => {
                     resolution. We will do everything possible to assist you.
                 </p>
             </article>
-            <article className="flex flex-col items-start gap-2">
+            <article id="quality" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">Quality Issues</h2>
                 <p className="text-sm">
                     To ensure the quickest resolution, please send an email to{" "}
@@ -81,7 +81,7 @@ const ReturnsAndFAQPage = () => {
                     solution to the issue at hand.
                 </p>
             </article>
-            <article className="flex flex-col items-start gap-2">
+            <article id="refunds" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">Refund Policy</h2>
 
                 <p className="text-sm">
@@ -100,7 +100,7 @@ const ReturnsAndFAQPage = () => {
                     directly to inquire about the status of the refund.
                 </p>
             </article>
-            <article className="flex flex-col items-start gap-2">
+            <article id="payment-methods" className="flex flex-col items-start gap-2">
                 <h2 className="font-semibold underline">Accepted Payment Methods</h2>
                 <p className="text-sm">
                     We accept payments via credit cards, debit cards and Google Pay.

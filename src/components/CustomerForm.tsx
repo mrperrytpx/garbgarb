@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { useEffect, useRef } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useRef } from "react";
 import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -55,23 +55,24 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         setValue(e.target.value);
     };
 
-    const ref = useRef<HTMLUListElement>(null);
     const addressData = useGetSuggestionsQuery(suggestion);
 
-    // useEffect(() => {
-    //   function handleClickOutside(event: Event) {
-    //     if (ref.current && !ref.current.contains(event.target as Node)) {
-    //       clearSuggestions();
-    //     }
-    //   }
-    //   const eventTypes = ["mousedown", "touchstart"];
-    //   eventTypes.forEach((type) => {
-    //     document.addEventListener(type as keyof DocumentEventMap, handleClickOutside);
-    //     return () => {
-    //       document.removeEventListener(type as keyof DocumentEventMap, handleClickOutside);
-    //     };
-    //   });
-    // }, [ref]);
+    const handleChoice = (suggestion: AutocompletePrediction) => {
+        clearSuggestions();
+        clearErrors();
+        setSuggestion(suggestion);
+    };
+
+    const handleKeyboardChoice = (
+        e: KeyboardEvent<HTMLLIElement>,
+        suggestion: AutocompletePrediction
+    ) => {
+        if (e.code === "Space" || e.code === "Enter") {
+            clearSuggestions();
+            clearErrors();
+            setSuggestion(suggestion);
+        }
+    };
 
     useEffect(() => {
         if (session.data?.user?.email) {
@@ -100,7 +101,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     return (
         <form
             onSubmit={onSubmit}
-            className="relative flex min-h-[300px] flex-col items-start justify-start gap-4 p-2 text-white"
+            className="relative flex flex-col items-start justify-start gap-4 rounded-lg bg-black p-2 text-white"
         >
             <fieldset className="flex w-full flex-col items-center">
                 <div className="flex w-full flex-col gap-2">
@@ -109,16 +110,20 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             <strong className="uppercase">Full Name</strong>
                         </label>
                         <input
+                            style={{
+                                borderColor: errors.name ? "rgb(220 38 38)" : "rgb(107 114 128)",
+                            }}
                             {...register("name")}
                             name="name"
                             id="name"
-                            className="h-10 w-full border bg-black p-2 text-sm"
+                            type="text"
+                            className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                             placeholder="Full Name"
                             autoComplete="off"
                             disabled={!ready}
                         />
                         {errors.name && (
-                            <span className="pl-1 text-xs font-semibold">
+                            <span className="pl-1 text-xs font-semibold text-red-500">
                                 {errors.name.message}
                             </span>
                         )}
@@ -128,17 +133,20 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             <strong className="uppercase">Email</strong>
                         </label>
                         <input
+                            style={{
+                                borderColor: errors.email ? "rgb(220 38 38)" : "rgb(107 114 128)",
+                            }}
                             {...register("email")}
                             name="email"
                             id="email"
                             type="email"
-                            className="h-10 w-full border bg-black p-2 text-sm"
+                            className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                             placeholder="Email address"
                             autoComplete="off"
                             disabled={!ready}
                         />
                         {errors.email && (
-                            <span className="pl-1 text-xs font-semibold">
+                            <span className="pl-1 text-xs font-semibold text-red-500">
                                 {errors.email.message}
                             </span>
                         )}
@@ -149,40 +157,42 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 <strong className="uppercase">Street name</strong>
                             </label>
                             <input
+                                style={{
+                                    borderColor: errors.streetName
+                                        ? "rgb(220 38 38)"
+                                        : "rgb(107 114 128)",
+                                }}
                                 {...register("streetName")}
                                 name="streetName"
                                 id="streetName"
                                 onChange={handleInput}
-                                className="h-10 w-full border bg-black p-2 text-sm"
+                                className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                                 type="text"
                                 placeholder="Street Name"
                                 autoComplete="off"
                                 disabled={!ready}
                             />
                             {errors.streetName && (
-                                <span className="pl-1 text-xs font-semibold">
+                                <span className="pl-1 text-xs font-semibold text-red-500">
                                     {errors.streetName.message}
                                 </span>
                             )}
                             {addressData.isLoading && addressData.fetchStatus !== "idle" ? (
-                                <div className="absolute left-0 top-[68px] z-20 w-full gap-0.5 bg-white px-2">
+                                <div className="absolute left-0 top-[68px] z-20 w-full gap-0.5 bg-black px-2">
                                     <LoadingSpinner />
                                 </div>
                             ) : (
                                 status === "OK" && (
-                                    <ul
-                                        ref={ref}
-                                        className="absolute left-0 top-[68px] flex w-full flex-col rounded-md bg-black shadow-lg outline outline-1"
-                                    >
+                                    <ul className="absolute left-0 top-[68px] flex w-full flex-col rounded-md bg-black shadow-lg outline outline-1">
                                         {data.map((suggestion, i) => (
                                             <li
-                                                className="cursor-pointer border-b-2 p-2 last-of-type:border-0 hover:bg-slate-700 hover:text-white"
+                                                tabIndex={0}
+                                                onKeyDown={(e) =>
+                                                    handleKeyboardChoice(e, suggestion)
+                                                }
+                                                className="cursor-pointer border-b-2 p-2 last-of-type:border-0 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                                                 key={i}
-                                                onClick={() => {
-                                                    clearSuggestions();
-                                                    clearErrors();
-                                                    setSuggestion(suggestion);
-                                                }}
+                                                onClick={(e) => handleChoice(suggestion)}
                                             >
                                                 <strong className="uppercase">
                                                     {suggestion.description}
@@ -199,17 +209,22 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     <strong className="uppercase">St. Number</strong>
                                 </label>
                                 <input
+                                    style={{
+                                        borderColor: errors.streetNumber
+                                            ? "rgb(220 38 38)"
+                                            : "rgb(107 114 128)",
+                                    }}
                                     {...register("streetNumber")}
                                     name="streetNumber"
                                     id="streetNumber"
-                                    className="h-10 w-full border bg-black p-2 text-sm"
+                                    className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Street Number"
                                     autoComplete="off"
                                     disabled={!ready}
                                 />
                                 {errors.streetNumber && (
-                                    <span className="pl-1 text-xs font-semibold">
+                                    <span className="pl-1 text-xs font-semibold text-red-500">
                                         {errors.streetNumber.message}
                                     </span>
                                 )}
@@ -219,10 +234,15 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     <strong className="uppercase">Subpremise</strong>
                                 </label>
                                 <input
+                                    style={{
+                                        borderColor: errors.subpremise
+                                            ? "rgb(220 38 38)"
+                                            : "rgb(107 114 128)",
+                                    }}
                                     {...register("subpremise")}
                                     name="subpremise"
                                     id="subpremise"
-                                    className="h-10 w-full border bg-black p-2 text-sm"
+                                    className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Apartment, Suite, etc."
                                     autoComplete="off"
@@ -230,7 +250,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     disabled={!ready}
                                 />
                                 {errors.subpremise && (
-                                    <span className="pl-1 text-xs font-semibold">
+                                    <span className="pl-1 text-xs font-semibold text-red-500">
                                         {errors.subpremise.message}
                                     </span>
                                 )}
@@ -244,17 +264,25 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 <strong className="uppercase">City</strong>
                             </label>
                             <input
+                                style={{
+                                    borderColor: errors.city
+                                        ? "rgb(220 38 38)"
+                                        : "rgb(107 114 128)",
+                                }}
                                 {...register("city")}
                                 name="city"
                                 id="city"
-                                className="h-10 w-full border bg-black  p-2 text-sm"
+                                className="h-10 w-full rounded-md border border-gray-500 bg-black  p-2 text-sm"
                                 type="text"
                                 placeholder="City"
                                 autoComplete="off"
                                 disabled={!ready}
                             />
                             {errors.city && (
-                                <span className="pl-1 text-xs font-semibold" role="error">
+                                <span
+                                    className="pl-1 text-xs font-semibold text-red-500"
+                                    role="error"
+                                >
                                     {errors.city.message}
                                 </span>
                             )}
@@ -266,10 +294,15 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         <strong className="uppercase">Country code</strong>
                                     </label>
                                     <input
+                                        style={{
+                                            borderColor: errors.country
+                                                ? "rgb(220 38 38)"
+                                                : "rgb(107 114 128)",
+                                        }}
                                         {...register("country")}
                                         name="country"
                                         id="country"
-                                        className="h-10 w-full border bg-black  p-2 text-sm"
+                                        className="h-10 w-full rounded-md border border-gray-500 bg-black  p-2 text-sm"
                                         type="text"
                                         placeholder="Country"
                                         autoComplete="off"
@@ -282,10 +315,15 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         <strong className="uppercase">Zip</strong>
                                     </label>
                                     <input
+                                        style={{
+                                            borderColor: errors.zip
+                                                ? "rgb(220 38 38)"
+                                                : "rgb(107 114 128)",
+                                        }}
                                         {...register("zip")}
                                         name="zip"
                                         id="zip"
-                                        className="h-10 w-full border bg-black p-2 text-sm"
+                                        className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
                                         type="text"
                                         placeholder="Zip"
                                         autoComplete="off"
@@ -296,11 +334,11 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             <div className="flex items-center justify-between gap-2">
                                 {errors.country && (
                                     <div className="w-full">
-                                        <p className="pl-1 text-sm font-semibold">
+                                        <p className="pl-1 text-sm font-semibold text-red-500">
                                             {errors.country.message}
                                         </p>
                                         <Link
-                                            className="pl-1 text-sm uppercase underline"
+                                            className="pl-1 text-sm font-semibold uppercase text-white underline hover:animate-hop focus:animate-hop"
                                             href="/static/returns-faq"
                                         >
                                             Check available countries
@@ -308,7 +346,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     </div>
                                 )}
                                 {errors.zip && (
-                                    <span className="w-full self-start pl-1 text-xs font-semibold">
+                                    <span className="w-full self-start pl-1 text-xs font-semibold text-red-500">
                                         {errors.zip.message}
                                     </span>
                                 )}
@@ -321,13 +359,13 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                 <button
                     type="button"
                     onClick={() => setCheckoutStep((prev) => prev - 1)}
-                    className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
+                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
                 >
                     Back
                 </button>
                 <button
                     type="submit"
-                    className="w-28 rounded-lg border p-2 shadow-md hover:bg-slate-700 hover:text-white disabled:opacity-30"
+                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
                 >
                     Next
                 </button>

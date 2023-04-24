@@ -25,12 +25,3 @@ export const printfulApiInstance = axios.create({
     },
     signal: new AbortController().signal,
 });
-
-export const postgridApiKeyInstance = axios.create({
-    baseURL: "https://api.postgrid.com/v1",
-    headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.POSTGRID_API_KEY,
-    },
-    signal: new AbortController().signal,
-});

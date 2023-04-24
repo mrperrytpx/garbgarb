@@ -14,6 +14,7 @@ import { apiInstance } from "../utils/axiosClients";
 import { TCheckoutPayload } from "../lib/checkPayloadStock";
 import { TProductVariant } from "../pages/api/product";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 interface IOrderSummaryProps {
     suggestion: AutocompletePrediction | null;
@@ -74,21 +75,21 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.zip}-${formData.country}`;
 
     return (
-        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-black p-4 font-medium text-white">
-            <div className="flex flex-col items-start justify-center gap-4">
-                <h1 className="w-full border-b border-slate-300 text-xl font-bold">
+        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-black p-2 font-medium text-white">
+            <div className="flex flex-col items-start justify-center gap-3">
+                <h1 className="mb-2 w-full border-b border-slate-300 text-xl font-bold">
                     ORDER SUMMARY
                 </h1>
 
-                <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+                <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
                     <p className="text-sm uppercase">Address:</p>
                     {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
                 </div>
-                <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+                <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
                     <p className="text-sm uppercase">Email:</p>
                     <p className="text-sm">{formData.email}</p>
                 </div>
-                <div className="flex w-full flex-col items-start justify-between gap-0.5 sm:flex-row">
+                <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
                     <p className="text-sm uppercase">Items:</p>
                     <div className="flex flex-col gap-0.5 rounded-md">
                         {productsInCart.map((product) => (
@@ -99,7 +100,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                                         toast("Removed from cart.");
                                     }
                                 }}
-                                className={`text-xs sm:text-right ${
+                                className={`text-xs xs:text-right ${
                                     product.outOfStock ? "line-through" : ""
                                 } ${product.outOfStock ? "cursor-pointer" : "cursor-default"} ${
                                     product.outOfStock ? "shadow" : "shadow-none"
@@ -123,14 +124,16 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         )}
                     </p>
                 </div>
-                <div className="flex w-full items-center justify-between">
+                <div className="flex w-full flex-wrap items-center justify-between">
                     <p className="text-sm uppercase">Est. Shipping:</p>
                     {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
                         <LoadingSpinner size={12} />
                     ) : extraCosts.data ? (
                         <p className="text-sm font-bold">{currency(extraCosts.data?.shipping)}</p>
                     ) : (
-                        <p className="text-sm font-bold">{extraCosts.isError ? "💀" : "TBD"}</p>
+                        <p className="text-sm font-bold">
+                            {extraCosts.isError ? "Couldn't estimate the price 💀" : "TBD"}
+                        </p>
                     )}
                 </div>
                 <div className="flex w-full items-center justify-between">
@@ -144,11 +147,13 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                             )}
                         </p>
                     ) : (
-                        <p className="text-sm font-bold">{extraCosts.isError ? "💀" : "TBD"}</p>
+                        <p className="text-sm font-bold">
+                            {extraCosts.isError ? "Couldn't estimate tje price 💀" : "TBD"}
+                        </p>
                     )}
                 </div>
                 <div className="w-full border-t-2">
-                    <div className="flex w-full items-center justify-between">
+                    <div className="mt-4 flex w-full items-center justify-between">
                         <p className="text-lg uppercase">
                             <strong>Est. Total:</strong>
                         </p>
@@ -179,10 +184,14 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                             </p>
                         )}
                     </div>
-                    <div>
-                        <p className="text-xs underline">
-                            *Customers may be subject to additional customs fees
-                        </p>
+                    <div className="inline-block hover:animate-hop focus:animate-hop">
+                        *
+                        <Link
+                            href="/static/returns-faq#fees"
+                            className="text-xs underline hover:animate-hop focus:animate-hop"
+                        >
+                            Customers may be subject to additional customs fees
+                        </Link>
                     </div>
                 </div>
 
@@ -195,16 +204,16 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         !!productsInCart.filter((x) => x.outOfStock).length
                     }
                     onClick={() => checkStockMutation.mutate()}
-                    className="flex w-full items-center justify-center gap-2 self-center rounded-lg border border-slate-300 p-2 shadow-md disabled:opacity-50"
+                    className="hover mt-8 flex w-full items-center justify-center gap-2 self-center rounded-lg border border-gray-500 p-2 enabled:shadow-sm enabled:shadow-slate-100 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:animate-hop enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-50"
                     type="button"
                 >
-                    {completeOrderMutation.isLoading && <LoadingSpinner size={24} />}
-                    {checkStockMutation.isLoading && <LoadingSpinner size={24} />}
-                    <p>
-                        {!!productsInCart.filter((x) => x.outOfStock).length
-                            ? "Remove out of stock items"
-                            : "Go to Payment"}
-                    </p>
+                    {completeOrderMutation.isLoading && <LoadingSpinner size={30} />}
+                    {checkStockMutation.isLoading && <LoadingSpinner size={30} />}
+                    {!!productsInCart.filter((x) => x.outOfStock).length
+                        ? "Remove out of stock items"
+                        : completeOrderMutation.isError
+                        ? "Error"
+                        : "Go to Payment"}
                 </button>
             </div>
         </aside>
