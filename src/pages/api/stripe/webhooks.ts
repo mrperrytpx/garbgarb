@@ -42,8 +42,6 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 expand: ["line_items"],
             });
 
-            console.log(session);
-
             if (!session?.line_items) {
                 console.log("No line items");
                 return res.status(500).end("How did you place an order without items???");
