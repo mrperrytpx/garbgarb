@@ -13,7 +13,7 @@
 
 html,
 body {
-    @apply bg-zinc-950;
+    @apply bg-neutral-950;
 }
 
 .google {

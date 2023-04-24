@@ -24,7 +24,7 @@ const CartPage = () => {
                 ))}
             </div>
             {/*  */}
-            <div className="mt-auto flex flex-col justify-center gap-2 border-t-2 md:m-0 md:flex-1 md:justify-start md:rounded-md md:border md:border-slate-300 md:px-4 md:py-6 md:shadow-md">
+            <div className="mt-auto flex flex-col justify-center gap-2 border-t-2 bg-black md:m-0 md:flex-1 md:justify-start md:rounded-md md:border-t-0 md:px-4 md:py-6">
                 <div className="flex w-full flex-col items-center justify-center gap-0.5 py-3 md:rounded-md">
                     <div className="flex items-center justify-start gap-2">
                         <p>Subtotal:</p>
@@ -39,7 +39,10 @@ const CartPage = () => {
                     </div>
                     <p className="text-xs">Fees not applied</p>
                 </div>
-                <LinkButton href={productsInCart.some((x) => x.outOfStock) ? "/cart" : "/checkout"}>
+                <LinkButton
+                    className="shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                    href={productsInCart.some((x) => x.outOfStock) ? "/cart" : "/checkout"}
+                >
                     CHECKOUT
                 </LinkButton>
             </div>
