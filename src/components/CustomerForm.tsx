@@ -101,9 +101,9 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     return (
         <form
             onSubmit={onSubmit}
-            className="relative flex flex-col items-start justify-start gap-4  text-gray-200"
+            className="relative mb-4 flex flex-col items-start justify-start gap-4  text-gray-200"
         >
-            <fieldset className="flex w-full flex-col items-center rounded-lg bg-black p-2">
+            <fieldset className="flex w-full flex-col items-center rounded-lg">
                 <div className="flex w-full flex-col gap-2">
                     <div>
                         <label className="block p-1 text-xs" htmlFor="name">
@@ -152,8 +152,8 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-                        <div className="relative flex w-full flex-1 flex-col  gap-1 self-start sm:w-auto">
-                            <label className="block p-1 text-xs" htmlFor="streetName">
+                        <div className="relative flex w-full flex-1 flex-col gap-1 self-start sm:w-auto">
+                            <label className="block pl-1 text-xs" htmlFor="streetName">
                                 <strong className="uppercase">Street name</strong>
                             </label>
                             <input
@@ -205,7 +205,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                         </div>
                         <div className="flex w-full flex-1 gap-2">
                             <div className="flex w-full flex-col gap-1 self-start sm:w-auto">
-                                <label className="block p-1 text-xs" htmlFor="streetNumber">
+                                <label className="block pl-1 text-xs" htmlFor="streetNumber">
                                     <strong className="uppercase">St. Number</strong>
                                 </label>
                                 <input
@@ -230,7 +230,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 )}
                             </div>
                             <div className="flex w-full flex-col gap-1  self-start sm:w-auto">
-                                <label className="block p-1 text-xs" htmlFor="subpremise">
+                                <label className="block pl-1 text-xs" htmlFor="subpremise">
                                     <strong className="uppercase">Subpremise</strong>
                                 </label>
                                 <input
@@ -260,7 +260,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
 
                     <div className="flex flex-col gap-4">
                         <div className="flex w-full flex-col gap-1">
-                            <label className="block p-1 text-xs" htmlFor="city">
+                            <label className="block pl-1 text-xs" htmlFor="city">
                                 <strong className="uppercase">City</strong>
                             </label>
                             <input
@@ -287,7 +287,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 </span>
                             )}
                         </div>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                             <div className="flex gap-2">
                                 <div className="w-full">
                                     <label className="block p-1 text-xs" htmlFor="country">
@@ -334,11 +334,11 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             <div className="flex items-center justify-between gap-2">
                                 {errors.country && (
                                     <div className="w-full">
-                                        <p className="pl-1 text-sm font-semibold text-red-500">
+                                        <p className="pl-1 text-xs font-semibold text-red-500">
                                             {errors.country.message}
                                         </p>
                                         <Link
-                                            className="text-sm font-semibold text-gray-200 underline hover:animate-hop focus:animate-hop"
+                                            className="inline-block pl-1 text-xs font-semibold text-gray-200 underline hover:animate-hop focus:animate-hop"
                                             href="/static/returns-faq#countries"
                                         >
                                             Check available countries
@@ -355,7 +355,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                     </div>
                 </div>
             </fieldset>
-            <div className="mb-2 mt-auto flex w-full items-center justify-between px-2">
+            <div className="mb-2 mt-auto flex w-full items-center justify-between">
                 <button
                     type="button"
                     onClick={() => setCheckoutStep((prev) => prev - 1)}

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { Logo } from "../components/Logos";
-import DefaultPic from "../public/static/default.png";
+import DefaultPic from "../../public/static/default.png";
 import NextNProgress from "nextjs-progressbar";
 
 interface ILayoutProps {

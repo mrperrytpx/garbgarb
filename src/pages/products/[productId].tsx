@@ -29,6 +29,7 @@ import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import { PageError } from "../../components/PageError";
+import Head from "next/head";
 
 const CheckedIcon = () => {
     return (
@@ -117,228 +118,257 @@ const ArticlePage = ({
 
     if (productQuery.isLoading || availabilityQuery.isLoading)
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
-                <p className="text-sm font-semibold">Loading product...</p>
-                <LoadingSpinner size={50} />
-            </div>
+            <>
+                <Head>
+                    <title>GarbGarb - {myShirtName}</title>
+                </Head>
+                <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
+                    <p className="text-sm font-semibold">Loading product...</p>
+                    <LoadingSpinner size={50} />
+                </div>
+            </>
         );
 
     if (productQuery.isError || availabilityQuery.isError)
-        return <PageError error={productQuery.error || availabilityQuery.error} />;
+        return (
+            <>
+                <Head>
+                    <title>GarbGarb - {myShirtName}</title>
+                </Head>
+                <PageError error={productQuery.error || availabilityQuery.error} />;
+            </>
+        );
 
     if (!productQuery.data || !availabilityQuery.data)
-        return <PageError error={productQuery.error || availabilityQuery.error} />;
+        return (
+            <>
+                <Head>
+                    <title>GarbGarb - {myShirtName}</title>
+                </Head>
+                <PageError error={productQuery.error || availabilityQuery.error} />;
+            </>
+        );
 
     return (
-        <div className="mx-auto mb-8 max-w-screen-lg">
-            <div className="p-4">
-                <Breadcrumbs />
-            </div>
-            <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
-                <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
-                    <Image
-                        priority={true}
-                        placeholder="blur"
-                        blurDataURL="https://placehold.co/500x500/png"
-                        width={500}
-                        height={500}
-                        alt="Piece of clothing with some words written on it"
-                        src={productQuery.data.sync_variants[option.index].files[1].preview_url}
-                        className="rounded-lg"
-                    />
+        <>
+            <Head>
+                <title>GarbGarb - {myShirtName}</title>
+            </Head>
+            <div className="mx-auto mb-8 max-w-screen-lg">
+                <div className="p-4">
+                    <Breadcrumbs />
                 </div>
-                {/*  */}
-                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-gray-200 md:flex-1 lg:max-w-[450px]">
-                    <div className="flex w-full flex-col items-start justify-center gap-4">
-                        <div className="flex w-full flex-col gap-0.5">
-                            <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
-                            <p className="text-left">{baseShirtName}</p>
-                            <p
-                                style={{ backgroundColor: option.color_code }}
-                                className="block w-full rounded-lg border border-slate-500  pl-2"
-                            >
-                                <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
-                                    {option.color_name}
-                                </span>
-                            </p>
-                        </div>
-                        <div className="flex w-full items-center justify-between gap-2">
-                            <p className="text-xl">
-                                {currency(
-                                    +productQuery.data?.sync_variants[option?.index].retail_price
-                                )}
-                            </p>
-                            <p className="text-xs">Tax / VAT not included</p>
-                        </div>
-                    </div>
-                    {/*  */}
-                    <div className="flex w-full flex-wrap gap-2">
-                        {productColors.map((prodColor) => (
-                            <div
-                                style={{
-                                    backgroundColor: prodColor,
-                                }}
-                                className="group relative flex items-center justify-center gap-2 rounded-lg hover:animate-hop"
-                                key={prodColor}
-                            >
-                                <button
-                                    onClick={() => handleColorChange(prodColor)}
-                                    style={{
-                                        backgroundColor: prodColor,
-                                    }}
-                                    className="h-10 w-10 rounded-lg border-2 border-slate-500 hover:border-white"
-                                />
-                                {prodColor === color && (
-                                    <div className="absolute">
-                                        <CheckedIcon />
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    {/*  */}
-                    <div className="flex w-full flex-col items-start justify-center">
-                        <p>Select Size:</p>
-                        <SizeDropdown
-                            getValue={(option) => option.id}
-                            getLabel={(option) => option.size}
-                            state={option}
-                            setState={setOption}
-                            options={product[color]}
+                <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
+                    <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
+                        <Image
+                            priority={true}
+                            placeholder="blur"
+                            blurDataURL="https://placehold.co/500x500/png"
+                            width={500}
+                            height={500}
+                            alt="Piece of clothing with some words written on it"
+                            src={productQuery.data.sync_variants[option.index].files[1].preview_url}
+                            className="rounded-lg"
                         />
                     </div>
                     {/*  */}
-                    <div className="flex w-full flex-col gap-0.5">
-                        <p className="px-1 text-sm font-semibold">Qty:</p>
-                        <div className="flex gap-2">
-                            <input
-                                value={quantity}
-                                onChange={(e) => setQuantity(+e.target.value)}
-                                className="w-[100px] rounded-lg border border-slate-500 bg-black p-3 shadow-sm shadow-slate-500 hover:border-white"
-                                onBlur={handleQuantity}
-                                min="1"
-                                max="999"
-                                type="number"
-                            />
-                            <button
-                                onClick={handleAddToCart}
-                                className="w-full self-end rounded-lg border border-slate-500 p-3 shadow-sm shadow-slate-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
-                            >
-                                Add to cart!
-                            </button>
-                        </div>
-                    </div>
-                    {/*  */}
-                    <div className="flex flex-col">
-                        <Accordion title="More Details">
-                            <div className="flex w-full flex-col gap-2 px-2">
-                                {parse(productDescription)}
-                            </div>
-                        </Accordion>
-                        <Accordion title="Size Guide">
-                            <div className="mb-4 mt-2 flex flex-col gap-2 px-2">
-                                <div
-                                    onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className="w-max cursor-pointer self-center border border-slate-400 p-2 hover:border-white hover:bg-slate-200 hover:text-black  focus:bg-slate-200 focus:text-black"
+                    <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-gray-200 md:flex-1 lg:max-w-[450px]">
+                        <div className="flex w-full flex-col items-start justify-center gap-4">
+                            <div className="flex w-full flex-col gap-0.5">
+                                <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
+                                <p className="text-left">{baseShirtName}</p>
+                                <p
+                                    style={{ backgroundColor: option.color_code }}
+                                    className="block w-full rounded-lg border border-slate-500  pl-2"
                                 >
-                                    <span
-                                        className="h-full cursor-pointer text-sm font-bold"
-                                        {...spanProp}
-                                    >
-                                        Click to {isModalOpen ? "close" : "open"} the sizes guide
+                                    <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
+                                        {option.color_name}
                                     </span>
-                                </div>
-                            </div>
-                        </Accordion>
-                        <Accordion title="Quality Guarantee & Returns">
-                            <div className="flex flex-col gap-2 px-2">
-                                <p className="list-item text-sm font-normal">
-                                    Quality is guaranteed. If there is a print error or visible
-                                    quality issue, we'll replace or refund it.
-                                </p>
-                                <p className="list-item text-sm font-normal last-of-type:mb-4">
-                                    Because the products are made to order, we do not accept general
-                                    returns or sizing-related returns.
                                 </p>
                             </div>
-                        </Accordion>
-                    </div>
-                </article>
-            </div>
-            {/*  */}
-            {isModalOpen && (
-                <Portal>
-                    <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-200 bg-black p-4 text-slate-100">
-                        {!sizesQuery.data ? (
-                            <LoadingSpinner size={50} />
-                        ) : (
-                            <>
-                                <button
-                                    onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow-sm shadow-slate-500 hover:bg-red-400"
-                                >
-                                    <RxCross1 size="20" />
-                                </button>
+                            <div className="flex w-full items-center justify-between gap-2">
+                                <p className="text-xl">
+                                    {currency(
+                                        +productQuery.data?.sync_variants[option?.index]
+                                            .retail_price
+                                    )}
+                                </p>
+                                <p className="text-xs">Tax / VAT not included</p>
+                            </div>
+                        </div>
+                        {/*  */}
+                        <div className="flex w-full flex-wrap gap-2">
+                            {productColors.map((prodColor) => (
                                 <div
-                                    role="heading"
-                                    aria-level={1}
-                                    className="w-full border-b-2 font-bold"
+                                    style={{
+                                        backgroundColor: prodColor,
+                                    }}
+                                    className="group relative flex items-center justify-center gap-2 rounded-lg hover:animate-hop"
+                                    key={prodColor}
                                 >
-                                    Measure yourself
-                                </div>
-                                <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
-                                    {parse(
-                                        sizesQuery.data.size_tables[0].description.replace(
-                                            /(\r\n|\n|\r)/gm,
-                                            ""
-                                        )
+                                    <button
+                                        onClick={() => handleColorChange(prodColor)}
+                                        style={{
+                                            backgroundColor: prodColor,
+                                        }}
+                                        className="h-10 w-10 rounded-lg border-2 border-slate-500 hover:border-white"
+                                    />
+                                    {prodColor === color && (
+                                        <div className="absolute">
+                                            <CheckedIcon />
+                                        </div>
                                     )}
                                 </div>
-                                <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
-                                    <div className="w-[150px] self-center sm:self-start">
-                                        <Image
-                                            width={150}
-                                            height={150}
-                                            alt="Visual guide for measuring yourself"
-                                            src={sizesQuery.data?.size_tables[0].image_url}
-                                        />
+                            ))}
+                        </div>
+                        {/*  */}
+                        <div className="flex w-full flex-col items-start justify-center">
+                            <p>Select Size:</p>
+                            <SizeDropdown
+                                getValue={(option) => option.id}
+                                getLabel={(option) => option.size}
+                                state={option}
+                                setState={setOption}
+                                options={product[color]}
+                            />
+                        </div>
+                        {/*  */}
+                        <div className="flex w-full flex-col gap-0.5">
+                            <p className="px-1 text-sm font-semibold">Qty:</p>
+                            <div className="flex gap-2">
+                                <input
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(+e.target.value)}
+                                    className="w-[100px] rounded-lg border border-slate-500 bg-black p-3 shadow-sm shadow-slate-500 hover:border-white"
+                                    onBlur={handleQuantity}
+                                    min="1"
+                                    max="999"
+                                    type="number"
+                                />
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="w-full self-end rounded-lg border border-slate-500 p-3 shadow-sm shadow-slate-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                                >
+                                    Add to cart!
+                                </button>
+                            </div>
+                        </div>
+                        {/*  */}
+                        <div className="flex flex-col">
+                            <Accordion title="More Details">
+                                <div className="flex w-full flex-col gap-2 px-2">
+                                    {parse(productDescription)}
+                                </div>
+                            </Accordion>
+                            <Accordion title="Size Guide">
+                                <div className="mb-4 mt-2 flex flex-col gap-2 px-2">
+                                    <div
+                                        onClick={() => setIsModalOpen(!isModalOpen)}
+                                        className="w-max cursor-pointer self-center border border-slate-400 p-2 hover:border-white hover:bg-slate-200 hover:text-black  focus:bg-slate-200 focus:text-black"
+                                    >
+                                        <span
+                                            className="h-full cursor-pointer text-sm font-bold"
+                                            {...spanProp}
+                                        >
+                                            Click to {isModalOpen ? "close" : "open"} the sizes
+                                            guide
+                                        </span>
                                     </div>
-                                    <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
+                                </div>
+                            </Accordion>
+                            <Accordion title="Quality Guarantee & Returns">
+                                <div className="flex flex-col gap-2 px-2">
+                                    <p className="list-item text-sm font-normal">
+                                        Quality is guaranteed. If there is a print error or visible
+                                        quality issue, we'll replace or refund it.
+                                    </p>
+                                    <p className="list-item text-sm font-normal last-of-type:mb-4">
+                                        Because the products are made to order, we do not accept
+                                        general returns or sizing-related returns.
+                                    </p>
+                                </div>
+                            </Accordion>
+                        </div>
+                    </article>
+                </div>
+                {/*  */}
+                {isModalOpen && (
+                    <Portal>
+                        <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-200 bg-black p-4 text-slate-100">
+                            {!sizesQuery.data ? (
+                                <LoadingSpinner size={50} />
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={() => setIsModalOpen(!isModalOpen)}
+                                        className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow-sm shadow-slate-500 hover:bg-red-400"
+                                    >
+                                        <RxCross1 size="20" />
+                                    </button>
+                                    <div
+                                        role="heading"
+                                        aria-level={1}
+                                        className="w-full border-b-2 font-bold"
+                                    >
+                                        Measure yourself
+                                    </div>
+                                    <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
                                         {parse(
-                                            sizesQuery.data.size_tables[0].image_description.replace(
+                                            sizesQuery.data.size_tables[0].description.replace(
                                                 /(\r\n|\n|\r)/gm,
                                                 ""
                                             )
                                         )}
                                     </div>
-                                </div>
-                                <div className="flex gap-4 self-start">
-                                    <span
-                                        tabIndex={1}
-                                        onClick={() => setIsCentimeters(true)}
-                                        className={`cursor-pointer p-2 ${
-                                            isCentimeters && "border-b-4 border-slate-500"
-                                        }`}
-                                    >
-                                        Centimeters
-                                    </span>
-                                    <span
-                                        tabIndex={1}
-                                        onClick={() => setIsCentimeters(false)}
-                                        className={`cursor-pointer p-2 ${
-                                            !isCentimeters && "border-b-4 border-slate-500"
-                                        }`}
-                                    >
-                                        Inches
-                                    </span>
-                                </div>
-                                <SizesTable isCentimeters={isCentimeters} sizes={sizesQuery.data} />
-                            </>
-                        )}
-                    </div>
-                </Portal>
-            )}
-        </div>
+                                    <div className="flex flex-col items-start justify-center gap-2 sm:flex-row">
+                                        <div className="w-[150px] self-center sm:self-start">
+                                            <Image
+                                                width={150}
+                                                height={150}
+                                                alt="Visual guide for measuring yourself"
+                                                src={sizesQuery.data?.size_tables[0].image_url}
+                                            />
+                                        </div>
+                                        <div className="flex flex-1 flex-col items-start justify-center gap-2 text-sm">
+                                            {parse(
+                                                sizesQuery.data.size_tables[0].image_description.replace(
+                                                    /(\r\n|\n|\r)/gm,
+                                                    ""
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4 self-start">
+                                        <span
+                                            tabIndex={1}
+                                            onClick={() => setIsCentimeters(true)}
+                                            className={`cursor-pointer p-2 ${
+                                                isCentimeters && "border-b-4 border-slate-500"
+                                            }`}
+                                        >
+                                            Centimeters
+                                        </span>
+                                        <span
+                                            tabIndex={1}
+                                            onClick={() => setIsCentimeters(false)}
+                                            className={`cursor-pointer p-2 ${
+                                                !isCentimeters && "border-b-4 border-slate-500"
+                                            }`}
+                                        >
+                                            Inches
+                                        </span>
+                                    </div>
+                                    <SizesTable
+                                        isCentimeters={isCentimeters}
+                                        sizes={sizesQuery.data}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    </Portal>
+                )}
+            </div>
+        </>
     );
 };
 

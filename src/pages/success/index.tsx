@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { emptyCart } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";
 import { AiOutlineCheck } from "react-icons/ai";
+import Head from "next/head";
 
 const SuccessPage = () => {
     const dispatch = useDispatch();
@@ -16,15 +17,20 @@ const SuccessPage = () => {
     }, [session_id, dispatch]);
 
     return (
-        <div className="m-auto flex-1 text-gray-200">
-            <div className="mb-16 flex flex-col items-center justify-center gap-4 p-2">
-                <AnimatedCheckmark />
-                <div className="text-center">
-                    <h1 className="text-xl font-bold">Thank you for Your purchase!</h1>
-                    <p className="mt-1 text-lg">We'll email you the receipt shortly!</p>
+        <>
+            <Head>
+                <title>Thank You!</title>
+            </Head>
+            <div className="m-auto flex-1 text-gray-200">
+                <div className="mb-16 flex flex-col items-center justify-center gap-4 p-2">
+                    <AnimatedCheckmark />
+                    <div className="text-center">
+                        <h1 className="text-xl font-bold">Thank you for Your purchase!</h1>
+                        <p className="mt-1 text-lg">We'll email you the receipt shortly!</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

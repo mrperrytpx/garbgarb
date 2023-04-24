@@ -15,6 +15,7 @@ import { useSession, signIn } from "next-auth/react";
 import { AddressForm } from "../../components/CustomerForm";
 import { OrderSummary } from "../../components/OrderSummary";
 import { allowedCountries } from "../../utils/allowedCountries";
+import Head from "next/head";
 
 const libraries: Libraries = ["places"];
 
@@ -86,76 +87,92 @@ const CheckoutPage = () => {
     if (loadError) return <PageError error={loadError} />;
 
     return (
-        <FormProvider {...methods}>
-            <div className="mx-auto mb-2 mt-4 flex w-full max-w-screen-md flex-col items-start gap-2 px-2 lg:gap-6">
-                <div className="flex w-full flex-col gap-4">
-                    <div className="flex">
-                        <SectionSeparator checkoutStep={checkoutStep} name="Login" number={1} />
-                        <SectionSeparator checkoutStep={checkoutStep} name="Cart" number={2} />
-                        <SectionSeparator checkoutStep={checkoutStep} name="Address" number={3} />
-                        <SectionSeparator checkoutStep={checkoutStep} name="Review" number={4} />
-                    </div>
-                    {checkoutStep === 1 && (
-                        <>
-                            <div className="mt-8 flex flex-col items-center justify-between gap-6 p-2 text-gray-200">
-                                <button
-                                    onClick={() => signIn()}
-                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black
-                   p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
-                                >
-                                    Use an existing account
-                                </button>
-                                <p>Or</p>
-                                <button
-                                    onClick={nextStep}
-                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
-                                >
-                                    Proceed as guest
-                                </button>
-                            </div>
-                        </>
-                    )}
-                    {checkoutStep === 2 && (
-                        <div className="flex flex-col gap-4 p-2">
-                            <div className="flex w-full flex-col items-center gap-2">
-                                {productsInCart.map((item) => (
-                                    <MinimalCartProduct key={item.sku} item={item} />
-                                ))}
-                            </div>
-                            <StepButtons
+        <>
+            <Head>
+                {checkoutStep === 1 && <title>Checkout - Login</title>}
+                {checkoutStep === 2 && <title>Checkout - Cart</title>}
+                {checkoutStep === 3 && <title>Checkout - Shipping</title>}
+                {checkoutStep === 4 && <title>Checkout - Review</title>}
+            </Head>
+            <FormProvider {...methods}>
+                <div className="mx-auto mb-2 mt-4 flex w-full max-w-screen-md flex-col items-start gap-2 px-2 lg:gap-6">
+                    <div className="flex w-full flex-col gap-4">
+                        <div className="flex">
+                            <SectionSeparator checkoutStep={checkoutStep} name="Login" number={1} />
+                            <SectionSeparator checkoutStep={checkoutStep} name="Cart" number={2} />
+                            <SectionSeparator
                                 checkoutStep={checkoutStep}
-                                prevStep={prevStep}
-                                nextStep={nextStep}
+                                name="Shipping"
+                                number={3}
+                            />
+                            <SectionSeparator
+                                checkoutStep={checkoutStep}
+                                name="Review"
+                                number={4}
                             />
                         </div>
-                    )}
-                    {checkoutStep === 3 && (
-                        <div className="flex flex-col gap-2">
-                            <AddressForm
-                                setCheckoutStep={setCheckoutStep}
-                                suggestion={suggestion}
-                                setSuggestion={setSuggestion}
-                            />
-                        </div>
-                    )}
-                    {checkoutStep === 4 && (
-                        <div className="flex flex-col gap-2">
-                            <OrderSummary
-                                setCheckoutStep={setCheckoutStep}
-                                suggestion={suggestion}
-                            />
-                            <div className="w-full p-2">
+                        {checkoutStep === 1 && (
+                            <>
+                                <div className="mt-8 flex flex-col items-center justify-between gap-6 p-2 text-gray-200">
+                                    <button
+                                        onClick={() => signIn()}
+                                        className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black
+                   p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
+                                    >
+                                        Use an existing account
+                                    </button>
+                                    <p>Or</p>
+                                    <button
+                                        onClick={nextStep}
+                                        className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
+                                    >
+                                        Proceed as guest
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                        {checkoutStep === 2 && (
+                            <div className="flex flex-col gap-4 p-2">
+                                <div className="flex w-full flex-col items-center gap-2">
+                                    {productsInCart.map((item) => (
+                                        <MinimalCartProduct key={item.sku} item={item} />
+                                    ))}
+                                </div>
                                 <StepButtons
                                     checkoutStep={checkoutStep}
                                     prevStep={prevStep}
                                     nextStep={nextStep}
                                 />
                             </div>
-                        </div>
-                    )}
+                        )}
+                        {checkoutStep === 3 && (
+                            <div className="flex flex-col gap-2">
+                                <AddressForm
+                                    setCheckoutStep={setCheckoutStep}
+                                    suggestion={suggestion}
+                                    setSuggestion={setSuggestion}
+                                />
+                            </div>
+                        )}
+                        {checkoutStep === 4 && (
+                            <div className="flex flex-col gap-2">
+                                <OrderSummary
+                                    setCheckoutStep={setCheckoutStep}
+                                    suggestion={suggestion}
+                                />
+                                <div className="w-full p-2">
+                                    <StepButtons
+                                        checkoutStep={checkoutStep}
+                                        prevStep={prevStep}
+                                        nextStep={nextStep}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </FormProvider>
+            </FormProvider>
+        </>
     );
 };
 
