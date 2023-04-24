@@ -45,7 +45,7 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
     }, []);
 
     return (
-        <div className="flex w-full select-none flex-col items-center justify-start">
+        <div className="flex w-full flex-col items-center justify-start">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
                 tabIndex={0}
@@ -57,7 +57,7 @@ export const Accordion = ({ children, title }: IAccordionProps) => {
                 }}
                 className="group flex w-full cursor-pointer items-center justify-between gap-2 p-2 shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black"
             >
-                <p className="text-sm font-bold uppercase">{title}</p>
+                <p className="select-none text-sm font-bold uppercase">{title}</p>
                 <TriangleIcon isExpanded={isExpanded} />
             </div>
             <div

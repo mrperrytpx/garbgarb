@@ -16,7 +16,7 @@ const CartPage = () => {
                 </Head>
                 <div className="m-auto flex flex-col items-center justify-center gap-8 text-gray-200 md:m-auto">
                     <p className="self-center">Your cart is empty!</p>
-                    <p className="self-center text-4xl">(⌣̩̩́_⌣̩̩̀)</p>
+                    <p className="self-center text-4xl">😥😅😫😭😨😱</p>
                     <LinkButton
                         className="border-slate-500 bg-black shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                         href="/products"
