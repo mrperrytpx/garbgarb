@@ -18,7 +18,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
             style={{
                 borderTop: product.outOfStock ? "2px solid red" : "",
             }}
-            className="relative flex w-full flex-row items-center justify-center gap-4 rounded-lg bg-black p-2 text-sm md:text-base"
+            className="relative flex w-full flex-row items-center justify-center gap-4 rounded-lg border-b-2 border-gray-400 bg-black p-2 text-sm md:text-base "
         >
             <Link
                 className="min-w-[75px] max-w-[75px] select-none rounded-lg bg-slate-200 hover:scale-105"
