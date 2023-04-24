@@ -97,11 +97,11 @@ const ProductsPage = () => {
             </Head>
             <div className="mb-8 flex w-full flex-1 flex-col items-center justify-start gap-6 p-4 md:gap-8">
                 <Breadcrumbs />
-                <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 px-1 md:flex-row lg:justify-start ">
+                <div className="flex w-full max-w-screen-sm flex-col items-center justify-between gap-2 px-1 md:flex-row lg:justify-start">
                     <input
                         type="text"
                         placeholder="Filter by name or color..."
-                        className="max-w-xs rounded-md border-2 p-2"
+                        className="w-64 rounded-md border-2 p-2"
                         value={productFilter}
                         onChange={handleChange}
                     />

@@ -47,6 +47,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 return res.status(500).end("How did you place an order without items???");
             }
 
+            if (!session) res.status(500).end();
+
             const orderedItems = (
                 await Promise.allSettled(
                     session?.line_items?.data.map(async (item) => {
