@@ -26,12 +26,12 @@ export const CartIconWithNumber = () => {
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="group relative rounded-lg p-2 text-gray-300 hover:animate-hop hover:bg-slate-200">
+        <div className="group relative rounded-lg p-2 text-gray-200 hover:animate-hop hover:bg-slate-200">
             <div className="">
                 <CartIcon />
             </div>
             {productsInCart.length > 0 && (
-                <p className="absolute right-1 top-0.5 text-xs font-bold text-white group-hover:text-black">
+                <p className="absolute right-1 top-0.5 text-xs font-bold text-gray-200 group-hover:text-black">
                     {productsInCart.length}
                 </p>
             )}

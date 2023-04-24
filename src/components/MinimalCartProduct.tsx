@@ -21,8 +21,8 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
         return (
             <article
                 key={item.store_product_variant_id}
-                className={`flex w-full items-center gap-2 rounded-md border-b-2 border-gray-600 bg-black px-2 py-2 text-sm text-white shadow sm:flex-row ${
-                    item.outOfStock && "shadow shadow-red-400"
+                className={`flex w-full items-center gap-2 rounded-md border-b-2 border-gray-600 bg-black px-2 py-2 text-sm text-gray-200 shadow-sm sm:flex-row ${
+                    item.outOfStock && "shadow-sm shadow-red-400"
                 }`}
             >
                 <div className="max-w-[50px] rounded-lg bg-slate-200 sm:block">
@@ -69,7 +69,7 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
     return (
         <div
             key={item.id}
-            className="flex items-center gap-2 border-b-2 px-2 text-sm text-white last-of-type:border-b-0 sm:flex-row"
+            className="flex items-center gap-2 rounded-lg bg-black px-2 py-2 text-sm text-gray-200 sm:flex-row"
         >
             <div className="w-[50px] max-w-[50px] sm:block">
                 <Image

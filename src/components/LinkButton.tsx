@@ -12,7 +12,7 @@ export const LinkButton = ({ children, href, className, minWidth, ...rest }: ILi
     return (
         <Link
             className={
-                "rounded-lg border py-2 px-4 text-center font-medium uppercase text-white shadow-lg transition-all " +
+                "rounded-lg border px-4 py-2 text-center font-medium uppercase text-gray-200 shadow-lg transition-all " +
                 className
             }
             href={href}

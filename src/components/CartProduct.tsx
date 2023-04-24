@@ -37,7 +37,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                     </Link>
                     <div
                         tabIndex={0}
-                        className="group absolute right-1 top-1 cursor-pointer select-none rounded-full outline outline-2 outline-gray-600 hover:animate-hop hover:bg-white focus:animate-hop focus:bg-white"
+                        className="group absolute right-1 top-1 cursor-pointer select-none rounded-full bg-zinc-950 outline outline-2 outline-gray-600 hover:animate-hop hover:bg-white focus:animate-hop focus:bg-white"
                     >
                         <FiX
                             onClick={() => {

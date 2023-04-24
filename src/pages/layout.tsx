@@ -26,7 +26,7 @@ const Layout = ({ children }: ILayoutProps) => {
     return (
         <div className="flex min-h-screen flex-col">
             {/* Header */}
-            <header className="sticky top-0 z-30 grid h-16 items-center border-b border-gray-700 bg-black px-4 text-gray-300">
+            <header className="sticky top-0 z-30 grid h-16 items-center border-b border-gray-700 bg-black px-4 text-gray-200">
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
                     <div className="flex items-center justify-center gap-4">
                         <Link
@@ -113,7 +113,7 @@ const Layout = ({ children }: ILayoutProps) => {
             />
             {/* Mobile Menu */}
             {isExpanded ? (
-                <div className="flex h-[calc(max(600px,100svh)-64px)] flex-col items-center justify-center bg-black text-gray-300">
+                <div className="flex h-[calc(max(600px,100svh)-64px)] flex-col items-center justify-center bg-black text-gray-200">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
                             className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
@@ -183,7 +183,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         </main>
                     </ErrorBoundary>
                     {/* Footer */}
-                    <footer className="border-t border-gray-700 bg-black px-2 text-gray-300 ">
+                    <footer className="border-t border-gray-700 bg-black px-2 text-gray-200 ">
                         <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4 py-8">
                             <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
                                 <div className="flex flex-col items-center justify-center gap-4 p-2 md:flex-row md:gap-6">

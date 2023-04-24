@@ -53,7 +53,7 @@ const OrderPage = () => {
 
     if (orderData.isLoading)
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-white">
+            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
                 <p className="text-sm font-semibold">Loading order {orderId}...</p>
                 <LoadingSpinner size={50} />
             </div>
@@ -61,12 +61,12 @@ const OrderPage = () => {
 
     if (orderData.isError)
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-white">
+            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
                 <p className="text-sm font-semibold">Couldn't find order #{orderId}</p>
                 <p className="text-lg font-semibold">😥</p>
                 <Link
                     href="/my_orders"
-                    className="rounded-lg border p-2 font-semibold text-white hover:bg-slate-200 hover:text-black"
+                    className="rounded-lg border p-2 font-semibold text-gray-200 hover:bg-slate-200 hover:text-black"
                 >
                     Back to profile
                 </Link>
@@ -74,10 +74,10 @@ const OrderPage = () => {
         );
 
     return (
-        <div className="mx-auto my-4 mb-10 flex w-full max-w-screen-sm flex-1 flex-col gap-2 text-white">
+        <div className="mx-auto my-4 mb-10 flex w-full max-w-screen-sm flex-1 flex-col gap-2 text-gray-200">
             <div className="flex items-center justify-between px-2 ">
                 <Link
-                    className="group rounded-lg p-2 shadow shadow-slate-100 hover:bg-slate-200"
+                    className="group rounded-lg bg-black p-2 shadow-sm shadow-slate-500 hover:bg-slate-200"
                     href="/my_orders"
                 >
                     <IoArrowBackSharp className="group-hover:stroke-black" size="28" />
@@ -209,13 +209,13 @@ const OrderPage = () => {
                             orderData.data?.status !== "pending"
                         }
                         onClick={() => cancelOrderMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                        className="mt-auto w-full rounded-lg border border-slate-500 bg-black p-2 text-center font-bold uppercase shadow-sm shadow-slate-500 hover:border-slate-200 hover:bg-red-600 hover:text-gray-200 focus:border-slate-200 focus:bg-red-600 focus:text-gray-200 disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
                     >
                         {cancelOrderMutation.isLoading ? <LoadingSpinner size={24} /> : "CANCEL"}
                     </button>
                     <button
                         onClick={() => invoiceMutation.mutate({ orderId })}
-                        className="mt-auto w-full rounded-lg border border-slate-200 p-2 text-center font-bold uppercase shadow hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
+                        className="mt-auto w-full rounded-lg border border-slate-500 bg-black p-2 text-center font-bold uppercase shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
                     >
                         {invoiceMutation.isLoading ? (
                             <LoadingSpinner size={24} />

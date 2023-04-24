@@ -75,9 +75,9 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.zip}-${formData.country}`;
 
     return (
-        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-black p-2 font-medium text-white">
+        <aside className=" mx-auto flex w-full max-w-screen-md flex-col rounded-lg bg-black p-2 font-medium text-gray-200">
             <div className="flex flex-col items-start justify-center gap-3">
-                <h1 className="mb-2 w-full border-b border-slate-300 text-xl font-bold">
+                <h1 className="mb-2 w-full border-b border-slate-200 text-xl font-bold">
                     ORDER SUMMARY
                 </h1>
 
@@ -184,15 +184,12 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                             </p>
                         )}
                     </div>
-                    <div className="inline-block hover:animate-hop focus:animate-hop">
-                        *
-                        <Link
-                            href="/static/returns-faq#fees"
-                            className="text-xs underline hover:animate-hop focus:animate-hop"
-                        >
-                            Customers may be subject to additional customs fees
-                        </Link>
-                    </div>
+                    <Link
+                        href="/static/returns-faq#fees"
+                        className="inline-block text-xs underline hover:animate-hop focus:animate-hop"
+                    >
+                        *Customers may be subject to additional customs fees
+                    </Link>
                 </div>
 
                 <button
@@ -204,11 +201,11 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         !!productsInCart.filter((x) => x.outOfStock).length
                     }
                     onClick={() => checkStockMutation.mutate()}
-                    className="hover mt-8 flex w-full items-center justify-center gap-2 self-center rounded-lg border border-gray-500 p-2 enabled:shadow-sm enabled:shadow-slate-100 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:animate-hop enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-50"
+                    className="hover mt-8 flex w-full items-center justify-center gap-2 self-center rounded-lg border border-slate-500 p-2 enabled:shadow-sm enabled:shadow-slate-500 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:animate-hop enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-50"
                     type="button"
                 >
-                    {completeOrderMutation.isLoading && <LoadingSpinner size={30} />}
-                    {checkStockMutation.isLoading && <LoadingSpinner size={30} />}
+                    {completeOrderMutation.isLoading && <LoadingSpinner size={28} />}
+                    {checkStockMutation.isLoading && <LoadingSpinner size={28} />}
                     {!!productsInCart.filter((x) => x.outOfStock).length
                         ? "Remove out of stock items"
                         : completeOrderMutation.isError

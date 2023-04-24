@@ -17,7 +17,7 @@ export default function SignIn({
     const emailProvider = Object.values(providers)[0];
 
     return (
-        <div className="mx-auto mt-4 flex w-full max-w-screen-xs flex-1 items-start justify-start text-white">
+        <div className="mx-auto mt-4 flex w-full max-w-screen-xs flex-1 items-start justify-start text-gray-200">
             <div className="flex w-full flex-col items-center justify-start gap-8 rounded-lg bg-gray-900 p-2 py-16">
                 <div className="flex flex-col items-center gap-2">
                     <div className="min-w-[min(95%,500px)]">
@@ -54,7 +54,7 @@ export default function SignIn({
                     </div>
                     <button
                         type="submit"
-                        className="animate-hop rounded-lg bg-gray-600 p-2 font-medium text-gray-300"
+                        className="animate-hop rounded-lg bg-gray-600 p-2 font-medium text-gray-200"
                     >
                         Sign in
                     </button>

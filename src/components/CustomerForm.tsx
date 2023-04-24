@@ -101,9 +101,9 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
     return (
         <form
             onSubmit={onSubmit}
-            className="relative flex flex-col items-start justify-start gap-4 rounded-lg bg-black p-2 text-white"
+            className="relative flex flex-col items-start justify-start gap-4  text-gray-200"
         >
-            <fieldset className="flex w-full flex-col items-center">
+            <fieldset className="flex w-full flex-col items-center rounded-lg bg-black p-2">
                 <div className="flex w-full flex-col gap-2">
                     <div>
                         <label className="block p-1 text-xs" htmlFor="name">
@@ -117,7 +117,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             name="name"
                             id="name"
                             type="text"
-                            className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                            className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                             placeholder="Full Name"
                             autoComplete="off"
                             disabled={!ready}
@@ -140,7 +140,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             name="email"
                             id="email"
                             type="email"
-                            className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                            className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                             placeholder="Email address"
                             autoComplete="off"
                             disabled={!ready}
@@ -166,7 +166,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 name="streetName"
                                 id="streetName"
                                 onChange={handleInput}
-                                className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                                className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                                 type="text"
                                 placeholder="Street Name"
                                 autoComplete="off"
@@ -217,7 +217,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     {...register("streetNumber")}
                                     name="streetNumber"
                                     id="streetNumber"
-                                    className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                                    className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Street Number"
                                     autoComplete="off"
@@ -242,7 +242,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     {...register("subpremise")}
                                     name="subpremise"
                                     id="subpremise"
-                                    className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                                    className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                                     type="text"
                                     placeholder="Apartment, Suite, etc."
                                     autoComplete="off"
@@ -272,7 +272,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 {...register("city")}
                                 name="city"
                                 id="city"
-                                className="h-10 w-full rounded-md border border-gray-500 bg-black  p-2 text-sm"
+                                className="h-10 w-full rounded-md border border-slate-500 bg-black  p-2 text-sm"
                                 type="text"
                                 placeholder="City"
                                 autoComplete="off"
@@ -302,7 +302,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         {...register("country")}
                                         name="country"
                                         id="country"
-                                        className="h-10 w-full rounded-md border border-gray-500 bg-black  p-2 text-sm"
+                                        className="h-10 w-full rounded-md border border-slate-500 bg-black  p-2 text-sm"
                                         type="text"
                                         placeholder="Country"
                                         autoComplete="off"
@@ -323,7 +323,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         {...register("zip")}
                                         name="zip"
                                         id="zip"
-                                        className="h-10 w-full rounded-md border border-gray-500 bg-black p-2 text-sm"
+                                        className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm"
                                         type="text"
                                         placeholder="Zip"
                                         autoComplete="off"
@@ -338,8 +338,8 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                             {errors.country.message}
                                         </p>
                                         <Link
-                                            className="pl-1 text-sm font-semibold uppercase text-white underline hover:animate-hop focus:animate-hop"
-                                            href="/static/returns-faq"
+                                            className="text-sm font-semibold text-gray-200 underline hover:animate-hop focus:animate-hop"
+                                            href="/static/returns-faq#countries"
                                         >
                                             Check available countries
                                         </Link>
@@ -355,17 +355,17 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                     </div>
                 </div>
             </fieldset>
-            <div className="mb-2 mt-auto flex w-full items-center justify-between">
+            <div className="mb-2 mt-auto flex w-full items-center justify-between px-2">
                 <button
                     type="button"
                     onClick={() => setCheckoutStep((prev) => prev - 1)}
-                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
+                    className="w-28 rounded-lg border border-slate-500 bg-black p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
                 >
                     Back
                 </button>
                 <button
                     type="submit"
-                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
+                    className="w-28 rounded-lg border border-slate-500 bg-black p-2 shadow-sm shadow-gray-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30"
                 >
                     Next
                 </button>

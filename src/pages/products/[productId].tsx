@@ -117,7 +117,7 @@ const ArticlePage = ({
 
     if (productQuery.isLoading || availabilityQuery.isLoading)
         return (
-            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-white">
+            <div className="mx-auto flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-200">
                 <p className="text-sm font-semibold">Loading product...</p>
                 <LoadingSpinner size={50} />
             </div>
@@ -148,14 +148,14 @@ const ArticlePage = ({
                     />
                 </div>
                 {/*  */}
-                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-white md:flex-1 lg:max-w-[450px]">
+                <article className="mb-10 flex w-full flex-col items-center justify-center gap-6 rounded-md bg-black p-4 text-gray-200 md:flex-1 lg:max-w-[450px]">
                     <div className="flex w-full flex-col items-start justify-center gap-4">
                         <div className="flex w-full flex-col gap-0.5">
                             <h1 className="text-left text-xl font-bold">{myShirtName}</h1>
                             <p className="text-left">{baseShirtName}</p>
                             <p
                                 style={{ backgroundColor: option.color_code }}
-                                className="block w-full rounded-lg border border-gray-500  pl-2"
+                                className="block w-full rounded-lg border border-slate-500  pl-2"
                             >
                                 <span className="font-bold drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                     {option.color_name}
@@ -186,7 +186,7 @@ const ArticlePage = ({
                                     style={{
                                         backgroundColor: prodColor,
                                     }}
-                                    className="h-10 w-10 rounded-lg border-2 border-gray-500 hover:border-white"
+                                    className="h-10 w-10 rounded-lg border-2 border-slate-500 hover:border-white"
                                 />
                                 {prodColor === color && (
                                     <div className="absolute">
@@ -214,7 +214,7 @@ const ArticlePage = ({
                             <input
                                 value={quantity}
                                 onChange={(e) => setQuantity(+e.target.value)}
-                                className="w-[100px] rounded-lg border border-gray-500 bg-black p-3 hover:border-white"
+                                className="w-[100px] rounded-lg border border-slate-500 bg-black p-3 shadow-sm shadow-slate-500 hover:border-white"
                                 onBlur={handleQuantity}
                                 min="1"
                                 max="999"
@@ -222,7 +222,7 @@ const ArticlePage = ({
                             />
                             <button
                                 onClick={handleAddToCart}
-                                className="w-full self-end rounded-lg border border-gray-500 p-3 shadow-sm shadow-slate-100 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                                className="w-full self-end rounded-lg border border-slate-500 p-3 shadow-sm shadow-slate-500 hover:animate-hop hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                             >
                                 Add to cart!
                             </button>
@@ -268,14 +268,14 @@ const ArticlePage = ({
             {/*  */}
             {isModalOpen && (
                 <Portal>
-                    <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-300 bg-black p-4 text-slate-100">
+                    <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-200 bg-black p-4 text-slate-100">
                         {!sizesQuery.data ? (
                             <LoadingSpinner size={50} />
                         ) : (
                             <>
                                 <button
                                     onClick={() => setIsModalOpen(!isModalOpen)}
-                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow shadow-slate-100 hover:bg-red-400"
+                                    className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow-sm shadow-slate-500 hover:bg-red-400"
                                 >
                                     <RxCross1 size="20" />
                                 </button>
@@ -317,7 +317,7 @@ const ArticlePage = ({
                                         tabIndex={1}
                                         onClick={() => setIsCentimeters(true)}
                                         className={`cursor-pointer p-2 ${
-                                            isCentimeters && "border-b-4 border-gray-500"
+                                            isCentimeters && "border-b-4 border-slate-500"
                                         }`}
                                     >
                                         Centimeters
@@ -326,7 +326,7 @@ const ArticlePage = ({
                                         tabIndex={1}
                                         onClick={() => setIsCentimeters(false)}
                                         className={`cursor-pointer p-2 ${
-                                            !isCentimeters && "border-b-4 border-gray-500"
+                                            !isCentimeters && "border-b-4 border-slate-500"
                                         }`}
                                     >
                                         Inches

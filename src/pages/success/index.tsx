@@ -16,7 +16,7 @@ const SuccessPage = () => {
     }, [session_id, dispatch]);
 
     return (
-        <div className="m-auto flex-1 text-white">
+        <div className="m-auto flex-1 text-gray-200">
             <div className="mb-16 flex flex-col items-center justify-center gap-4 p-2">
                 <AnimatedCheckmark />
                 <div className="text-center">
@@ -36,7 +36,7 @@ const AnimatedCheckmark = () => {
     useEffect(() => setMounted(true), []);
 
     return (
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-slate-100 p-4">
+        <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-slate-200 p-4">
             <AiOutlineCheck size="52" fill="white" />
             <div className="absolute left-0 top-0 h-1/2 w-1/2 translate-x-1/2 translate-y-1/2 rotate-180">
                 <div

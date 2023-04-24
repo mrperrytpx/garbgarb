@@ -66,12 +66,12 @@ const ProfilePage = () => {
     );
 
     return (
-        <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 text-white">
+        <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 text-gray-200">
             <div className="w-full">
                 <h1 className="font-semibold uppercase">Orders:</h1>
                 <div className="mt-2 flex">
                     {allOrders.isLoading ? (
-                        <div className="flex h-40 w-full flex-col items-center justify-center gap-2 p-2 text-white">
+                        <div className="flex h-40 w-full flex-col items-center justify-center gap-2 p-2 text-gray-200">
                             <p className="text-sm font-semibold">Loading orders...</p>
                             <LoadingSpinner size={50} />
                         </div>
@@ -82,12 +82,12 @@ const ProfilePage = () => {
                                     <Link
                                         href={`/my_orders/${order.id}`}
                                         key={i}
-                                        className="w-full rounded-md border border-gray-500 p-2"
+                                        className="w-full rounded-md border border-slate-500 bg-black p-2 font-semibold transition-all duration-75 hover:border-slate-200 hover:bg-slate-200 hover:text-black"
                                     >
                                         <div className="flex flex-col justify-between gap-2">
                                             <div className="flex items-center justify-between gap-4">
                                                 <span className="underline">#{order.id}</span>
-                                                <strong
+                                                <span
                                                     style={{
                                                         textDecoration: order.canceled
                                                             ? "line-through"
@@ -96,7 +96,7 @@ const ProfilePage = () => {
                                                     className="min-w-[70px] text-right"
                                                 >
                                                     {currency(order.totalAmount / 100)}
-                                                </strong>
+                                                </span>
                                             </div>
                                             <div className="flex flex-wrap items-center justify-between gap-2">
                                                 <span className="text-sm">
@@ -123,10 +123,10 @@ const ProfilePage = () => {
                                             onClick={() =>
                                                 deleteCanceledOrder.mutate({ orderId: order.id })
                                             }
-                                            className="group relative z-10 w-24 rounded-md border border-gray-500 p-2 shadow-sm shadow-gray-500 hover:border-slate-200 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                            className="group relative z-10 w-24 rounded-md border border-slate-500 p-2 shadow-sm shadow-gray-500 hover:border-slate-200 hover:bg-red-600 hover:text-gray-200 focus:bg-red-600 focus:text-gray-200"
                                         >
                                             DELETE
-                                            <div className="pointer-events-none absolute left-full top-[6px] z-0 h-8 w-8 -translate-y-1/2 rounded-br-lg border-b-2 border-r-2 border-gray-500  group-hover:border-red-500"></div>
+                                            <div className="pointer-events-none absolute left-full top-[6px] z-0 h-8 w-8 -translate-y-1/2 rounded-br-lg border-b-2 border-r-2 border-slate-500  group-hover:border-red-500"></div>
                                         </button>
                                     )}
                                 </div>
@@ -144,7 +144,7 @@ const ProfilePage = () => {
                 <h1 className="font-semibold uppercase">Account:</h1>
 
                 <button
-                    className="rounded-lg border p-2 shadow-sm shadow-slate-200 transition-colors hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                    className="rounded-lg border border-slate-500 bg-black p-2 shadow-sm shadow-slate-500 transition-colors duration-75 hover:border-slate-200 hover:bg-red-600 hover:text-gray-200 focus:bg-red-600 focus:text-gray-200"
                     onClick={() => setIsModalOpen(!isModalOpen)}
                 >
                     {deleteUserMutation.isLoading ? <LoadingSpinner size={20} /> : "Delete Account"}
@@ -152,7 +152,7 @@ const ProfilePage = () => {
             </div>
             {isModalOpen && (
                 <Portal>
-                    <div className="relative flex max-h-full w-full max-w-[min(95%,450px)] flex-col items-center gap-8 overflow-y-auto rounded-md border-2 bg-black p-4 text-center text-sm text-white">
+                    <div className="relative flex max-h-full w-full max-w-[min(95%,450px)] flex-col items-center gap-8 overflow-y-auto rounded-md border-2 border-slate-500 bg-black p-4 text-center text-sm text-gray-200 hover:border-slate-200">
                         <div>
                             <h1 className="mb-2 text-xl font-bold uppercase">Are you sure?</h1>
                             <p className="mb-2 text-sm">All of your data will be deleted.</p>
@@ -167,13 +167,13 @@ const ProfilePage = () => {
                                     deleteUserMutation.mutate();
                                     setIsModalOpen(false);
                                 }}
-                                className="min-w-[100px] rounded-lg border p-2 font-semibold shadow-md hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                                className="min-w-[100px] rounded-lg border border-slate-500 p-2 font-semibold shadow-sm shadow-slate-500 hover:border-slate-200 hover:bg-red-600 focus:border-slate-200 focus:bg-red-600"
                             >
                                 I'M SURE
                             </button>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="min-w-[100px] rounded-lg border p-2 font-semibold shadow-sm shadow-slate-100 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                                className="min-w-[100px] rounded-lg border border-slate-500 p-2 font-semibold shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                             >
                                 NO
                             </button>

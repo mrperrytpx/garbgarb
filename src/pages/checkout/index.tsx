@@ -97,10 +97,10 @@ const CheckoutPage = () => {
                     </div>
                     {checkoutStep === 1 && (
                         <>
-                            <div className="mt-8 flex flex-col items-center justify-between gap-6 p-2 text-white">
+                            <div className="mt-8 flex flex-col items-center justify-between gap-6 p-2 text-gray-200">
                                 <button
                                     onClick={() => signIn()}
-                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-gray-500 bg-black
+                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black
                    p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
                                 >
                                     Use an existing account
@@ -108,7 +108,7 @@ const CheckoutPage = () => {
                                 <p>Or</p>
                                 <button
                                     onClick={nextStep}
-                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-gray-500 bg-black p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
+                                    className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
                                 >
                                     Proceed as guest
                                 </button>
@@ -172,11 +172,11 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
     const productsInCart = useSelector(cartSelector);
 
     return (
-        <div className="mb-2 mt-auto flex w-full items-center justify-between text-white">
+        <div className="mb-2 mt-auto flex w-full items-center justify-between text-gray-200">
             {checkoutStep > 1 && (
                 <button
                     disabled={checkoutStep === 2 && !!session.data?.user}
-                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-slate-100 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-30"
+                    className="w-28 rounded-lg border border-slate-500 bg-black p-2 shadow-sm shadow-slate-500 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-30"
                     onClick={prevStep}
                 >
                     Back
@@ -184,7 +184,7 @@ const StepButtons = ({ checkoutStep, prevStep, nextStep }: IStepButtonsProps) =>
             )}
             {checkoutStep < 4 && (
                 <button
-                    className="w-28 rounded-lg border border-gray-500 p-2 shadow-sm shadow-slate-100 hover:bg-slate-200 enabled:hover:animate-hop enabled:hover:text-black enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-30"
+                    className="w-28 rounded-lg border border-slate-500 bg-black p-2 shadow-sm shadow-slate-500 hover:bg-slate-200 enabled:hover:animate-hop enabled:hover:text-black enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-30"
                     onClick={nextStep}
                     disabled={checkoutStep === 4 || !!productsInCart.some((x) => x.outOfStock)}
                 >

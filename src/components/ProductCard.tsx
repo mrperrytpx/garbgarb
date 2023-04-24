@@ -18,7 +18,7 @@ export const ProductCard = ({ product }: IProductCard) => {
     const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
 
     return (
-        <div className="max-w-[300px] rounded-md bg-slate-100 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
+        <div className="max-w-[300px] rounded-md bg-slate-200 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
             <div>
                 <Link href={`/products/${product.metadata.id}`}>
                     <Image
@@ -29,7 +29,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                         height={400}
                     />
                 </Link>
-                <div className="flex flex-col items-start justify-center gap-2 rounded-md bg-white py-2 px-4">
+                <div className="flex flex-col items-start justify-center gap-2 rounded-md bg-white px-4 py-2">
                     <div>
                         <p className="text-lg font-bold md:text-xl">{shirtName}</p>
                         <p className="text-sm">{defualtShirtName}</p>
@@ -53,7 +53,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                                     style={{
                                         backgroundColor: hex,
                                     }}
-                                    className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] rounded-md border border-black px-2 py-1 font-bold text-white group-hover:block "
+                                    className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] rounded-md border border-black px-2 py-1 font-bold text-gray-200 group-hover:block "
                                 >
                                     <span className="drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
                                         {GetColorName(hex)}

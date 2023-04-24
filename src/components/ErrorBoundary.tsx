@@ -32,7 +32,10 @@ export class ErrorBoundary extends Component<Props, State> {
                         <h1>Well, well, well, if it isn't the consequences of my own actions</h1>
                         <h2>Let me know what happened 😒</h2>
                     </div>
-                    <button className="rounded-md border border-slate-200 px-4 py-2" type="button">
+                    <button
+                        className="rounded-md border border-slate-500 px-4 py-2 font-semibold shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                        type="button"
+                    >
                         Report
                     </button>
                 </div>
