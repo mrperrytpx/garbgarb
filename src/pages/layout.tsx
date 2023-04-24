@@ -113,7 +113,7 @@ const Layout = ({ children }: ILayoutProps) => {
             />
             {/* Mobile Menu */}
             {isExpanded ? (
-                <div className="flex h-[calc(max(600px,100vh)-64px)] flex-col items-center justify-center bg-black text-gray-300">
+                <div className="flex h-[calc(max(600px,100svh)-64px)] flex-col items-center justify-center bg-black text-gray-300">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
                             className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
@@ -178,7 +178,7 @@ const Layout = ({ children }: ILayoutProps) => {
             ) : (
                 <>
                     <ErrorBoundary>
-                        <main className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-screen-2xl flex-1">
+                        <main className="mx-auto flex min-h-[calc(100svh-64px)] w-full max-w-screen-2xl">
                             {children}
                         </main>
                     </ErrorBoundary>

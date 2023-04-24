@@ -41,6 +41,9 @@ module.exports = {
             animation: {
                 hop: "hop 0.1s linear",
             },
+            height: {
+                screen: ["100vh /* fallback for Opera, IE and etc. */", "100dvh"],
+            },
         },
     },
     plugins: [],

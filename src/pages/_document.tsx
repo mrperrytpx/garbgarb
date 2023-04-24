@@ -11,7 +11,8 @@ export default function Document() {
                 <link
                     href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap"
                     rel="stylesheet"
-                ></link>
+                />
+                <script src="https://unpkg.com/large-small-dynamic-viewport-units-polyfill@0.1.1/dist/large-small-dynamic-viewport-units-polyfill.min.js" />
             </Head>
             <body>
                 <Main />
