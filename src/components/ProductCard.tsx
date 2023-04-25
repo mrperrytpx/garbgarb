@@ -16,6 +16,7 @@ export const ProductCard = ({ product }: IProductCard) => {
     const defualtShirtName = splitName.slice(whichIndex).join(" ");
 
     const parsedColorHexs: string[] = JSON.parse(product.metadata.color_keys);
+    const parsedColorNames: string[] = JSON.parse(product.metadata.color_names);
 
     return (
         <div className="max-w-[300px] rounded-md bg-slate-200 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
@@ -24,7 +25,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                     <Image
                         className="rounded-md border border-b-2"
                         src={product.metadata.thumbnail_url}
-                        alt=""
+                        alt="Product"
                         width={400}
                         height={400}
                     />
@@ -35,7 +36,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                         <p className="text-sm">{defualtShirtName}</p>
                     </div>
                     <div className="flex flex-wrap items-center justify-start gap-2 ">
-                        {parsedColorHexs.map((hex) => (
+                        {parsedColorHexs.map((hex, i) => (
                             <Link
                                 href={`/products/${product.metadata.id}?color=${
                                     "%23" + hex.split("").splice(1).join("")
@@ -56,7 +57,7 @@ export const ProductCard = ({ product }: IProductCard) => {
                                     className="rouned-md absolute -top-10 right-0 z-10 hidden w-max translate-x-[40%] rounded-md border border-black px-2 py-1 font-bold text-gray-200 group-hover:block "
                                 >
                                     <span className="drop-shadow-[1px_1px_1.5px_rgb(0,0,0)]">
-                                        {GetColorName(hex)}
+                                        {parsedColorNames[i]}
                                     </span>
                                 </div>
                             </Link>

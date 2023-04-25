@@ -162,8 +162,6 @@ const ArticlePage = ({
                     <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
                         <Image
                             priority={true}
-                            placeholder="blur"
-                            blurDataURL="https://placehold.co/500x500/png"
                             width={500}
                             height={500}
                             alt="Piece of clothing with some words written on it"
@@ -294,21 +292,21 @@ const ArticlePage = ({
                 {/*  */}
                 {isModalOpen && (
                     <Portal>
-                        <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-200 bg-black p-4 text-slate-100">
+                        <div className="relative flex max-h-full max-w-screen-md flex-col items-center gap-4 overflow-y-auto rounded-md border-2 border-slate-500 bg-black p-4 text-slate-100 hover:border-slate-200">
                             {!sizesQuery.data ? (
                                 <LoadingSpinner size={50} />
                             ) : (
                                 <>
                                     <button
                                         onClick={() => setIsModalOpen(!isModalOpen)}
-                                        className=" absolute right-0 top-0 mr-4 mt-2 rounded-lg p-1 shadow-sm shadow-slate-500 hover:bg-red-400"
+                                        className="absolute right-0 top-0 mr-4 mt-2 rounded-lg bg-black p-1 shadow-sm shadow-slate-500 hover:bg-red-600"
                                     >
                                         <RxCross1 size="20" />
                                     </button>
                                     <div
                                         role="heading"
                                         aria-level={1}
-                                        className="w-full border-b-2 font-bold"
+                                        className="w-full border-b-2 border-slate-500 font-bold"
                                     >
                                         Measure yourself
                                     </div>
@@ -342,7 +340,7 @@ const ArticlePage = ({
                                         <span
                                             tabIndex={1}
                                             onClick={() => setIsCentimeters(true)}
-                                            className={`cursor-pointer p-2 ${
+                                            className={`font-semibol cursor-pointer p-2 hover:border-b-4 hover:border-slate-500 hover:bg-slate-200 hover:text-black ${
                                                 isCentimeters && "border-b-4 border-slate-500"
                                             }`}
                                         >
@@ -351,7 +349,7 @@ const ArticlePage = ({
                                         <span
                                             tabIndex={1}
                                             onClick={() => setIsCentimeters(false)}
-                                            className={`cursor-pointer p-2 ${
+                                            className={`cursor-pointer p-2 font-semibold hover:border-b-4  hover:border-slate-500 hover:bg-slate-200 hover:text-black ${
                                                 !isCentimeters && "border-b-4 border-slate-500"
                                             }`}
                                         >

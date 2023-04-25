@@ -34,7 +34,7 @@ const ProductsPage = () => {
             const filteredByName = data.filter(
                 (product) =>
                     product.name.toLowerCase().includes(productFilter.toLowerCase()) ||
-                    product.metadata.color_names.includes(productFilter.toLowerCase())
+                    product.metadata.basic_color_names.includes(productFilter.toLowerCase())
             );
 
             if (selectedSizes.length === 0) return filteredByName;

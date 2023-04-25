@@ -81,8 +81,8 @@ export const SizesTable = ({ sizes, isCentimeters }: ISizesTable) => {
     });
 
     return (
-        <div className="self-start">
-            <table>
+        <div className="self-start bg-black text-gray-200">
+            <table className="">
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <tr className="border" key={headerGroup.id}>

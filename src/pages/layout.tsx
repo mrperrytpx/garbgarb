@@ -110,6 +110,7 @@ const Layout = ({ children }: ILayoutProps) => {
                     trickle: true,
                 }}
                 color="rgb(209 213 219)"
+                showOnShallow={false}
             />
             {/* Mobile Menu */}
             {isExpanded ? (
