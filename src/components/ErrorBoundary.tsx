@@ -30,14 +30,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 <div className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-screen-2xl flex-1 flex-col items-center justify-center gap-4 p-4 text-center text-gray-200">
                     <div className="flex flex-col items-center justify-center text-center">
                         <h1>Well, well, well, if it isn't the consequences of my own actions</h1>
-                        <h2>Let me know what happened 😒</h2>
+                        <h2>Reload the page 😒</h2>
                     </div>
-                    <button
+                    {/* <button
                         className="rounded-md border border-slate-500 px-4 py-2 font-semibold shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                         type="button"
                     >
                         Report
-                    </button>
+                    </button> */}
                 </div>
             );
         }

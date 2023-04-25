@@ -1,10 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiInstance } from "../../../utils/axiosClients";
 import { tryCatchAsync } from "../../../utils/tryCatchWrappers";
 import { ApiError } from "next/dist/server/api-utils";
-
-// ______________________________________________________________________________________
 
 export type TSizes = {
     code: number;
@@ -55,8 +52,6 @@ async function getProductSizes(id: string | string[] | undefined): Promise<TProd
     return data;
 }
 
-// products https://api.printful.com/store/products
-// single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         const { id } = req.query;

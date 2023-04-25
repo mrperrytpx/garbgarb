@@ -84,12 +84,12 @@ const CheckoutPage = () => {
         router.push("/products");
     }
 
-    if (loadError) return <PageError error={loadError} />;
+    if (loadError) return <PageError />;
 
     return (
         <>
             <Head>
-                {checkoutStep === 1 && <title>Checkout - Login</title>}
+                {checkoutStep === 1 && <title>Checkout - Account</title>}
                 {checkoutStep === 2 && <title>Checkout - Cart</title>}
                 {checkoutStep === 3 && <title>Checkout - Shipping</title>}
                 {checkoutStep === 4 && <title>Checkout - Review</title>}
@@ -98,7 +98,11 @@ const CheckoutPage = () => {
                 <div className="mx-auto mb-2 mt-4 flex w-full max-w-screen-md flex-col items-start gap-2 px-2 lg:gap-6">
                     <div className="flex w-full flex-col gap-4">
                         <div className="flex">
-                            <SectionSeparator checkoutStep={checkoutStep} name="Login" number={1} />
+                            <SectionSeparator
+                                checkoutStep={checkoutStep}
+                                name="Account"
+                                number={1}
+                            />
                             <SectionSeparator checkoutStep={checkoutStep} name="Cart" number={2} />
                             <SectionSeparator
                                 checkoutStep={checkoutStep}
@@ -119,7 +123,7 @@ const CheckoutPage = () => {
                                         className="w-full flex-1 cursor-pointer rounded-lg border-2 border-slate-500 bg-black
                    p-4 text-center font-semibold hover:animate-hop hover:bg-slate-200 hover:text-black focus:border-white"
                                     >
-                                        Use an existing account
+                                        Sign in
                                     </button>
                                     <p>Or</p>
                                     <button

@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { TProduct } from "../store";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
@@ -87,8 +86,6 @@ async function getStoreProductVariants(
     return data;
 }
 
-// products https://api.printful.com/store/products
-// single product https://api.printful.com/store/products/<id>
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         const { id } = req.query;

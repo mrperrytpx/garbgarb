@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { emptyCart } from "../../redux/slices/cartSlice";
 import { useRouter } from "next/router";

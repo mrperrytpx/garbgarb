@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import Stripe from "stripe";
 import { currency } from "../utils/currency";
-import { GetColorName } from "hex-color-to-color-name";
 
 interface IProductCard {
     product: Stripe.Product;

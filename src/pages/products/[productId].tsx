@@ -135,7 +135,7 @@ const ArticlePage = ({
                 <Head>
                     <title>GarbGarb - {myShirtName}</title>
                 </Head>
-                <PageError error={productQuery.error || availabilityQuery.error} />;
+                <PageError />;
             </>
         );
 
@@ -145,7 +145,7 @@ const ArticlePage = ({
                 <Head>
                     <title>GarbGarb - {myShirtName}</title>
                 </Head>
-                <PageError error={productQuery.error || availabilityQuery.error} />;
+                <PageError />;
             </>
         );
 

@@ -67,7 +67,7 @@ const ProductsPage = () => {
                 <Head>
                     <title>GarbGarb - Products</title>
                 </Head>
-                <PageError error={error} />
+                <PageError />
             </>
         );
 

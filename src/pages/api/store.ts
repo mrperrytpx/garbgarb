@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { printfulApiKeyInstance } from "../../utils/axiosClients";
 import { tryCatchAsync } from "../../utils/tryCatchWrappers";
@@ -27,9 +26,6 @@ export type TPrintfulStore = {
 };
 
 // ______________________________________________________________________________________
-
-// products https://api.printful.com/store/products
-// single product https://api.printful.com/store/products/<id>
 
 async function getStoreProducts(): Promise<TProduct[]> {
     const storeResponse = await printfulApiKeyInstance.get<TPrintfulStore>("/store/products");

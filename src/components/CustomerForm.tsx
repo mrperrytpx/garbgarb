@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { KeyboardEvent, MouseEvent, useEffect, useRef } from "react";
+import { KeyboardEvent, useEffect } from "react";
 import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
