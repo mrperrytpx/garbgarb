@@ -18,7 +18,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
             style={{
                 borderTop: product.outOfStock ? "2px solid red" : "",
             }}
-            className="relative flex w-full flex-row items-center justify-center gap-4 rounded-lg border-b-2 border-gray-600 bg-black p-2 text-sm md:text-base "
+            className="relative flex w-full flex-row items-center justify-center gap-4 rounded-lg border-b-2 border-gray-600 bg-black p-2 text-sm"
         >
             <Link
                 className="min-w-[75px] max-w-[75px] select-none rounded-lg bg-slate-200 hover:scale-105"
@@ -31,7 +31,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                 <div className="flex flex-1 flex-col items-start justify-center gap-1 ">
                     <Link
                         href={`/products/${product.store_product_id}`}
-                        className="mr-8  font-semibold hover:animate-hop hover:underline focus:animate-hop focus:underline"
+                        className="mr-8 text-base font-semibold hover:animate-hop hover:underline focus:animate-hop focus:underline"
                     >
                         {product.name}
                     </Link>
@@ -61,7 +61,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                         >
                             -
                         </button>
-                        <p>{product.quantity}</p>
+                        <p className="w-4 text-center">{product.quantity}</p>
                         <button
                             onClick={() => dispatch(increaseQuantity({ sku: product.sku }))}
                             className="select-none rounded-md px-2 text-sm outline outline-2 outline-gray-600 hover:bg-slate-200 hover:text-black focus:outline-white"

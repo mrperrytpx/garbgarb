@@ -4,6 +4,7 @@ import { CartProduct } from "../../components/CartProduct";
 import { currency } from "../../utils/currency";
 import { LinkButton } from "../../components/LinkButton";
 import Head from "next/head";
+import Link from "next/link";
 
 const CartPage = () => {
     const productsInCart = useSelector(cartSelector);
@@ -52,7 +53,12 @@ const CartPage = () => {
                                 )}
                             </p>
                         </div>
-                        <p className="text-xs">Fees not applied</p>
+                        <Link
+                            href="/static/returns-faq#fees"
+                            className="text-xs hover:animate-hop hover:underline focus:animate-hop focus:underline"
+                        >
+                            Fees not applied
+                        </Link>
                     </div>
                     <LinkButton
                         className="border border-slate-500 shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
