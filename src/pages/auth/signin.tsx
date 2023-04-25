@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 type ValidatedLoginForm = z.infer<typeof loginValidationSchema>;
 
@@ -23,11 +24,12 @@ export default function SignIn({
     const router = useRouter();
     const { error } = router.query;
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const {
         register,
         formState: { errors },
         handleSubmit,
-        clearErrors,
     } = useForm<ValidatedLoginForm>({
         resolver: zodResolver(loginValidationSchema),
     });
@@ -35,14 +37,13 @@ export default function SignIn({
     // config provider order matters
     const allProviders = Object.values(providers).slice(1);
 
-    const [email, setEmail] = useState("");
-
-    const onSubmit = () => {
+    const onSubmit = handleSubmit((data) => {
+        setIsLoading(true);
         signIn("email", {
-            email,
-            callbackUrl: "/auth/verify-request",
+            email: data.email,
+            callbackUrl: "/",
         });
-    };
+    });
 
     return (
         <>
@@ -57,22 +58,24 @@ export default function SignIn({
                         </div>
                         {error === "SessionRequired" && (
                             <p className="text-sm">
-                                Please <strong>Sign In</strong> to access this page.
+                                <u>
+                                    Please <strong>Sign In</strong> to access this page.
+                                </u>
                             </p>
                         )}
                         {error === "OAuthAccountNotLinked" && (
                             <p className="text-sm">
-                                This email is already linked to another account.
+                                <u> This email is already linked to another account.</u>
                             </p>
                         )}
                         {error === "Default" && (
-                            <p className="text-sm">Something is wrong... Try reloading the page.</p>
+                            <p className="text-sm text-red-600">Something is wrong... Try again.</p>
                         )}
                     </div>
                     <form
                         method="post"
                         action="/api/auth/signin/email"
-                        onSubmit={handleSubmit(onSubmit)}
+                        onSubmit={onSubmit}
                         className="flex w-full flex-col gap-2"
                     >
                         <div className="flex w-full flex-col gap-1">
@@ -92,11 +95,6 @@ export default function SignIn({
                                 name="email"
                                 required
                                 placeholder="john.doe@foo.com"
-                                value={email}
-                                onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    clearErrors();
-                                }}
                             />
                             {errors.email && (
                                 <span className="pl-1 text-xs font-semibold text-red-500">
@@ -105,10 +103,11 @@ export default function SignIn({
                             )}
                         </div>
                         <button
+                            disabled={isLoading}
                             type="submit"
-                            className="h-10 animate-hop rounded-lg border border-slate-500 bg-black p-2 text-sm font-medium text-gray-200 shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
+                            className="h-10 animate-hop rounded-lg border border-slate-500 bg-black p-2 text-sm font-medium text-gray-200 shadow-sm shadow-slate-500 enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-50"
                         >
-                            Sign in
+                            {isLoading ? <LoadingSpinner size={20} /> : "Sign in"}
                         </button>
                     </form>
                     <div className="relative flex w-full items-center justify-center text-xs">
