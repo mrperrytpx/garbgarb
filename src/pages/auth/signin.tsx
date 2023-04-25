@@ -5,6 +5,16 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TextLogoNoClothing } from "../../components/Logos";
+import { FormEvent, useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type ValidatedLoginForm = z.infer<typeof loginValidationSchema>;
+
+const loginValidationSchema = z.object({
+    email: z.string().email().min(1, "Required"),
+});
 
 export default function SignIn({
     providers,
@@ -12,15 +22,32 @@ export default function SignIn({
     const router = useRouter();
     const { error } = router.query;
 
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        clearErrors,
+    } = useForm<ValidatedLoginForm>({
+        resolver: zodResolver(loginValidationSchema),
+    });
+
     // config provider order matters
     const allProviders = Object.values(providers).slice(1);
-    const emailProvider = Object.values(providers)[0];
+
+    const [email, setEmail] = useState("");
+
+    const onSubmit = () => {
+        signIn("email", {
+            email,
+            callbackUrl: "/auth/verify-request",
+        });
+    };
 
     return (
-        <div className="mx-auto mt-4 flex w-full max-w-screen-xs flex-1 items-start justify-start text-gray-200">
-            <div className="flex w-full flex-col items-center justify-start gap-8 rounded-lg bg-gray-900 p-2 py-16">
-                <div className="flex flex-col items-center gap-2">
-                    <div className="min-w-[min(95%,500px)]">
+        <div className="mx-auto mt-4 w-full max-w-screen-xs flex-1  text-gray-200 lg:mt-20">
+            <div className="mb-10 flex w-full flex-col items-center justify-start gap-8 rounded-lg p-4">
+                <div className="flex w-full flex-col items-center gap-2">
+                    <div className="w-full min-w-[min(95%,500px)]">
                         <TextLogoNoClothing />
                     </div>
                     {error === "SessionRequired" && (
@@ -36,36 +63,54 @@ export default function SignIn({
                     )}
                 </div>
                 <form
-                    onSubmit={() => signIn(emailProvider.id)}
-                    className="flex w-full flex-col gap-4"
+                    method="post"
+                    action="/api/auth/signin/email"
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex w-full flex-col gap-2"
                 >
                     <div className="flex w-full flex-col gap-1">
-                        <label className="px-2" htmlFor="email">
-                            <strong>Email</strong>
+                        <label className="pl-1 text-sm font-semibold" htmlFor="email">
+                            Email
                         </label>
                         <input
-                            required
-                            className="h-[40px] rounded-lg px-2 text-sm font-medium text-black"
+                            style={{
+                                borderColor: errors.email ? "rgb(220 38 38)" : "rgb(107 114 128)",
+                            }}
+                            {...register("email")}
+                            className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm font-medium focus:bg-slate-200 focus:text-black"
                             type="email"
                             id="email"
                             name="email"
+                            required
                             placeholder="john.doe@foo.com"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                clearErrors();
+                            }}
                         />
+                        {errors.email && (
+                            <span className="pl-1 text-xs font-semibold text-red-500">
+                                {errors.email.message}
+                            </span>
+                        )}
                     </div>
                     <button
                         type="submit"
-                        className="animate-hop rounded-lg bg-gray-600 p-2 font-medium text-gray-200"
+                        className="h-10 animate-hop rounded-lg border border-slate-500 bg-black p-2 text-sm font-medium text-gray-200 shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                     >
                         Sign in
                     </button>
                 </form>
-                <p className="text-sm">
-                    <strong>OR</strong>
-                </p>
+                <div className="relative flex w-full items-center justify-center text-xs">
+                    <span className="absolute left-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2 transform bg-slate-500" />
+                    <span className="z-10 bg-zinc-950 p-2">OR</span>
+                    <span className="absolute right-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2 transform bg-slate-500" />
+                </div>
                 {allProviders.map((provider) => (
                     <button
                         key={provider.id}
-                        className="flex h-[40px] w-full items-center justify-center gap-2 rounded-lg border-2 border-[#4285F4] bg-[#4285F4] text-sm"
+                        className="mb-2 flex h-[40px] w-full items-center justify-center gap-2 rounded-lg border-2 border-[#4285F4] bg-[#4285F4] text-sm hover:border-slate-200 hover:bg-white hover:text-black"
                         onClick={() => signIn(provider.id)}
                     >
                         <div className="rounded-sm bg-white p-2">
