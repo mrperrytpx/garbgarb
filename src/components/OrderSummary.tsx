@@ -25,8 +25,13 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const productsInCart = useSelector(cartSelector);
     const dispatch = useDispatch();
 
+    const { getValues } = useFormContext<ValidatedForm>();
+
+    const formData = getValues();
+    if (!validationSchema.parse(formData)) setCheckoutStep(3);
+
     const { data: addressData } = useGetSuggestionsQuery(suggestion);
-    const extraCosts = useGetExtraCostsQuery(addressData);
+    const extraCosts = useGetExtraCostsQuery(formData);
     const completeOrderMutation = useCompleteOrderMutation();
 
     const checkStockMutation = useMutation(
@@ -66,11 +71,6 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
             },
         }
     );
-
-    const { getValues } = useFormContext<ValidatedForm>();
-
-    const formData = getValues();
-    if (!validationSchema.parse(formData)) setCheckoutStep(3);
 
     const formattedAddress = `${formData.streetNumber} ${formData.streetName}, ${formData.city}, ${formData.zip}-${formData.country}`;
 

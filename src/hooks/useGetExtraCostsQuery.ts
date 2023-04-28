@@ -3,13 +3,24 @@ import { useSelector } from "react-redux";
 import { cartSelector } from "../redux/slices/cartSlice";
 import { apiInstance } from "../utils/axiosClients";
 import { TShippingRatesResp } from "../pages/api/printful/shipping_rates";
-import { ValidatedAddress } from "../pages/checkout";
+import { ValidatedAddress, ValidatedForm } from "../pages/checkout";
 
-export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => {
+export const useGetExtraCostsQuery = (formData: ValidatedForm | undefined) => {
     const productsInCart = useSelector(cartSelector);
 
     const postExtraCosts = async () => {
         const items = productsInCart.filter((x) => !x.outOfStock);
+
+        if (!formData) return;
+
+        const address: ValidatedAddress = {
+            streetName: formData.streetName,
+            streetNumber: formData.streetNumber,
+            city: formData.city,
+            country: formData.country,
+            zip: formData.zip,
+            subpremise: formData.subpremise,
+        };
 
         const response = await apiInstance.post<TShippingRatesResp>(
             "/api/printful/shipping_rates",
@@ -23,9 +34,9 @@ export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => 
     };
 
     return useQuery({
-        queryKey: ["costs", address?.country, productsInCart.length],
+        queryKey: ["costs", formData?.country, productsInCart.length],
         queryFn: postExtraCosts,
-        enabled: !!address,
+        enabled: !!formData,
         refetchOnWindowFocus: false,
     });
 };

@@ -3,10 +3,11 @@ import { useFormContext } from "react-hook-form";
 import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { AutocompletePrediction } from "react-places-autocomplete";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { KeyboardEvent, useEffect } from "react";
+import { KeyboardEvent, useEffect, useRef } from "react";
 import { ValidatedForm } from "../pages/checkout";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { allowedCountries, allowedCountriesAsObj } from "../utils/allowedCountries";
 
 export type TAddress = {
     address1: string;
@@ -49,6 +50,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         setValue: setFormValue,
         handleSubmit,
         clearErrors,
+        control,
     } = useFormContext<ValidatedForm>();
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +76,8 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         }
     };
 
+    const formRef = useRef<HTMLFormElement>(null);
+
     useEffect(() => {
         if (session.data?.user?.email) {
             setFormValue("email", session.data?.user?.email, { shouldValidate: true });
@@ -94,12 +98,28 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
         }
     }, [addressData.data, setFormValue]);
 
+    useEffect(() => {
+        function handleClickOutside(event: Event) {
+            if (formRef.current && !formRef.current.contains(event.target as Node)) {
+                clearSuggestions();
+            }
+        }
+        const eventTypes = ["mousedown", "touchstart"];
+        eventTypes.forEach((type) => {
+            document.addEventListener(type as keyof DocumentEventMap, handleClickOutside);
+            return () => {
+                document.removeEventListener(type as keyof DocumentEventMap, handleClickOutside);
+            };
+        });
+    }, [formRef]);
+
     const onSubmit = handleSubmit(() => {
         setCheckoutStep((prev) => prev + 1);
     });
 
     return (
         <form
+            ref={formRef}
             onSubmit={onSubmit}
             className="relative mb-4 flex flex-col items-start justify-start gap-4  text-gray-200"
         >
@@ -192,7 +212,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                                 }
                                                 className="cursor-pointer border-b-2 p-2 last-of-type:border-0 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black"
                                                 key={i}
-                                                onClick={(e) => handleChoice(suggestion)}
+                                                onClick={() => handleChoice(suggestion)}
                                             >
                                                 <strong className="uppercase">
                                                     {suggestion.description}
@@ -246,7 +266,6 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                     type="text"
                                     placeholder="Apartment, Suite, etc."
                                     autoComplete="off"
-                                    onChange={handleInput}
                                     disabled={!ready}
                                 />
                                 {errors.subpremise && (
@@ -291,23 +310,23 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                             <div className="flex gap-2">
                                 <div className="w-full">
                                     <label className="block p-1 text-xs" htmlFor="country">
-                                        <strong className="uppercase">Country code</strong>
+                                        <strong className="uppercase">Country</strong>
                                     </label>
-                                    <input
-                                        style={{
-                                            borderColor: errors.country
-                                                ? "rgb(220 38 38)"
-                                                : "rgb(107 114 128)",
-                                        }}
+                                    <select
+                                        defaultValue={allowedCountriesAsObj["AD"]}
+                                        className="h-10 w-full cursor-pointer select-none overflow-y-auto rounded-md border border-slate-500 bg-black px-2 text-sm text-gray-200 hover:border-white"
                                         {...register("country")}
-                                        name="country"
-                                        id="country"
-                                        className="h-10 w-full rounded-md border border-slate-500 bg-black p-2 text-sm font-medium  focus:bg-slate-200 focus:text-black"
-                                        type="text"
-                                        placeholder="Country"
-                                        autoComplete="off"
-                                        disabled={!ready}
-                                    />
+                                    >
+                                        {allowedCountries.map((country) => (
+                                            <option
+                                                className="inline-block w-full cursor-pointer text-lg hover:bg-slate-300"
+                                                value={country}
+                                                key={country}
+                                            >
+                                                {allowedCountriesAsObj[country]}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div className="w-full">
@@ -332,6 +351,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                 </div>
                             </div>
                             <div className="flex items-center justify-between gap-2">
+                                {!errors.country && <div className="w-full" />}
                                 {errors.country && (
                                     <div className="w-full">
                                         <p className="pl-1 text-xs font-semibold text-red-500">
@@ -345,6 +365,8 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                                         </Link>
                                     </div>
                                 )}
+                                {!errors.zip && <div className="w-full" />}
+
                                 {errors.zip && (
                                     <span className="w-full self-start pl-1 text-xs font-semibold text-red-500">
                                         {errors.zip.message}
