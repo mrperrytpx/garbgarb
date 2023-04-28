@@ -111,7 +111,7 @@ export const AddressForm = ({ suggestion, setSuggestion, setCheckoutStep }: IAdd
                 document.removeEventListener(type as keyof DocumentEventMap, handleClickOutside);
             };
         });
-    }, [formRef]);
+    }, [formRef, clearSuggestions]);
 
     const onSubmit = handleSubmit(() => {
         setCheckoutStep((prev) => prev + 1);
