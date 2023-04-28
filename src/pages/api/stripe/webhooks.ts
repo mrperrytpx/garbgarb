@@ -8,6 +8,7 @@ import { Costs } from "../../../lib/estimateShippingCost";
 import { RetailCosts } from "../../../lib/estimateShippingCost";
 import { prisma } from "../../../../prisma/prisma";
 import Cors from "micro-cors";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const cors = Cors({
     allowMethods: ["POST", "HEAD"],
@@ -49,6 +50,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
 
             if (!session) res.status(500).end();
 
+            console.log("session", session);
+
             const orderedItems = (
                 await Promise.allSettled(
                     session?.line_items?.data.map(async (item) => {
@@ -61,6 +64,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
             )
                 .filter((x) => x.status === "fulfilled")
                 .map((x) => (x as PromiseFulfilledResult<Stripe.Product>).value);
+
+            console.log("orderedItems", orderedItems);
 
             const orderRes = await printfulApiKeyInstance.post<TOrderResponse>("/orders", {
                 recipient: {
@@ -85,9 +90,11 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                 },
             });
 
+            console.log("orderRes", orderRes.data);
+
             const orderId = +orderRes.data.result.id;
 
-            await prisma.order.create({
+            const addOrder = await prisma.order.create({
                 data: {
                     userId: session.metadata?.user,
                     id: orderId,
@@ -97,6 +104,8 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
                     email: session.customer_details?.email as string,
                 },
             });
+
+            console.log("addOrder", addOrder);
         } else if (event.type === "charge.refunded") {
             const refund = event.data.object;
 
