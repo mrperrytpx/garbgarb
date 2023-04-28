@@ -22,7 +22,9 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
         >
             <Link
                 className="min-w-[75px] max-w-[75px] select-none rounded-lg bg-slate-200 hover:scale-105"
-                href={`/products/${product.store_product_id}`}
+                href={`/products/${product.store_product_id}?color=${
+                    "%23" + product.color_code.split("").splice(1).join("")
+                }`}
             >
                 <Image width={200} height={200} src={product.variant_image} alt="Product" />
             </Link>
@@ -30,7 +32,9 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
             <div className="flex w-full flex-col gap-4 ">
                 <div className="flex flex-1 flex-col items-start justify-center gap-1 ">
                     <Link
-                        href={`/products/${product.store_product_id}`}
+                        href={`/products/${product.store_product_id}?color=${
+                            "%23" + product.color_code.split("").splice(1).join("")
+                        }`}
                         className="mr-8 text-base font-semibold hover:animate-hop hover:underline focus:animate-hop focus:underline"
                     >
                         {product.name}
