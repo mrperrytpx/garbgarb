@@ -8,7 +8,6 @@ import { Costs } from "../../../lib/estimateShippingCost";
 import { RetailCosts } from "../../../lib/estimateShippingCost";
 import { prisma } from "../../../../prisma/prisma";
 import Cors from "micro-cors";
-import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const cors = Cors({
     allowMethods: ["POST", "HEAD"],
