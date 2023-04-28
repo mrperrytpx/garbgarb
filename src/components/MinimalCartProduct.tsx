@@ -44,7 +44,7 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
                             <button
                                 onClick={() => {
                                     dispatch(removeFromCart({ sku: item.sku }));
-                                    toast("Removed from cart.");
+                                    toast.success("Removed from cart.");
                                 }}
                                 className="mb-2 rounded-lg p-1 shadow"
                             >

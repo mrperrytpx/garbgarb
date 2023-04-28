@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Portal } from "../../components/Portal";
 import Head from "next/head";
+import { toast } from "react-toastify";
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -55,7 +56,7 @@ const ProfilePage = () => {
                 queryClient.setQueryData<Order[]>(["orders"], (old) => {
                     return old?.filter((x) => x.id !== orderId);
                 });
-
+                toast.warn("Order deleted");
                 return { previousOrders };
             },
             onError: (_err, _data, context) => {
@@ -131,7 +132,7 @@ const ProfilePage = () => {
                                                 className="group relative z-10 w-24 rounded-md border border-slate-500 p-2 shadow-sm shadow-gray-500 hover:border-slate-200 hover:bg-red-600 hover:text-gray-200 focus:bg-red-600 focus:text-gray-200"
                                             >
                                                 DELETE
-                                                <div className="pointer-events-none absolute left-full top-[6px] z-0 h-8 w-8 -translate-y-1/2 rounded-br-lg border-b-2 border-r-2 border-slate-500  group-hover:border-red-500"></div>
+                                                <div className="pointer-events-none absolute left-full top-[6px] -z-10 h-8 w-8 -translate-y-1/2 rounded-br-lg border-b-2 border-r-2 border-slate-500  group-hover:border-red-500"></div>
                                             </button>
                                         )}
                                     </div>

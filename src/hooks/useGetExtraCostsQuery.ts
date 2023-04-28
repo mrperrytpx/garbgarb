@@ -5,22 +5,13 @@ import { apiInstance } from "../utils/axiosClients";
 import { TShippingRatesResp } from "../pages/api/printful/shipping_rates";
 import { ValidatedAddress, ValidatedForm } from "../pages/checkout";
 
-export const useGetExtraCostsQuery = (formData: ValidatedForm | undefined) => {
+export const useGetExtraCostsQuery = (address: ValidatedAddress | undefined) => {
     const productsInCart = useSelector(cartSelector);
 
     const postExtraCosts = async () => {
         const items = productsInCart.filter((x) => !x.outOfStock);
 
-        if (!formData) return;
-
-        const address: ValidatedAddress = {
-            streetName: formData.streetName,
-            streetNumber: formData.streetNumber,
-            city: formData.city,
-            country: formData.country,
-            zip: formData.zip,
-            subpremise: formData.subpremise,
-        };
+        if (!address) return;
 
         const response = await apiInstance.post<TShippingRatesResp>(
             "/api/printful/shipping_rates",
@@ -34,9 +25,9 @@ export const useGetExtraCostsQuery = (formData: ValidatedForm | undefined) => {
     };
 
     return useQuery({
-        queryKey: ["costs", formData?.country, productsInCart.length],
+        queryKey: ["costs", address?.country, productsInCart.length],
         queryFn: postExtraCosts,
-        enabled: !!formData,
+        enabled: !!address,
         refetchOnWindowFocus: false,
     });
 };

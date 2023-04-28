@@ -3,12 +3,10 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import { cartSelector, removeFromCart, updateStock } from "../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { currency } from "../utils/currency";
-import { AutocompletePrediction } from "react-places-autocomplete";
-import { useGetSuggestionsQuery } from "../hooks/useGetSuggestionsQuery";
 import { useGetExtraCostsQuery } from "../hooks/useGetExtraCostsQuery";
 import { useCompleteOrderMutation } from "../hooks/useCompleteOrderMutation";
 import { useFormContext } from "react-hook-form";
-import { ValidatedForm, validationSchema } from "../pages/checkout";
+import { ValidatedAddress, ValidatedForm, validationSchema } from "../pages/checkout";
 import { useMutation } from "@tanstack/react-query";
 import { apiInstance } from "../utils/axiosClients";
 import { TCheckoutPayload } from "../lib/checkPayloadStock";
@@ -17,11 +15,10 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 
 interface IOrderSummaryProps {
-    suggestion: AutocompletePrediction | null;
     setCheckoutStep: Dispatch<SetStateAction<number>>;
 }
 
-export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps) => {
+export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
     const productsInCart = useSelector(cartSelector);
     const dispatch = useDispatch();
 
@@ -30,8 +27,16 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
     const formData = getValues();
     if (!validationSchema.parse(formData)) setCheckoutStep(3);
 
-    const { data: addressData } = useGetSuggestionsQuery(suggestion);
-    const extraCosts = useGetExtraCostsQuery(formData);
+    const address: ValidatedAddress = {
+        streetName: formData.streetName,
+        streetNumber: formData.streetNumber,
+        city: formData.city,
+        country: formData.country,
+        zip: formData.zip,
+        subpremise: formData.subpremise,
+    };
+    const extraCosts = useGetExtraCostsQuery(address);
+
     const completeOrderMutation = useCompleteOrderMutation();
 
     const checkStockMutation = useMutation(
@@ -59,7 +64,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
             onSuccess: (data) => {
                 if (data?.length === productsInCart.length) {
                     completeOrderMutation.mutate({
-                        address: addressData,
+                        address: address,
                         email: formData.email,
                         name: formData.name,
                     });
@@ -97,7 +102,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                                 onClick={() => {
                                     if (product.outOfStock) {
                                         dispatch(removeFromCart({ sku: product.sku }));
-                                        toast("Removed from cart.");
+                                        toast.success("Removed from cart.");
                                     }
                                 }}
                                 className={`text-xs xs:text-right ${
@@ -148,7 +153,7 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         </p>
                     ) : (
                         <p className="text-sm font-bold">
-                            {extraCosts.isError ? "Couldn't estimate tje price 💀" : "TBD"}
+                            {extraCosts.isError ? "Couldn't estimate the price 💀" : "TBD"}
                         </p>
                     )}
                 </div>
@@ -198,7 +203,8 @@ export const OrderSummary = ({ suggestion, setCheckoutStep }: IOrderSummaryProps
                         extraCosts.isFetching ||
                         completeOrderMutation.isLoading ||
                         checkStockMutation.isLoading ||
-                        !!productsInCart.filter((x) => x.outOfStock).length
+                        !!productsInCart.filter((x) => x.outOfStock).length ||
+                        completeOrderMutation.isError
                     }
                     onClick={() => checkStockMutation.mutate()}
                     className="hover mt-8 flex w-full items-center justify-center gap-2 self-center rounded-lg border border-slate-500 bg-black p-2 enabled:shadow-sm enabled:shadow-slate-500 enabled:hover:animate-hop enabled:hover:bg-slate-200 enabled:hover:text-black enabled:focus:animate-hop enabled:focus:bg-slate-200 enabled:focus:text-black disabled:opacity-50"

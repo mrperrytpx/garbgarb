@@ -160,10 +160,7 @@ const CheckoutPage = () => {
                         )}
                         {checkoutStep === 4 && (
                             <div className="flex flex-col gap-2">
-                                <OrderSummary
-                                    setCheckoutStep={setCheckoutStep}
-                                    suggestion={suggestion}
-                                />
+                                <OrderSummary setCheckoutStep={setCheckoutStep} />
                                 <div className="w-full p-2">
                                     <StepButtons
                                         checkoutStep={checkoutStep}

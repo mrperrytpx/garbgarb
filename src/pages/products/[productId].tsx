@@ -102,7 +102,7 @@ const ArticlePage = ({
         if (!payload) return;
 
         dispatch(addToCart(payload));
-        toast("Added to cart!");
+        toast.success("Added to cart!");
     }
 
     function handleColorChange(color: string): void {
