@@ -152,6 +152,15 @@ const ArticlePage = ({
     return (
         <>
             <Head>
+                <meta property="og:title" content={myShirtName} />
+                <meta property="og:type" content="image.png" />
+                <meta property="og:description" content={baseShirtName} />
+                <meta
+                    property="og:image"
+                    content={productQuery.data.sync_variants[option.index].files[1].preview_url}
+                />
+                <meta property="og:url" content={router.pathname} />
+                <meta name="twitter:card" content="summary_large_image"></meta>
                 <title>GarbGarb - {myShirtName}</title>
             </Head>
             <div className="mx-auto mb-8 max-w-screen-lg">
