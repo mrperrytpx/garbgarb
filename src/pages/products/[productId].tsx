@@ -159,23 +159,28 @@ const ArticlePage = ({
                     property="og:image"
                     content={productQuery.data.sync_variants[option.index].files[1].preview_url}
                 />
-                <meta property="og:url" content={router.pathname} />
+                <meta
+                    property="og:url"
+                    content={process.env.NEXT_PUBLIC_SERVER_URL + router.asPath}
+                />
                 <meta name="twitter:card" content="summary_large_image"></meta>
                 <title>GarbGarb - {myShirtName}</title>
             </Head>
-            <div className="mx-auto mb-8 max-w-screen-lg">
+            <div className="mx-auto mb-8 w-full max-w-screen-lg">
                 <div className="p-4">
                     <Breadcrumbs />
                 </div>
                 <div className="flex w-full flex-col items-center justify-center gap-6 px-4 py-2 md:flex-row lg:mt-4 lg:gap-12">
-                    <div className="max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
+                    <div className="w-full max-w-[350px] rounded-md bg-slate-200 sm:max-w-[500px] md:sticky md:top-20 md:flex-1 md:self-start">
                         <Image
                             priority={true}
                             width={500}
                             height={500}
+                            placeholder="blur"
+                            blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAEUlEQVR42mNkqGfAAIxDWRAAOIQFAap6xDkAAAAASUVORK5CYII"
                             alt="Piece of clothing with some words written on it"
                             src={productQuery.data.sync_variants[option.index].files[1].preview_url}
-                            className="rounded-lg"
+                            className="aspect-square rounded-lg"
                         />
                     </div>
                     {/*  */}

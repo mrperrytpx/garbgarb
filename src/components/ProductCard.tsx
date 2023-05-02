@@ -18,18 +18,20 @@ export const ProductCard = ({ product }: IProductCard) => {
     const parsedColorNames: string[] = JSON.parse(product.metadata.color_names);
 
     return (
-        <div className="max-w-[300px] rounded-md bg-slate-200 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
+        <div className="w-full max-w-[300px] rounded-md bg-slate-200 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
             <div>
                 <Link href={`/products/${product.metadata.id}`}>
                     <Image
-                        className="rounded-md border border-b-2"
+                        className="aspect-square rounded-md border border-b-2"
                         src={product.metadata.thumbnail_url}
                         alt="Product"
+                        placeholder="blur"
+                        blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAEUlEQVR42mNkqGfAAIxDWRAAOIQFAap6xDkAAAAASUVORK5CYII="
                         width={400}
                         height={400}
                     />
                 </Link>
-                <div className="flex flex-col items-start justify-center gap-2 rounded-md bg-white px-4 py-2">
+                <div className="flex w-full max-w-[300px] flex-col items-start justify-center gap-2 rounded-md bg-white px-4 py-2">
                     <div>
                         <p className="text-lg font-bold md:text-xl">{shirtName}</p>
                         <p className="text-sm">{defualtShirtName}</p>

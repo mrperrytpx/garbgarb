@@ -22,6 +22,7 @@ type CustomAppProps = AppProps & {
 const toastProps: ToastContainerProps = {
     autoClose: 1500,
     theme: "dark",
+    limit: 5
 };
 
 export default function App({ Component, pageProps }: CustomAppProps) {
