@@ -9,16 +9,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
-
-import dynamic from "next/dynamic";
+import { TextLogoNoClothing } from "../../components/Logos";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-
-const TextLogoNoClothing = dynamic(
-    () => import("../../components/Logos").then((mod) => mod.TextLogoNoClothing),
-    {
-        loading: () => <LoadingSpinner />,
-    }
-);
 
 type ValidatedLoginForm = z.infer<typeof loginValidationSchema>;
 
