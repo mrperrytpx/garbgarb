@@ -25,7 +25,7 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
                     item.outOfStock && "shadow-sm shadow-red-400"
                 }`}
             >
-                <div className="max-w-[50px] rounded-lg bg-slate-200 sm:block">
+                <div className="w-[min(100%,50px)] max-w-[50px] rounded-lg bg-slate-200 sm:block">
                     <Image src={item.variant_image} width={100} height={100} alt="Item" />
                 </div>
                 <div className="flex w-full flex-col gap-1">

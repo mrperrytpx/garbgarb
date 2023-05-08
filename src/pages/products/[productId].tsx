@@ -219,6 +219,7 @@ const ArticlePage = ({
                                     key={prodColor}
                                 >
                                     <button
+                                        aria-label={`Color value ${prodColor}`}
                                         onClick={() => handleColorChange(prodColor)}
                                         style={{
                                             backgroundColor: prodColor,
@@ -246,9 +247,17 @@ const ArticlePage = ({
                         </div>
                         {/*  */}
                         <div className="flex w-full flex-col gap-0.5">
-                            <p className="px-1 text-sm font-semibold">Qty:</p>
+                            <label
+                                aria-label="Quantity"
+                                htmlFor="qty"
+                                className="px-1 text-sm font-semibold"
+                            >
+                                Qty:
+                            </label>
                             <div className="flex gap-2">
                                 <input
+                                    id="qty"
+                                    name="qty"
                                     value={quantity}
                                     onChange={(e) => setQuantity(+e.target.value)}
                                     className="w-[100px] rounded-lg border border-slate-500 bg-black p-3 shadow-sm shadow-slate-500 hover:border-white"
@@ -312,18 +321,15 @@ const ArticlePage = ({
                             ) : (
                                 <>
                                     <button
+                                        aria-label="Close size guide"
                                         onClick={() => setIsModalOpen(!isModalOpen)}
                                         className="absolute right-0 top-0 mr-4 mt-2 rounded-lg bg-black p-1 shadow-sm shadow-slate-500 hover:bg-red-600"
                                     >
                                         <RxCross1 size="20" />
                                     </button>
-                                    <div
-                                        role="heading"
-                                        aria-level={1}
-                                        className="w-full border-b-2 border-slate-500 font-bold"
-                                    >
+                                    <h1 className="w-full border-b-2 border-slate-500 font-bold">
                                         Measure yourself
-                                    </div>
+                                    </h1>
                                     <div className="flex w-full flex-col items-start justify-center gap-2 text-sm">
                                         {parse(
                                             sizesQuery.data.size_tables[0].description.replace(

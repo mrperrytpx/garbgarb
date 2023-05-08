@@ -1,6 +1,11 @@
 import Head from "next/head";
 import { LinkButton } from "../components/LinkButton";
-import { TextLogo } from "../components/Logos";
+import dynamic from "next/dynamic";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+
+const TextLogo = dynamic(() => import("../components/Logos").then((mod) => mod.TextLogo), {
+    loading: () => <LoadingSpinner />,
+});
 
 function HomePage() {
     return (

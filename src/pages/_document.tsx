@@ -12,8 +12,6 @@ export default function Document() {
                     href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap"
                     rel="stylesheet"
                 />
-                <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
-                <link rel="icon" type="image/png" href="/static/favicon.png" />
             </Head>
             <body>
                 <Main />

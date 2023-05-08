@@ -7,9 +7,15 @@ import { CartIconWithNumber } from "../components/CartIconWithNumber";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { ErrorBoundary } from "../components/ErrorBoundary";
-import { Logo } from "../components/Logos";
 import DefaultPic from "../../public/static/default.png";
 import NextNProgress from "nextjs-progressbar";
+
+import dynamic from "next/dynamic";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+
+const Logo = dynamic(() => import("../components/Logos").then((mod) => mod.Logo), {
+    loading: () => <LoadingSpinner />,
+});
 
 interface ILayoutProps {
     children: JSX.Element | JSX.Element[];
@@ -30,12 +36,14 @@ const Layout = ({ children }: ILayoutProps) => {
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
                     <div className="flex items-center justify-center gap-4">
                         <Link
+                            aria-label="Home page"
                             className="flex items-center justify-center rounded-lg text-3xl hover:animate-hop hover:bg-slate-200"
                             href="/"
                         >
                             <Logo />
                         </Link>
                         <Link
+                            aria-label="Shop"
                             className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline"
                             href="/products"
                         >
@@ -45,6 +53,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <Link
                                 className="rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:hidden"
                                 href="/my_orders"
+                                aria-label="Profile"
                             >
                                 <Image
                                     className="w-7 rounded-full bg-slate-200"
@@ -61,6 +70,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <Link
                                 className="hidden rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:inline"
                                 href="/my_orders"
+                                aria-label="Profile"
                             >
                                 <Image
                                     className="w-8 rounded-full bg-slate-200"
@@ -75,6 +85,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signOut()}
                                 title="Sign out"
+                                aria-label="Sign out"
                                 className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline-block"
                             >
                                 <FiLogOut className="group-hover:stroke-black" size="24" />
@@ -84,15 +95,17 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signIn()}
                                 title="Sign in"
+                                aria-label="Sign in"
                                 className="group hidden rounded-md p-2 hover:animate-hop hover:bg-slate-200 sm:inline-block"
                             >
                                 <FiLogIn className="group-hover:stroke-black" size="24" />
                             </button>
                         )}
-                        <Link className="text-3xl" href="/cart">
+                        <Link aria-label="Cart" className="text-3xl" href="/cart">
                             <CartIconWithNumber />
                         </Link>
                         <button
+                            aria-label="Menu"
                             onClick={() => setIsExpanded((old) => !old)}
                             className="selext-none text-3xl sm:hidden"
                             role="button"
@@ -117,6 +130,7 @@ const Layout = ({ children }: ILayoutProps) => {
                 <div className="flex h-[calc(max(600px,100svh)-64px)] flex-col items-center justify-center bg-black text-gray-200">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
+                            aria-label="Shop"
                             className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                             href="/products"
                         >
@@ -124,6 +138,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         </Link>
                         {session?.user && (
                             <Link
+                                aria-label="Profile"
                                 className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                                 href="/my_orders"
                             >
@@ -134,6 +149,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             <button
                                 onClick={() => signOut()}
                                 title="Sign out"
+                                aria-label="Sign out"
                                 className="text-xl font-medium hover:animate-hop hover:underline  focus:underline"
                             >
                                 Sign Out
@@ -141,6 +157,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         )}
                         {!session?.user && (
                             <button
+                                aria-label="Sign in"
                                 onClick={() => signIn()}
                                 title="Sign in"
                                 className="text-xl font-medium hover:animate-hop hover:underline focus:underline"
@@ -155,6 +172,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             target="_blank"
                             rel="noreferrer"
                             href="https://github.com/mrperrytpx/garbgarb"
+                            aria-label="Github"
                         >
                             <FiGithub
                                 className="group-hover:stroke-black"
@@ -166,7 +184,8 @@ const Layout = ({ children }: ILayoutProps) => {
                             className="group my-10 rounded-lg p-2 hover:animate-hop hover:bg-slate-200 "
                             target="_blank"
                             rel="noreferrer"
-                            href="https://www.linkedin.com/"
+                            href="https://www.linkedin.com/in/tomislav-%C5%A1iprak-83abb1275/"
+                            aria-label="LinkedIn"
                         >
                             <FiLinkedin
                                 className="group-hover:stroke-black"
@@ -212,6 +231,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                         className="group rounded-md p-2 hover:animate-hop hover:bg-slate-200"
                                         target="_blank"
                                         rel="noreferrer"
+                                        aria-label="Github"
                                         href="https://github.com/mrperrytpx/garbgarb"
                                     >
                                         <FiGithub
@@ -224,7 +244,8 @@ const Layout = ({ children }: ILayoutProps) => {
                                         className="group rounded-md p-2 hover:animate-hop hover:bg-slate-200"
                                         target="_blank"
                                         rel="noreferrer"
-                                        href="https://www.linkedin.com/"
+                                        aria-label="LinkedIn"
+                                        href="https://www.linkedin.com/in/tomislav-%C5%A1iprak-83abb1275/"
                                     >
                                         <FiLinkedin
                                             className="group-hover:stroke-black"

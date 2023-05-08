@@ -14,6 +14,7 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { ToastContainer } from "react-toastify";
 import { ToastContainerProps } from "react-toastify/dist/types";
 import "react-toastify/dist/ReactToastify.css";
+import Head from "next/head";
 
 type CustomAppProps = AppProps & {
     Component: NextComponentType & { auth?: boolean };
@@ -22,7 +23,7 @@ type CustomAppProps = AppProps & {
 const toastProps: ToastContainerProps = {
     autoClose: 1500,
     theme: "dark",
-    limit: 5
+    limit: 5,
 };
 
 export default function App({ Component, pageProps }: CustomAppProps) {
@@ -39,32 +40,45 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     );
 
     return (
-        <SessionProvider session={pageProps.session}>
-            <QueryClientProvider client={queryClient}>
-                <Hydrate state={pageProps.dehydratedState}>
-                    <Provider store={store}>
-                        <PersistGate persistor={persistor} loading={null}>
-                            <ErrorBoundary>
-                                <Layout>
-                                    {Component.auth ? (
-                                        <Auth>
-                                            <Component {...pageProps} />
-                                            <ToastContainer {...toastProps} />
-                                        </Auth>
-                                    ) : (
-                                        <>
-                                            <Component {...pageProps} />
-                                            <ToastContainer {...toastProps} />
-                                        </>
-                                    )}
-                                </Layout>
-                            </ErrorBoundary>
-                            <ReactQueryDevtools initialIsOpen={false} />
-                        </PersistGate>
-                    </Provider>
-                </Hydrate>
-            </QueryClientProvider>
-        </SessionProvider>
+        <>
+            <Head>
+                <title>GarbGarb</title>
+                <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+                <link rel="icon" type="image/png" href="/static/favicon.png" />
+                <meta name="description" content="GarbGarb - Buy yourself something nice" />
+                <meta property="og:title" content="GarbGarb" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://garbgarb.vercel.app/" />
+                <meta property="og:description" content="GarbGarb - Buy yourself something nice" />
+                <meta name="theme-color" content="#0a0a0a" />
+            </Head>
+            <SessionProvider session={pageProps.session}>
+                <QueryClientProvider client={queryClient}>
+                    <Hydrate state={pageProps.dehydratedState}>
+                        <Provider store={store}>
+                            <PersistGate persistor={persistor} loading={null}>
+                                <ErrorBoundary>
+                                    <Layout>
+                                        {Component.auth ? (
+                                            <Auth>
+                                                <Component {...pageProps} />
+                                                <ToastContainer {...toastProps} />
+                                            </Auth>
+                                        ) : (
+                                            <>
+                                                <Component {...pageProps} />
+                                                <ToastContainer {...toastProps} />
+                                            </>
+                                        )}
+                                    </Layout>
+                                </ErrorBoundary>
+                                <ReactQueryDevtools initialIsOpen={false} />
+                            </PersistGate>
+                        </Provider>
+                    </Hydrate>
+                </QueryClientProvider>
+            </SessionProvider>
+        </>
     );
 }
 

@@ -20,15 +20,19 @@ export const ProductCard = ({ product }: IProductCard) => {
     return (
         <div className="w-full max-w-[300px] rounded-md bg-slate-200 shadow-xl transition-all duration-75 hover:scale-105 md:self-start">
             <div>
-                <Link href={`/products/${product.metadata.id}`}>
+                <Link
+                    aria-label={`Product with ID ${product.metadata.id}`}
+                    href={`/products/${product.metadata.id}`}
+                >
                     <Image
                         className="aspect-square rounded-md border border-b-2"
                         src={product.metadata.thumbnail_url}
                         alt="Product"
                         placeholder="blur"
+                        priority={true}
                         blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAEUlEQVR42mNkqGfAAIxDWRAAOIQFAap6xDkAAAAASUVORK5CYII="
-                        width={400}
-                        height={400}
+                        width={500}
+                        height={500}
                     />
                 </Link>
                 <div className="flex w-full max-w-[300px] flex-col items-start justify-center gap-2 rounded-md bg-white px-4 py-2">
@@ -36,20 +40,21 @@ export const ProductCard = ({ product }: IProductCard) => {
                         <p className="text-lg font-bold md:text-xl">{shirtName}</p>
                         <p className="text-sm">{defualtShirtName}</p>
                     </div>
-                    <div className="flex flex-wrap items-center justify-start gap-2 ">
+                    <div className="flex flex-wrap items-center justify-start gap-4">
                         {parsedColorHexs.map((hex, i) => (
                             <Link
                                 href={`/products/${product.metadata.id}?color=${
                                     "%23" + hex.split("").splice(1).join("")
                                 }`}
-                                className="group relative z-10 flex items-center justify-center rounded-md hover:animate-hop"
+                                className="group relative z-10 flex items-center justify-center rounded-md shadow-sm shadow-slate-500 hover:animate-hop"
                                 key={hex}
+                                aria-label={`Product with ID ${product.metadata.id} and color ${parsedColorNames[i]}`}
                             >
                                 <div
                                     style={{
                                         backgroundColor: hex,
                                     }}
-                                    className="h-5 w-5  rounded-md border border-black"
+                                    className="h-6 w-6 rounded-md border border-black"
                                 />
                                 <div
                                     style={{

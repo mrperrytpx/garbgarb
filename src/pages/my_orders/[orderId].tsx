@@ -219,6 +219,7 @@ const OrderPage = () => {
                 {orderData?.data?.status !== "canceled" && (
                     <div className="flex w-full flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
                         <button
+                            aria-label="Cancel order"
                             disabled={
                                 orderData?.data?.status !== "draft" &&
                                 orderData.data?.status !== "pending"
@@ -233,6 +234,9 @@ const OrderPage = () => {
                             )}
                         </button>
                         <button
+                            aria-label={
+                                invoiceMutation.isSuccess ? "Invoice resent :)" : "Resend Invoice"
+                            }
                             onClick={() => invoiceMutation.mutate({ orderId })}
                             className="mt-auto w-full rounded-lg border border-slate-500 bg-black p-2 text-center font-bold uppercase shadow-sm shadow-slate-500 hover:bg-slate-200 hover:text-black focus:bg-slate-200 focus:text-black disabled:opacity-30 sm:m-0 sm:w-auto sm:min-w-[120px]"
                         >

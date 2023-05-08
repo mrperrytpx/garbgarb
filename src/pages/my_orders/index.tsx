@@ -84,6 +84,7 @@ const ProfilePage = () => {
                                 {allOrders.data?.map((order, i) => (
                                     <div className="flex w-full flex-col items-start gap-2" key={i}>
                                         <Link
+                                            aria-label={`Order number ${order.id}`}
                                             href={`/my_orders/${order.id}`}
                                             key={i}
                                             className="w-full rounded-md border border-slate-500 bg-black p-2 font-semibold transition-all duration-75 hover:border-slate-200 hover:bg-slate-200 hover:text-black"
@@ -124,6 +125,7 @@ const ProfilePage = () => {
                                         </Link>
                                         {order.canceled && (
                                             <button
+                                                aria-label="Delete order"
                                                 onClick={() =>
                                                     deleteCanceledOrder.mutate({
                                                         orderId: order.id,

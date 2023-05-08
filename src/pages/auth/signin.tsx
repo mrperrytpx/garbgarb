@@ -4,13 +4,21 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { TextLogoNoClothing } from "../../components/Logos";
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
+
+import dynamic from "next/dynamic";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
+
+const TextLogoNoClothing = dynamic(
+    () => import("../../components/Logos").then((mod) => mod.TextLogoNoClothing),
+    {
+        loading: () => <LoadingSpinner />,
+    }
+);
 
 type ValidatedLoginForm = z.infer<typeof loginValidationSchema>;
 
@@ -117,8 +125,9 @@ export default function SignIn({
                     </div>
                     {allProviders.map((provider) => (
                         <button
+                            aria-label={`${provider.name} sign in.`}
                             key={provider.id}
-                            className="mb-2 flex h-[40px] w-full items-center justify-center gap-2 rounded-lg border-2 border-[#4285F4] bg-[#4285F4] text-sm hover:border-slate-200 hover:bg-white hover:text-black"
+                            className="group mb-2 flex h-[40px] w-full items-center justify-center gap-2 rounded-lg border-2 border-[#4285F4] bg-[#4285F4] text-sm hover:border-slate-200 hover:bg-white hover:text-black"
                             onClick={() => signIn(provider.id)}
                         >
                             <div className="rounded-sm bg-white p-2">
@@ -130,7 +139,9 @@ export default function SignIn({
                                     height={18}
                                 />
                             </div>
-                            <span className="google pr-2">Sign in with {provider.name}</span>
+                            <span className="google pr-2 text-white group-hover:text-black">
+                                Sign in with {provider.name}
+                            </span>
                         </button>
                     ))}
                 </div>

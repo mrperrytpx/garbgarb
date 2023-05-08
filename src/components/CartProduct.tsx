@@ -39,7 +39,8 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                     >
                         {product.name}
                     </Link>
-                    <div
+                    <button
+                        aria-label="Remove from cart"
                         tabIndex={0}
                         className="group absolute right-1 top-1 cursor-pointer select-none rounded-full bg-zinc-950 outline outline-2 outline-gray-600 hover:animate-hop hover:bg-white focus:animate-hop focus:bg-white"
                     >
@@ -51,7 +52,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                             stroke="white"
                             className="p-1 group-hover:stroke-black group-focus:stroke-black"
                         />
-                    </div>
+                    </button>
                     <p>
                         ({product.color_name} - {product.size})
                     </p>
