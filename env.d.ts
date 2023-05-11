@@ -11,5 +11,10 @@ namespace NodeJS {
         GOOGLE_CLIENT_SECRET: string;
         NEXTAUTH_URL: string;
         NEXTAUTH_SECRET: string;
+        EMAIL_SERVER_PASSWORD: string;
+        EMAIL_SERVER_HOST: string;
+        EMAIL_SERVER_PORT: string;
+        EMAIL_FROM: string;
+        EMAIL_SERVER_USER: string;
     }
 }
