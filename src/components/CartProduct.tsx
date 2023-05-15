@@ -57,7 +57,7 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                         ({product.color_name} - {product.size})
                     </p>
                 </div>
-                <div className="flex flex-1 items-center gap-4 ">
+                <div className="flex flex-1 items-center gap-4">
                     <p>{currency(product.price)}</p>
                     <div className="flex justify-center gap-2">
                         <button
@@ -69,7 +69,9 @@ export const CartProduct = ({ product }: { product: TCartProduct }) => {
                         <p className="w-4 text-center">{product.quantity}</p>
                         <button
                             onClick={() => dispatch(increaseQuantity({ sku: product.sku }))}
-                            className="select-none rounded-md px-2 text-sm outline outline-2 outline-gray-600 hover:bg-slate-200 hover:text-black focus:outline-white"
+                            className={`select-none rounded-md px-2 text-sm outline outline-2 outline-gray-600 hover:bg-slate-200 hover:text-black focus:outline-white ${
+                                product.quantity >= 99 && "invisible"
+                            }`}
                         >
                             +
                         </button>

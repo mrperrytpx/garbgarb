@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { toast } from "react-toastify";
 
 export interface CartState {
     value: Array<TCartProduct>;
@@ -44,6 +45,9 @@ export const cartSlice = createSlice({
                 state.value = [...state.value, payload];
             } else {
                 product.quantity += payload.quantity;
+                if (product.quantity > 99) {
+                    product.quantity = 99;
+                }
                 state.value = [
                     ...state.value.filter((cartItem) => cartItem.sku !== product.sku),
                     product,
@@ -76,6 +80,10 @@ export const cartSlice = createSlice({
                 throw new Error("Product must be in the cart to increase its quantity");
             }
 
+            if (product.quantity >= 99) {
+                toast.warn("Can't add more than 99 of each variant");
+                return;
+            }
             product.quantity += 1;
         },
         decreaseQuantity: (state, action: PayloadAction<{ sku: string }>) => {

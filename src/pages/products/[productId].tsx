@@ -10,8 +10,8 @@ import React, { useState } from "react";
 import parse from "html-react-parser";
 import SizesTable from "../../components/SizesTable";
 import { Portal } from "../../components/Portal";
-import { addToCart, TCartProduct } from "../../redux/slices/cartSlice";
-import { useDispatch } from "react-redux";
+import { addToCart, cartSelector, TCartProduct } from "../../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { currency } from "../../utils/currency";
 import { Accordion } from "../../components/Accordion";
 import { QueryClient } from "@tanstack/react-query";
@@ -52,6 +52,7 @@ const ArticlePage = ({
     const storeProductId = productQuery.data?.sync_variants[0].product.product_id;
 
     const availabilityQuery = useGetProductAvailability(storeProductId);
+    const productsInCart = useSelector(cartSelector);
 
     const [color, setColor] = useState(() => {
         if (chosenColor) return chosenColor as string;
@@ -80,6 +81,14 @@ const ArticlePage = ({
 
     function handleAddToCart() {
         if (!productQuery.data) return;
+
+        const inCart = productsInCart.find(
+            (x) => x.sku === productQuery.data.sync_variants[option.index].sku
+        );
+        if (inCart && inCart.quantity + quantity > 99) {
+            toast.warn("Can't add more than 99 of each variant");
+            return;
+        }
 
         const payload: TCartProduct = {
             name: productQuery.data.sync_product.name,
@@ -263,7 +272,7 @@ const ArticlePage = ({
                                     className="w-[100px] rounded-lg border border-slate-500 bg-black p-3 shadow-sm shadow-slate-500 hover:border-white"
                                     onBlur={handleQuantity}
                                     min="1"
-                                    max="999"
+                                    max="99"
                                     type="number"
                                 />
                                 <button
