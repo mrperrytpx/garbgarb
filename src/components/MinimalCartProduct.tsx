@@ -22,8 +22,8 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
             <article
                 key={item.store_product_variant_id}
                 className={`flex w-full items-center gap-2 rounded-md border-b-2 border-gray-600 bg-black px-2 py-2 text-sm text-gray-200 shadow-sm sm:flex-row ${
-                    item.outOfStock && "shadow-sm shadow-red-400"
-                }`}
+                    item.outOfStock && "shadow-sm shadow-red-600"
+                } ${item.outOfStock && "border-red-600"}`}
             >
                 <div className="w-[min(100%,50px)] max-w-[50px] rounded-lg bg-slate-200 sm:block">
                     <Image src={item.variant_image} width={100} height={100} alt="Item" />
@@ -46,9 +46,9 @@ export const MinimalCartProduct = ({ item }: IMinimalCartProduct) => {
                                     dispatch(removeFromCart({ sku: item.sku }));
                                     toast.success("Removed from cart.");
                                 }}
-                                className="mb-2 rounded-lg p-1 shadow"
+                                className="group mb-2 rounded-lg stroke-black p-1 shadow hover:bg-red-600"
                             >
-                                <RxCross1 size="14" />
+                                <RxCross1 className="group-hover:stroke-black" size="14" />
                             </button>
                         ) : (
                             <p className="hidden xs:inline">{currency(item.price)}</p>

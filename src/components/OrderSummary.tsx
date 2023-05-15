@@ -69,6 +69,7 @@ export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
                         name: formData.name,
                     });
                 } else {
+                    console.log(data);
                     const itemsInStock = data?.filter((x) => x.in_stock).map((x) => x.id);
                     dispatch(updateStock(itemsInStock));
                     setCheckoutStep(2);

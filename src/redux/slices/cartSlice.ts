@@ -113,8 +113,6 @@ export const cartSlice = createSlice({
 
             const payload = action.payload;
 
-            if (!payload.length) return;
-
             const updatedProducts = state.value.map((product) => {
                 if (payload.includes(product.store_product_variant_id)) {
                     return product;

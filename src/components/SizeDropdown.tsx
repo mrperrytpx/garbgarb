@@ -32,7 +32,6 @@ export const SizeDropdown = <T extends { id: number; inStock: boolean }>({
         >
             {options.map((option) => (
                 <option
-                    disabled={!option.inStock}
                     className="inline-block w-full cursor-pointer text-lg hover:bg-slate-300"
                     key={option.id}
                     value={getValue(option)}
