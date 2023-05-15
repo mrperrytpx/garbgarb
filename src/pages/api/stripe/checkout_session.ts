@@ -123,7 +123,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 .end(estimateShippingCostError?.message);
         }
 
-        let calculatedVAT =
+        const calculatedVAT =
             Math.round(
                 (estimatedCosts.costs.total /
                     (estimatedCosts.costs.subtotal +
@@ -152,7 +152,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const taxRate: Stripe.TaxRate = await stripe.taxRates.create({
             display_name: "VAT",
             inclusive: false,
-            percentage: Math.round((calculatedVAT - 1) * 10) / 10,
+            percentage: Math.round((calculatedVAT - 1) * 10000) / 100,
             country: address.country,
         });
 

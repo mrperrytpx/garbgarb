@@ -131,7 +131,7 @@ export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
                 </div>
                 <div className="flex w-full flex-wrap items-center justify-between">
                     <p className="text-sm uppercase">Est. Shipping:</p>
-                    {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
+                    {extraCosts.isFetching ? (
                         <LoadingSpinner size={12} />
                     ) : extraCosts.data ? (
                         <p className="text-sm font-bold">{currency(extraCosts.data?.shipping)}</p>
@@ -143,7 +143,7 @@ export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
                 </div>
                 <div className="flex w-full items-center justify-between">
                     <p className="text-sm uppercase">VAT:</p>
-                    {extraCosts.isLoading && extraCosts.fetchStatus !== "idle" ? (
+                    {extraCosts.isFetching ? (
                         <LoadingSpinner size={12} />
                     ) : extraCosts.data ? (
                         <p className="text-sm font-bold">
@@ -215,7 +215,7 @@ export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
                     {!!productsInCart.filter((x) => x.outOfStock).length
                         ? "Remove out of stock items"
                         : completeOrderMutation.isError
-                        ? "Error"
+                        ? "Error 💀"
                         : "Go to Payment"}
                 </button>
             </div>
