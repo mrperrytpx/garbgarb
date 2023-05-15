@@ -49,8 +49,8 @@ export const useCancelOrderMutation = () => {
             },
             onSettled: (data) => {
                 setTimeout(() => {
-                    queryClient.invalidateQueries({ queryKey: ["order", data] });
-                    queryClient.invalidateQueries({ queryKey: ["orders"] });
+                    queryClient.refetchQueries({ queryKey: ["order", data] });
+                    queryClient.refetchQueries({ queryKey: ["orders"] });
                 }, 1250);
             },
         }
