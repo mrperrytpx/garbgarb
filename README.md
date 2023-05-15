@@ -93,6 +93,6 @@ I built this project to mainly teach myself Next.js, Typescript and TailwindCSS 
 
 #### `What did you learn?`
 
-I learned how to even more effectively work with multiple APIs at the same time, how TailwindCSS works and how to extend the baseline classes with custom ones, how to customize NextAuth default pages and how to deploy a MySQL database to Planetscale using Prisma.
+I learned how to work with NextJS and Typescript, how to even more effectively work with multiple APIs at the same time, how TailwindCSS works and how to extend the baseline classes with custom ones, how to customize NextAuth default pages and how to deploy a MySQL database to Planetscale using Prisma.
 
 I learned how to properly report API documentation bugs since I had to do it 4 times and how interation is key when it comes to designing pretty much anything, in my opinion.
