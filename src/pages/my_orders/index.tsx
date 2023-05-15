@@ -73,7 +73,7 @@ const ProfilePage = () => {
             <div className="mx-auto my-2 flex w-full max-w-screen-sm flex-1 flex-col gap-4 p-2 text-gray-200">
                 <div className="w-full">
                     <h1 className="font-semibold uppercase">Orders:</h1>
-                    <div className="mt-2 flex">
+                    <div className="mt-2 flex flex-col gap-2">
                         {allOrders.isLoading ? (
                             <div className="flex h-40 w-full flex-col items-center justify-center gap-2 p-2 text-gray-200">
                                 <p className="text-sm font-semibold">Loading orders...</p>
