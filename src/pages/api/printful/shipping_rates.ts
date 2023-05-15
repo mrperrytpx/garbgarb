@@ -40,7 +40,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const calculatedVAT =
             Math.round(
                 (estimatedCosts.costs.total /
-                    (estimatedCosts.costs.subtotal + estimatedCosts.costs.shipping)) *
+                    (estimatedCosts.costs.subtotal +
+                        estimatedCosts.costs.shipping -
+                        estimatedCosts.costs.discount)) *
                     100
             ) / 100;
 
