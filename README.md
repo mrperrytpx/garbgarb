@@ -60,7 +60,7 @@ Once the order is canceled, information about it will become greyed out.
 
 <img src="readme/order-canceled.png" width="500">
 
-##### Technologies and libraries used:
+### Technologies and libraries used:
 
 Next.js, Typescript, TailwindCSS, Prisma, NextAuth, Redux Toolkit, Tanstack Query, Tanstack Table, Axios, Zod, React-hook-form, Stripe, Google Places Autocomplete
 
@@ -93,6 +93,6 @@ I built this project to mainly teach myself Next.js, Typescript and TailwindCSS 
 
 #### `What did you learn?`
 
-I learned how to work with NextJS and Typescript, how to even more effectively work with multiple APIs at the same time, how TailwindCSS works and how to extend the baseline classes with custom ones, how to customize NextAuth default pages and how to deploy a MySQL database to Planetscale using Prisma.
+I learned how to work with Next.js and Typescript, how to even more effectively work with multiple APIs at the same time, how TailwindCSS works and how to extend the baseline classes with custom ones, how to customize NextAuth default pages and how to deploy a MySQL database to Planetscale using Prisma.
 
 I learned how to properly report API documentation bugs since I had to do it 4 times and how interation is key when it comes to designing pretty much anything, in my opinion.
