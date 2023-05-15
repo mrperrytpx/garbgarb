@@ -60,7 +60,7 @@ Once the order is canceled, information about it will become greyed out.
 
 <img src="readme/order-canceled.png" width="500">
 
-##### Technologies and libraries used:
+#### Technologies and libraries used:
 
 Next.js, Typescript, TailwindCSS, Prisma, NextAuth, Redux Toolkit, Tanstack Query, Tanstack Table, Axios, Zod, React-hook-form, Stripe, Google Places Autocomplete
 
