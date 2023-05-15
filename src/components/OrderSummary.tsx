@@ -87,12 +87,16 @@ export const OrderSummary = ({ setCheckoutStep }: IOrderSummaryProps) => {
                 </h1>
 
                 <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
-                    <p className="text-sm uppercase">Address:</p>
-                    {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
+                    <p className="text-sm uppercase">Name:</p>
+                    <p className="text-sm">{formData.name}</p>
                 </div>
                 <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
                     <p className="text-sm uppercase">Email:</p>
                     <p className="text-sm">{formData.email}</p>
+                </div>
+                <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
+                    <p className="text-sm uppercase">Address:</p>
+                    {formData.streetName && <p className="text-sm">{formattedAddress}</p>}
                 </div>
                 <div className="flex w-full flex-col items-start justify-between gap-0.5 xs:flex-row">
                     <p className="text-sm uppercase">Items:</p>

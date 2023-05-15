@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GarbGarb
 
-## Getting Started
+## Full-stack e-commerce shop
 
-First, run the development server:
+#### [URL](https://garbgarb.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+A full-stack e-commerce store selling unique t-shirts, sweatshirts and hoodies with some... unique slogans printed on the front that I've seen on the internet.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+It's currently using Stripe in Test mode and the order's status is Draft so no actual orders are being made, but it would work by changing Stripe to Live mode and by appending `?confirm=1` to the order request URL.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+<img src="readme/homepage.png" width="500">
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Products can be filtered by size with toggle buttons and by name and color by typing in the input element. Hovering over a colored box in the product card will show the color's name used by the fulfillment company and clicking it will take the user to the product page with that color already selected.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<img src="readme/shop.png" width="500">
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Before the product page is loaded, there's a stock check for each of the color + size pairs. The page itself allows the user to change the color, select the in-stock size for that color and add up to 99 of the product variant to the cart. The user can also check the size guide to order the right size for themselves.
 
-## Learn More
+<img src="readme/product.png" width="500">
 
-To learn more about Next.js, take a look at the following resources:
+Cart page is just a simple display of products and their subtotal price. User can remove the product or change the quantity.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<img src="readme/cart.png" width="500">
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Checkout consists of 4 steps: Account, Cart, Shipping and Review
 
-## Deploy on Vercel
+Account: User chooses if they want to buy as a guest user or if they want to sign in with an account. If the user is already signed in, this stepped is skipped.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<img src="readme/checkout1.png" width="500">
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Cart: User sees cart overview for their order. If the product becomes marked as out of stock while completing the order, a button to remove the product will appear, product card will get a red shadow and the name will be struck-through. The button to go to the next step will be disabled as long as there's a product marked as out of stock in the cart.
+
+<img src="readme/checkout2a.png" width="500">
+<img src="readme/checkout2b.png" width="500">
+
+Shipping: User must enter their full name, email and shipping address. If there's an error for an input value, it will get a red border and the error message below it.
+When the user starts typing their street name, UI shows some google suggested addresses the user can click to autofill the remaining information. Click outside of the form to make the suggestions disappear.
+
+<img src="readme/checkout3a.png" width="500">
+<img src="readme/checkout3b.png" width="500">
+
+Review: User sees all of their shipping information, all products in their cart as well as estimated shipping price, VAT percentage and the estimated total price. The button to go to payment will be disabled until the shipping and VAT is calculated and if there's any other errors that come up.
+"Go to Payment" button takes the user to a Stripe checkout session where they enter their phone number and payment information.
+
+<img src="readme/checkout4.png" width="500">
+
+After the checkout is successful, user is greeted with a Success page and the order is made.
+
+<img src="readme/success.png" width="400">
+
+If the user made completed the order while signed in, they can visit their profile page to see all of the orders they made using that account. User can delete only canceled orders. If the user wishes to delete their account, all of their order data will be deleted as well. A confirmation modal pops up to confirm account deletion.
+
+<img src="readme/profile.png" width="500">
+
+Clicking on an order will take the user to the order page where they can see all details about their order. User can also request an invoice to be resent to their email and cancel the order.
+
+<img src="readme/order.png" width="500">
+
+Once the order is canceled, information about it will become greyed out.
+
+<img src="readme/order-canceled.png" width="500">
+
+##### Technologies and libraries used:
+
+Next.js, Typescript, TailwindCSS, Prisma, NextAuth, Redux Toolkit, Tanstack Query, Tanstack Table, Axios, Zod, React-hook-form, Stripe, Google Places Autocomplete
+
+## Introspection
+
+#### `What was your motivation?`
+
+My motivation was further improvement as a self-taught software developer and to become hireable for a front-end position.
+
+#### `Why did you build this project?`
+
+I built this project to mainly teach myself Next.js, Typescript and TailwindCSS because those seem like valuable skills to have in web development. I also wanted to challenge myself to step out of my comfort zone as well as build a good project for my portfolio.
+
+#### `What did you learn?`
+
+I learned how to even more effectively work with multiple APIs at the same time, how TailwindCSS works and how to extend the baseline classes with custom ones, how to customize NextAuth default pages and how to deploy a MySQL database to Planetscale using Prisma.
+
+I learned how to properly report API documentation bugs since I had to do it 4 times and how interation is key when it comes to designing pretty much anything, in my opinion.
