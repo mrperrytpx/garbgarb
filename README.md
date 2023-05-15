@@ -64,6 +64,23 @@ Once the order is canceled, information about it will become greyed out.
 
 Next.js, Typescript, TailwindCSS, Prisma, NextAuth, Redux Toolkit, Tanstack Query, Tanstack Table, Axios, Zod, React-hook-form, Stripe, Google Places Autocomplete
 
+## How to install
+
+Download and install Node and NPM from https://nodejs.org/en/download.
+
+Once downloaded, run thes commands in the terminal:
+
+```ts
+$ git clone https://github.com/mrperrytpx/garbgarb
+$ cd .\garbgarb\
+$ npm install
+```
+
+Then set the correct environment variables in .env.
+
+`npm run dev` to run it in dev mode.
+`npm run build` to make a production build, run the production build with `npm run start`
+
 ## Introspection
 
 #### `What was your motivation?`
