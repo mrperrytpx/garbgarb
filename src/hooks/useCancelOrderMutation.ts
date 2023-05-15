@@ -48,7 +48,10 @@ export const useCancelOrderMutation = () => {
                 toast.info("Order canceled.");
             },
             onSettled: (data) => {
-                setTimeout(() => queryClient.invalidateQueries({ queryKey: ["order", data] }), 500);
+                setTimeout(() => {
+                    queryClient.invalidateQueries({ queryKey: ["order", data] });
+                    queryClient.invalidateQueries({ queryKey: ["orders"] });
+                }, 1250);
             },
         }
     );
