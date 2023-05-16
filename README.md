@@ -89,7 +89,7 @@ My motivation was further improvement as a self-taught software developer and to
 
 #### `Why did you build this project?`
 
-I built this project to mainly teach myself Next.js, Typescript and TailwindCSS because those seem like valuable skills to have in web development. I also wanted to challenge myself to step out of my comfort zone as well as build a good project for my portfolio.
+I built this project primarily to teach myself Next.js, Typescript and TailwindCSS because those seem like valuable skills to have in web development. I also wanted to challenge myself to step out of my comfort zone as well as build a good project for my portfolio.
 
 #### `What did you learn?`
 
