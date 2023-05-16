@@ -9,7 +9,7 @@ function HomePage() {
                 <title>GarbGarb</title>
             </Head>
             <main className="flex-1">
-                <div className="flex h-full flex-col items-center justify-center gap-6 pb-8">
+                <div className="flex h-full flex-col items-center justify-center gap-6 px-2 pb-8">
                     <div className="w-[min(95%,500px)]">
                         <TextLogo />
                     </div>

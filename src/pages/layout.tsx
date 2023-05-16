@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 
 const Logo = dynamic(() => import("../components/Logos").then((mod) => mod.Logo), {
-    loading: () => <LoadingSpinner />,
+    loading: () => <LoadingSpinner size={30} />,
 });
 
 interface ILayoutProps {
@@ -23,7 +23,7 @@ interface ILayoutProps {
 
 const Layout = ({ children }: ILayoutProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     const pathname = usePathname();
 
@@ -49,6 +49,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         >
                             <BsShop className="group-hover:fill-black" size="24" />
                         </Link>
+                        {status === "loading" ? <LoadingSpinner size={30} /> : null}
                         {session?.user && (
                             <Link
                                 className="rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:hidden"
@@ -66,6 +67,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         )}
                     </div>
                     <div className="flex items-center justify-center gap-4">
+                        {status === "loading" ? <LoadingSpinner size={30} /> : null}
                         {session?.user && (
                             <Link
                                 className="hidden rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:inline"
@@ -119,7 +121,6 @@ const Layout = ({ children }: ILayoutProps) => {
                 height={2}
                 options={{
                     showSpinner: false,
-                    trickleSpeed: 150,
                     trickle: true,
                 }}
                 color="rgb(209 213 219)"
