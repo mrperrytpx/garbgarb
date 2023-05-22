@@ -3,7 +3,7 @@ import { tryCatchSync } from "../utils/tryCatchWrappers";
 import { ApiError } from "next/dist/server/api-utils";
 import { printfulApiInstance, printfulApiKeyInstance } from "../utils/axiosClients";
 import { TProductDetails, TProductVariant } from "../pages/api/product";
-import { TBaseVariants, TWarehouseSingleVariant } from "../pages/api/product/availability";
+import { TBaseVariants, TWarehouse } from "../pages/api/product/availability";
 
 const cartItemsSchema = z
     .array(
@@ -31,13 +31,13 @@ export async function checkPayloadStock(
     }
 
     // ID VALIDATIONS SO ITEMS EXIST
-    const uniqueProductIDsInCart = [
+    const uniqueStoreProductIDsInCart = [
         ...new Set(parsedCartItems.map((item) => item.store_product_id)),
     ];
 
     const printfulStoreItems = (
         await Promise.allSettled(
-            uniqueProductIDsInCart.map(async (id) => {
+            uniqueStoreProductIDsInCart.map(async (id) => {
                 const res = await printfulApiKeyInstance.get<TProductDetails>(
                     `store/products/${id}`
                 );
@@ -66,23 +66,22 @@ export async function checkPayloadStock(
         throw new ApiError(404, "Items in your cart don't exist in the Store");
     }
 
-    const uniqueVariantIDsInCart = [
-        ...new Set(cartItemsExistInStore.map((item) => item?.variant_id)),
+    const uniqueProductIDsInCart = [
+        ...new Set(cartItemsExistInStore.map((item) => item?.product.product_id)),
     ];
 
     const warehouseStock = (
         await Promise.allSettled(
-            uniqueVariantIDsInCart.map(async (item) => {
-                const res = await printfulApiInstance.get<TWarehouseSingleVariant>(
-                    `products/variant/${item}`
-                );
-                const data = res.data.result.variant;
+            uniqueProductIDsInCart.map(async (item) => {
+                const res = await printfulApiInstance.get<TWarehouse>(`products/${item}`);
+                const data = res.data.result.variants;
                 return data;
             })
         )
     )
         .filter((x) => x.status === "fulfilled")
-        .map((x) => (x as PromiseFulfilledResult<TBaseVariants>).value);
+        .map((x) => (x as PromiseFulfilledResult<TBaseVariants[]>).value)
+        .flat();
 
     const cartItemsInStock = cartItemsExistInStore
         .map((item) => {

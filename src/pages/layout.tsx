@@ -49,7 +49,12 @@ const Layout = ({ children }: ILayoutProps) => {
                         >
                             <BsShop className="group-hover:fill-black" size="24" />
                         </Link>
-                        {status === "loading" ? <LoadingSpinner size={30} /> : null}
+                        {status === "loading" ? (
+                            <div className="sm:hidden">
+                                {" "}
+                                <LoadingSpinner size={30} />
+                            </div>
+                        ) : null}
                         {session?.user && (
                             <Link
                                 className="rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:hidden"
@@ -67,7 +72,12 @@ const Layout = ({ children }: ILayoutProps) => {
                         )}
                     </div>
                     <div className="flex items-center justify-center gap-4">
-                        {status === "loading" ? <LoadingSpinner size={30} /> : null}
+                        {status === "loading" ? (
+                            <div className="hidden sm:inline-block">
+                                {" "}
+                                <LoadingSpinner size={30} />
+                            </div>
+                        ) : null}
                         {session?.user && (
                             <Link
                                 className="hidden rounded-full p-0.5 hover:animate-hop hover:bg-slate-200 sm:inline"
