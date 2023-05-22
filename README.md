@@ -4,7 +4,7 @@
 
 #### [URL](https://garbgarb.vercel.app/)
 
-A full-stack e-commerce store selling unique t-shirts, sweatshirts and hoodies with some... unique slogans printed on the front that I've seen on the internet.
+A full-stack e-commerce store selling unique t-shirts, sweatshirts and hoodies with funny sarcastic slogans printed on the front that I've seen on the internet.
 
 It's currently using Stripe in Test mode and the order's status is Draft so no actual orders are being made, but it would work by changing Stripe to Live mode and by appending `?confirm=1` to the order request URL.
 
