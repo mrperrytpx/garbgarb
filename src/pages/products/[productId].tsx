@@ -162,7 +162,6 @@ const ArticlePage = ({
         <>
             <Head>
                 <meta property="og:title" content={myShirtName} />
-                <meta property="og:type" content="image.png" />
                 <meta property="og:description" content={baseShirtName} />
                 <meta
                     property="og:image"

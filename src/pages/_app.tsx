@@ -47,6 +47,10 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                 <link rel="icon" type="image/png" href="/static/favicon.png" />
                 <meta name="description" content="GarbGarb - Buy yourself something nice" />
                 <meta property="og:title" content="GarbGarb" />
+                <meta
+                    property="og:image"
+                    content="https://github.com/mrperrytpx/garbgarb/blob/main/public/static/favicon.png"
+                />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://garbgarb.vercel.app/" />
                 <meta property="og:description" content="GarbGarb - Buy yourself something nice" />
@@ -62,6 +66,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                                         {Component.auth ? (
                                             <Auth>
                                                 <Component {...pageProps} />
+
                                                 <ToastContainer {...toastProps} />
                                             </Auth>
                                         ) : (
