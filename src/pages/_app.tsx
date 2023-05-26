@@ -49,7 +49,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                 <meta property="og:title" content="GarbGarb" />
                 <meta
                     property="og:image"
-                    content="https://github.com/mrperrytpx/garbgarb/blob/main/public/static/favicon.png"
+                    content={`${process.env.NEXT_PUBLIC_SERVER_URL}/static/homepage.png`}
                 />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://garbgarb.vercel.app/" />
