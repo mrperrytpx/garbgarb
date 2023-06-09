@@ -1,10 +1,10 @@
 import NextAuth, { Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import EmailProvider from "next-auth/providers/email";
 import { createTransport } from "nodemailer";
 import { html, text } from "../../../utils/nextauthEmailText";
+import { prisma } from "../../../../prisma/prisma";
 
 declare module "next-auth" {
     /**
@@ -20,8 +20,6 @@ declare module "next-auth" {
         };
     }
 }
-
-const prisma = new PrismaClient();
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
