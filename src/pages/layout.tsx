@@ -256,7 +256,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                         target="_blank"
                                         rel="noreferrer"
                                         aria-label="LinkedIn"
-                                        href="https://www.linkedin.com/in/tomislav-%C5%A1iprak"
+                                        href="https://www.linkedin.com/in/tomislav-siprak"
                                     >
                                         <FiLinkedin
                                             className="group-hover:stroke-black"
