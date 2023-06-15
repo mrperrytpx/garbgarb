@@ -195,7 +195,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             className="group my-10 rounded-lg p-2 hover:animate-hop hover:bg-slate-200 "
                             target="_blank"
                             rel="noreferrer"
-                            href="https://www.linkedin.com/in/tomislav-%C5%A1iprak-83abb1275/"
+                            href="https://www.linkedin.com/in/tomislav-%C5%A1iprak"
                             aria-label="LinkedIn"
                         >
                             <FiLinkedin
@@ -256,7 +256,7 @@ const Layout = ({ children }: ILayoutProps) => {
                                         target="_blank"
                                         rel="noreferrer"
                                         aria-label="LinkedIn"
-                                        href="https://www.linkedin.com/in/tomislav-%C5%A1iprak-83abb1275/"
+                                        href="https://www.linkedin.com/in/tomislav-%C5%A1iprak"
                                     >
                                         <FiLinkedin
                                             className="group-hover:stroke-black"
