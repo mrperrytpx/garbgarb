@@ -195,7 +195,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             className="group my-10 rounded-lg p-2 hover:animate-hop hover:bg-slate-200 "
                             target="_blank"
                             rel="noreferrer"
-                            href="https://www.linkedin.com/in/tomislav-%C5%A1iprak"
+                            href="https://www.linkedin.com/in/tomislav-siprak"
                             aria-label="LinkedIn"
                         >
                             <FiLinkedin
