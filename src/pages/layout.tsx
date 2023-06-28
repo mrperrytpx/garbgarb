@@ -119,7 +119,7 @@ const Layout = ({ children }: ILayoutProps) => {
                         <button
                             aria-label="Menu"
                             onClick={() => setIsExpanded((old) => !old)}
-                            className="selext-none text-3xl sm:hidden"
+                            className="select-none text-3xl sm:hidden"
                             role="button"
                         >
                             <FiMenu />
