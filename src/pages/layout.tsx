@@ -34,7 +34,7 @@ const Layout = ({ children }: ILayoutProps) => {
             {/* Header */}
             <header className="sticky top-0 z-30 grid h-16 items-center border-b border-gray-700 bg-black px-4 text-gray-200">
                 <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
-                    <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center justify-center gap-2">
                         <Link
                             aria-label="Home page"
                             className="flex items-center justify-center rounded-lg text-3xl hover:animate-hop hover:bg-slate-200"
@@ -51,7 +51,6 @@ const Layout = ({ children }: ILayoutProps) => {
                         </Link>
                         {status === "loading" ? (
                             <div className="sm:hidden">
-                                {" "}
                                 <LoadingSpinner size={30} />
                             </div>
                         ) : null}
@@ -71,10 +70,12 @@ const Layout = ({ children }: ILayoutProps) => {
                             </Link>
                         )}
                     </div>
-                    <div className="flex items-center justify-center gap-4">
+                    <span className="-rotate-12 text-center font-bold uppercase sm:text-2xl">
+                        Demo
+                    </span>
+                    <div className="flex items-center justify-center gap-2">
                         {status === "loading" ? (
                             <div className="hidden sm:inline-block">
-                                {" "}
                                 <LoadingSpinner size={30} />
                             </div>
                         ) : null}
