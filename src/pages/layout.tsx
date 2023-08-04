@@ -139,7 +139,7 @@ const Layout = ({ children }: ILayoutProps) => {
             />
             {/* Mobile Menu */}
             {isExpanded ? (
-                <div className="flex h-[calc(max(600px,100svh)-64px)] flex-col items-center justify-center bg-black text-gray-200">
+                <div className="flex h-[(max(600px,100svh)] flex-col items-center justify-center bg-black text-gray-200">
                     <div className="flex flex-1 flex-col items-center justify-center gap-6">
                         <Link
                             aria-label="Shop"
@@ -206,6 +206,7 @@ const Layout = ({ children }: ILayoutProps) => {
                             />
                         </a>
                     </div>
+                    <div className="h-16" />
                 </div>
             ) : (
                 <>
