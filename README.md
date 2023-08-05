@@ -48,7 +48,7 @@ After the checkout is successful, user is greeted with a Success page and the or
 
 <img src="readme/success.png" width="400">
 
-If the user made completed the order while signed in, they can visit their profile page to see all of the orders they made using that account. User can delete only canceled orders. If the user wishes to delete their account, all of their order data will be deleted as well. A confirmation modal pops up to confirm account deletion.
+If the user completed the order while signed in, they can visit their profile page to see all of the orders they made using that account. User can delete only canceled orders. If the user wishes to delete their account, all of their order data will be deleted as well. A confirmation modal pops up to confirm account deletion.
 
 <img src="readme/profile.png" width="500">
 
