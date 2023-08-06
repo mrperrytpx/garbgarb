@@ -68,7 +68,7 @@ Next.js, Typescript, TailwindCSS, Prisma, NextAuth, Redux Toolkit, Tanstack Quer
 
 Download and install Node and NPM from https://nodejs.org/en/download.
 
-Once downloaded, run thes commands in the terminal:
+Once downloaded, run these commands in the terminal:
 
 ```ts
 $ git clone https://github.com/mrperrytpx/garbgarb
