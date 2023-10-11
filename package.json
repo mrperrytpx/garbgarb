@@ -36,7 +36,8 @@
         "sharp": "^0.32.0",
         "stripe": "^11.16.0",
         "use-google-maps-script": "^0.1.2",
-        "use-places-autocomplete": "^4.0.0"
+        "use-places-autocomplete": "^4.0.0",
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@tanstack/react-query-devtools": "^4.29.0",
