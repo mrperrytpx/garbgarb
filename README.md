@@ -24,7 +24,7 @@ Cart page is just a simple display of products and their subtotal price. User ca
 
 Checkout consists of 4 steps: Account, Cart, Shipping and Review
 
-Account: User chooses if they want to buy as a guest user or if they want to sign in with an account. If the user is already signed in, this stepped is skipped.
+Account: User chooses if they want to buy as a guest user or if they want to sign in with an account. If the user is already signed in, this step is skipped.
 
 <img src="readme/checkout1.png" width="500">
 
