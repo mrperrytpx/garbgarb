@@ -6,7 +6,7 @@ export const getStripe = () => {
     if (!stripePromise) {
         stripePromise = loadStripe(
             `${
-                process.env.NODE_ENV === "development"
+                process.env.PROD_FLAG === "development"
                     ? process.env.NEXT_PUBLIC_DEV_STRIPE_PUBLIC_KEY
                     : process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
             }`
