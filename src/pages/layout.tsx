@@ -70,9 +70,6 @@ const Layout = ({ children }: ILayoutProps) => {
                             </Link>
                         )}
                     </div>
-                    <span className="-rotate-12 text-center font-bold uppercase sm:text-2xl">
-                        Demo
-                    </span>
                     <div className="flex items-center justify-center gap-2">
                         {status === "loading" ? (
                             <div className="hidden sm:inline-block">

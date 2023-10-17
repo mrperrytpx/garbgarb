@@ -9,10 +9,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { printfulApiKeyInstance } from "../../../utils/axiosClients";
 import { TProductDetails, TProductVariant } from "../product";
-
-const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
-    apiVersion: "2022-11-15",
-});
+import { stripe } from "../../../lib/stripe";
 
 export const cartItemsSchema = z
     .array(

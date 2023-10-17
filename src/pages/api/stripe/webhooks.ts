@@ -23,7 +23,7 @@ async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const buf = await buffer(req);
         const sig = req.headers["stripe-signature"];
-        const scrt = process.env.STRIPE_WEBHOOK_KEY;
+        const scrt = process.env.NODE_ENV === "development" ? process.env.DEV_STRIPE_WEBHOOK_KEY : process.env.STRIPE_WEBHOOK_KEY;
 
         let event;
 
