@@ -24,7 +24,7 @@
         "html-react-parser": "^3.0.12",
         "micro": "^10.0.1",
         "micro-cors": "^0.1.1",
-        "next": "13.1.1",
+        "next": "13.5",
         "next-auth": "^4.24.7",
         "nextjs-progressbar": "^0.0.16",
         "nodemailer": "^6.9.12",
@@ -60,11 +60,5 @@
         "tailwindcss": "^3.3.1",
         "ts-node": "^10.9.1",
         "typescript": "^4.9.4"
-    },
-    "pnpm": {
-        "overrides": {
-            "postcss@<8.4.31": ">=8.4.31",
-            "next@>=0.9.9 <13.4.20-canary.13": ">=13.4.20-canary.13"
-        }
     }
 }
